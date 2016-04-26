@@ -27,15 +27,11 @@ import "package:angular2/src/platform/dom/events/dom_events.dart"
     show DomEventsPlugin;
 import "package:angular2/src/platform/dom/events/key_events.dart"
     show KeyEventsPlugin;
-import "package:angular2/src/platform/dom/events/hammer_gestures.dart"
-    show HammerGesturesPlugin;
 import "package:angular2/src/platform/dom/dom_tokens.dart" show DOCUMENT;
 import "package:angular2/src/platform/dom/dom_renderer.dart"
     show DomRootRenderer, DomRootRenderer_;
 import "package:angular2/src/platform/dom/shared_styles_host.dart"
-    show DomSharedStylesHost;
-import "package:angular2/src/platform/dom/shared_styles_host.dart"
-    show SharedStylesHost;
+    show DomSharedStylesHost, SharedStylesHost;
 import "package:angular2/src/animate/browser_details.dart" show BrowserDetails;
 import "package:angular2/src/animate/animation_builder.dart"
     show AnimationBuilder;
@@ -62,8 +58,8 @@ import "package:angular2/src/web_workers/shared/serializer.dart"
 import "package:angular2/src/web_workers/shared/api.dart" show ON_WEB_WORKER;
 import "package:angular2/src/web_workers/shared/render_store.dart"
     show RenderStore;
-import "dom/events/hammer_gestures.dart"
-    show HAMMER_GESTURE_CONFIG, HammerGestureConfig;
+import "package:angular2/src/platform/dom/events/hammer_gestures.dart"
+    show HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerGesturesPlugin;
 
 const OpaqueToken WORKER_SCRIPT = const OpaqueToken("WebWorkerScript");
 // Message based Worker classes that listen on the MessageBus

@@ -24,15 +24,13 @@ import "package:angular2/src/core/testability/testability.dart"
 import "package:angular2/src/core/linker/component_resolver.dart"
     show ComponentResolver;
 import "package:angular2/src/core/linker/component_factory.dart"
-    show ComponentRef;
+    show ComponentRef, ComponentFactory;
 import "package:angular2/src/facade/exceptions.dart"
     show BaseException, WrappedException, ExceptionHandler, unimplemented;
 import "package:angular2/src/core/console.dart" show Console;
 import "profile/profile.dart" show wtfLeave, wtfCreateScope, WtfScopeFn;
 import "package:angular2/src/core/change_detection/change_detector_ref.dart"
     show ChangeDetectorRef;
-import "package:angular2/src/core/linker/component_factory.dart"
-    show ComponentFactory;
 
 /**
  * Create an Angular zone.

@@ -12,10 +12,10 @@ import "change_detection/change_detection.dart"
         KeyValueDiffers,
         defaultKeyValueDiffers;
 import "linker/view_utils.dart" show ViewUtils;
-import "linker/component_resolver.dart" show ComponentResolver;
-import "linker/component_resolver.dart" show ReflectorComponentResolver;
-import "linker/dynamic_component_loader.dart" show DynamicComponentLoader;
-import "linker/dynamic_component_loader.dart" show DynamicComponentLoader_;
+import "linker/component_resolver.dart"
+    show ComponentResolver, ReflectorComponentResolver;
+import "linker/dynamic_component_loader.dart"
+    show DynamicComponentLoader, DynamicComponentLoader_;
 
 Type ___unused;
 /**

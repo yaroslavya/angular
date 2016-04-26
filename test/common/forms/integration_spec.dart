@@ -1,7 +1,7 @@
 library angular2.test.common.forms.integration_spec;
 
 import "package:angular2/core.dart"
-    show Component, Directive, Output, EventEmitter;
+    show Component, Directive, Output, EventEmitter, Provider, Input;
 import "package:angular2/testing_internal.dart"
     show
         ComponentFixture,
@@ -37,7 +37,6 @@ import "package:angular2/common.dart"
         Validators,
         Validator,
         RadioButtonState;
-import "package:angular2/core.dart" show Provider, Input;
 import "package:angular2/platform/browser.dart" show By;
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
 import "package:angular2/src/facade/async.dart"

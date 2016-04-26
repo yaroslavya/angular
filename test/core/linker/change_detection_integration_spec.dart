@@ -18,6 +18,8 @@ import "package:angular2/testing_internal.dart"
         beforeEachProviders;
 import "package:angular2/src/facade/lang.dart"
     show
+        IS_DART,
+        Type,
         isPresent,
         isBlank,
         isNumber,
@@ -33,7 +35,6 @@ import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
 import "package:angular2/src/core/change_detection/change_detection.dart"
     show PipeTransform, ChangeDetectionStrategy, WrappedValue;
 import "package:angular2/src/core/metadata/lifecycle_hooks.dart" show OnDestroy;
-import "package:angular2/src/facade/lang.dart" show IS_DART, Type;
 import "package:angular2/src/facade/async.dart"
     show EventEmitter, ObservableWrapper;
 import "package:angular2/core.dart"

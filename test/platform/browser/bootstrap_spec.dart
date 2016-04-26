@@ -20,7 +20,7 @@ import "package:angular2/src/facade/lang.dart"
 import "package:angular2/platform/browser.dart"
     show bootstrap, BROWSER_PROVIDERS, BROWSER_APP_PROVIDERS;
 import "package:angular2/src/core/application_ref.dart"
-    show ApplicationRef, PlatformRef;
+    show ApplicationRef, PlatformRef, disposePlatform;
 import "package:angular2/src/core/console.dart" show Console;
 import "package:angular2/core.dart" show Component, Directive, OnDestroy;
 import "package:angular2/src/platform/dom/dom_adapter.dart" show DOM;
@@ -37,7 +37,6 @@ import "package:angular2/core.dart"
         coreLoadAndBootstrap,
         createPlatform,
         ReflectiveInjector;
-import "package:angular2/src/core/application_ref.dart" show disposePlatform;
 import "package:angular2/src/facade/exceptions.dart"
     show ExceptionHandler, BaseException;
 import "package:angular2/src/core/testability/testability.dart"

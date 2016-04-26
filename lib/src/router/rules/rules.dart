@@ -8,8 +8,7 @@ import "package:angular2/src/facade/collection.dart" show Map;
 import "route_handlers/route_handler.dart" show RouteHandler;
 import "../url_parser.dart" show Url, convertUrlParamsToArray;
 import "../instruction.dart" show ComponentInstruction;
-import "route_paths/route_path.dart" show RoutePath;
-import "route_paths/route_path.dart" show GeneratedUrl;
+import "route_paths/route_path.dart" show RoutePath, GeneratedUrl;
 
 // RouteMatch objects hold information about a match between a rule and a URL
 abstract class RouteMatch {}

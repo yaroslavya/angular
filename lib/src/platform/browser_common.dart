@@ -25,15 +25,11 @@ import "package:angular2/src/platform/dom/events/dom_events.dart"
     show DomEventsPlugin;
 import "package:angular2/src/platform/dom/events/key_events.dart"
     show KeyEventsPlugin;
-import "package:angular2/src/platform/dom/events/hammer_gestures.dart"
-    show HammerGesturesPlugin;
 import "package:angular2/src/platform/dom/dom_tokens.dart" show DOCUMENT;
 import "package:angular2/src/platform/dom/dom_renderer.dart"
     show DomRootRenderer, DomRootRenderer_;
 import "package:angular2/src/platform/dom/shared_styles_host.dart"
-    show DomSharedStylesHost;
-import "package:angular2/src/platform/dom/shared_styles_host.dart"
-    show SharedStylesHost;
+    show DomSharedStylesHost, SharedStylesHost;
 import "package:angular2/src/animate/browser_details.dart" show BrowserDetails;
 import "package:angular2/src/animate/animation_builder.dart"
     show AnimationBuilder;
@@ -45,7 +41,7 @@ import "package:angular2/src/core/profile/wtf_init.dart" show wtfInit;
 import "package:angular2/src/platform/dom/events/event_manager.dart"
     show EventManager, EVENT_MANAGER_PLUGINS;
 import "package:angular2/src/platform/dom/events/hammer_gestures.dart"
-    show HAMMER_GESTURE_CONFIG, HammerGestureConfig;
+    show HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerGesturesPlugin;
 import "package:angular2/platform/common_dom.dart" show ELEMENT_PROBE_PROVIDERS;
 export "package:angular2/src/platform/dom/dom_tokens.dart" show DOCUMENT;
 export "package:angular2/src/platform/browser/title.dart" show Title;

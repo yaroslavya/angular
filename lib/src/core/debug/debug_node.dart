@@ -1,10 +1,9 @@
 library angular2.src.core.debug.debug_node;
 
 import "package:angular2/src/facade/lang.dart" show isPresent, Type;
-import "package:angular2/src/facade/collection.dart" show Predicate;
-import "package:angular2/src/core/di.dart" show Injector;
 import "package:angular2/src/facade/collection.dart"
-    show ListWrapper, MapWrapper;
+    show Predicate, ListWrapper, MapWrapper;
+import "package:angular2/src/core/di.dart" show Injector;
 import "package:angular2/src/core/render/api.dart" show RenderDebugInfo;
 
 class EventListener {

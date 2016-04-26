@@ -32,7 +32,8 @@ import "package:angular2/src/facade/lang.dart"
         isJsObject,
         global,
         stringify,
-        isBlank;
+        isBlank,
+        IS_DART;
 import "package:angular2/src/facade/exceptions.dart"
     show BaseException, WrappedException;
 import "package:angular2/src/facade/async.dart"
@@ -51,8 +52,7 @@ import "package:angular2/core.dart"
         SkipSelfMetadata,
         OnDestroy,
         ReflectiveInjector;
-import "package:angular2/common.dart" show NgIf, NgFor;
-import "package:angular2/common.dart" show AsyncPipe;
+import "package:angular2/common.dart" show NgIf, NgFor, AsyncPipe;
 import "package:angular2/src/core/change_detection/change_detection.dart"
     show PipeTransform, ChangeDetectorRef, ChangeDetectionStrategy;
 import "package:angular2/compiler.dart" show CompilerConfig;
@@ -77,7 +77,6 @@ import "package:angular2/src/core/linker/component_resolver.dart"
 import "package:angular2/src/core/linker/element_ref.dart" show ElementRef;
 import "package:angular2/src/core/linker/template_ref.dart" show TemplateRef;
 import "package:angular2/src/core/render.dart" show Renderer;
-import "package:angular2/src/facade/lang.dart" show IS_DART;
 
 const ANCHOR_ELEMENT = const OpaqueToken("AnchorElement");
 main() {

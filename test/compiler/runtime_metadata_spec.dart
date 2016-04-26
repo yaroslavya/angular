@@ -14,7 +14,7 @@ import "package:angular2/testing_internal.dart"
         AsyncTestCompleter,
         inject,
         beforeEachProviders;
-import "package:angular2/src/facade/lang.dart" show stringify;
+import "package:angular2/src/facade/lang.dart" show IS_DART, stringify;
 import "package:angular2/src/compiler/runtime_metadata.dart"
     show RuntimeMetadataResolver;
 import "package:angular2/src/core/metadata/lifecycle_hooks.dart"
@@ -37,7 +37,6 @@ import "package:angular2/core.dart"
         provide;
 import "test_bindings.dart" show TEST_PROVIDERS;
 import "package:angular2/src/compiler/util.dart" show MODULE_SUFFIX;
-import "package:angular2/src/facade/lang.dart" show IS_DART;
 import "package:angular2/src/core/platform_directives_and_pipes.dart"
     show PLATFORM_DIRECTIVES;
 import "runtime_metadata_fixture.dart" show MalformedStylesComponent;

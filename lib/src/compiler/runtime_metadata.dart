@@ -37,7 +37,6 @@ import "package:angular2/src/core/di/reflective_provider.dart"
     show constructDependencies, ReflectiveDependency;
 import "package:angular2/src/core/di/metadata.dart"
     show OptionalMetadata, SelfMetadata, HostMetadata, SkipSelfMetadata;
-import "package:angular2/src/core/metadata/di.dart" show AttributeMetadata;
 import "package:angular2/src/core/reflection/reflector_reader.dart"
     show ReflectorReader;
 
@@ -209,8 +208,8 @@ class RuntimeMetadataResolver {
     }
     return deps.map((dep) {
       var compileToken;
-      var p = (dep.properties.firstWhere((p) => p is AttributeMetadata,
-          orElse: () => null) as AttributeMetadata);
+      var p = (dep.properties.firstWhere((p) => p is dimd.AttributeMetadata,
+          orElse: () => null) as dimd.AttributeMetadata);
       var isAttribute = false;
       if (isPresent(p)) {
         compileToken = this.getTokenMetadata(p.attributeName);
