@@ -6794,10 +6794,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var __metadata = (this && this.__metadata) || function (k, v) {
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
-	var lang_1 = __webpack_require__(5);
 	var exceptions_1 = __webpack_require__(12);
 	var collection_1 = __webpack_require__(15);
-	var lang_2 = __webpack_require__(5);
+	var lang_1 = __webpack_require__(5);
 	var DefaultIterableDifferFactory = (function () {
 	    function DefaultIterableDifferFactory() {
 	    }
@@ -6834,7 +6833,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // Keeps track of records where custom track by is the same, but item identity has changed
 	        this._identityChangesHead = null;
 	        this._identityChangesTail = null;
-	        this._trackByFn = lang_2.isPresent(this._trackByFn) ? this._trackByFn : trackByIdentity;
+	        this._trackByFn = lang_1.isPresent(this._trackByFn) ? this._trackByFn : trackByIdentity;
 	    }
 	    Object.defineProperty(DefaultIterableDiffer.prototype, "collection", {
 	        get: function () { return this._collection; },
@@ -6883,7 +6882,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 	    DefaultIterableDiffer.prototype.diff = function (collection) {
-	        if (lang_2.isBlank(collection))
+	        if (lang_1.isBlank(collection))
 	            collection = [];
 	        if (!collection_1.isListLikeIterable(collection)) {
 	            throw new exceptions_1.BaseException("Error trying to diff '" + collection + "'");
@@ -6905,13 +6904,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var index;
 	        var item;
 	        var itemTrackBy;
-	        if (lang_2.isArray(collection)) {
+	        if (lang_1.isArray(collection)) {
 	            var list = collection;
 	            this._length = collection.length;
 	            for (index = 0; index < this._length; index++) {
 	                item = list[index];
 	                itemTrackBy = this._trackByFn(index, item);
-	                if (record === null || !lang_2.looseIdentical(record.trackById, itemTrackBy)) {
+	                if (record === null || !lang_1.looseIdentical(record.trackById, itemTrackBy)) {
 	                    record = this._mismatch(record, item, itemTrackBy, index);
 	                    mayBeDirty = true;
 	                }
@@ -6920,7 +6919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        // TODO(misko): can we limit this to duplicates only?
 	                        record = this._verifyReinsertion(record, item, itemTrackBy, index);
 	                    }
-	                    if (!lang_2.looseIdentical(record.item, item))
+	                    if (!lang_1.looseIdentical(record.item, item))
 	                        this._addIdentityChange(record, item);
 	                }
 	                record = record._next;
@@ -6930,7 +6929,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            index = 0;
 	            collection_1.iterateListLike(collection, function (item) {
 	                itemTrackBy = _this._trackByFn(index, item);
-	                if (record === null || !lang_2.looseIdentical(record.trackById, itemTrackBy)) {
+	                if (record === null || !lang_1.looseIdentical(record.trackById, itemTrackBy)) {
 	                    record = _this._mismatch(record, item, itemTrackBy, index);
 	                    mayBeDirty = true;
 	                }
@@ -6939,7 +6938,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        // TODO(misko): can we limit this to duplicates only?
 	                        record = _this._verifyReinsertion(record, item, itemTrackBy, index);
 	                    }
-	                    if (!lang_2.looseIdentical(record.item, item))
+	                    if (!lang_1.looseIdentical(record.item, item))
 	                        _this._addIdentityChange(record, item);
 	                }
 	                record = record._next;
@@ -7016,7 +7015,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (record !== null) {
 	            // We have seen this before, we need to move it forward in the collection.
 	            // But first we need to check if identity changed, so we can update in view if necessary
-	            if (!lang_2.looseIdentical(record.item, item))
+	            if (!lang_1.looseIdentical(record.item, item))
 	                this._addIdentityChange(record, item);
 	            this._moveAfter(record, previousRecord, index);
 	        }
@@ -7026,7 +7025,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (record !== null) {
 	                // It is an item which we have evicted earlier: reinsert it back into the list.
 	                // But first we need to check if identity changed, so we can update in view if necessary
-	                if (!lang_2.looseIdentical(record.item, item))
+	                if (!lang_1.looseIdentical(record.item, item))
 	                    this._addIdentityChange(record, item);
 	                this._reinsertAfter(record, previousRecord, index);
 	            }
@@ -7317,9 +7316,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    CollectionChangeRecord.prototype.toString = function () {
 	        return this.previousIndex === this.currentIndex ?
-	            lang_2.stringify(this.item) :
-	            lang_2.stringify(this.item) + '[' + lang_2.stringify(this.previousIndex) + '->' +
-	                lang_2.stringify(this.currentIndex) + ']';
+	            lang_1.stringify(this.item) :
+	            lang_1.stringify(this.item) + '[' + lang_1.stringify(this.previousIndex) + '->' +
+	                lang_1.stringify(this.currentIndex) + ']';
 	    };
 	    return CollectionChangeRecord;
 	}());
@@ -7359,7 +7358,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var record;
 	        for (record = this._head; record !== null; record = record._nextDup) {
 	            if ((afterIndex === null || afterIndex < record.currentIndex) &&
-	                lang_2.looseIdentical(record.trackById, trackById)) {
+	                lang_1.looseIdentical(record.trackById, trackById)) {
 	                return record;
 	            }
 	        }
@@ -7403,9 +7402,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    _DuplicateMap.prototype.put = function (record) {
 	        // todo(vicb) handle corner cases
-	        var key = lang_2.getMapKey(record.trackById);
+	        var key = lang_1.getMapKey(record.trackById);
 	        var duplicates = this.map.get(key);
-	        if (!lang_2.isPresent(duplicates)) {
+	        if (!lang_1.isPresent(duplicates)) {
 	            duplicates = new _DuplicateItemRecordList();
 	            this.map.set(key, duplicates);
 	        }
@@ -7420,9 +7419,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    _DuplicateMap.prototype.get = function (trackById, afterIndex) {
 	        if (afterIndex === void 0) { afterIndex = null; }
-	        var key = lang_2.getMapKey(trackById);
+	        var key = lang_1.getMapKey(trackById);
 	        var recordList = this.map.get(key);
-	        return lang_2.isBlank(recordList) ? null : recordList.get(trackById, afterIndex);
+	        return lang_1.isBlank(recordList) ? null : recordList.get(trackById, afterIndex);
 	    };
 	    /**
 	     * Removes a {@link CollectionChangeRecord} from the list of duplicates.
@@ -7430,7 +7429,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * The list of duplicates also is removed from the map if it gets empty.
 	     */
 	    _DuplicateMap.prototype.remove = function (record) {
-	        var key = lang_2.getMapKey(record.trackById);
+	        var key = lang_1.getMapKey(record.trackById);
 	        // todo(vicb)
 	        // assert(this.map.containsKey(key));
 	        var recordList = this.map.get(key);
@@ -7446,7 +7445,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        configurable: true
 	    });
 	    _DuplicateMap.prototype.clear = function () { this.map.clear(); };
-	    _DuplicateMap.prototype.toString = function () { return '_DuplicateMap(' + lang_2.stringify(this.map) + ')'; };
+	    _DuplicateMap.prototype.toString = function () { return '_DuplicateMap(' + lang_1.stringify(this.map) + ')'; };
 	    return _DuplicateMap;
 	}());
 
@@ -12174,9 +12173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var change_detection_1 = __webpack_require__(28);
 	var view_utils_1 = __webpack_require__(67);
 	var component_resolver_1 = __webpack_require__(65);
-	var component_resolver_2 = __webpack_require__(65);
 	var dynamic_component_loader_1 = __webpack_require__(81);
-	var dynamic_component_loader_2 = __webpack_require__(81);
 	var __unused; // avoid unused import when Type union types are erased
 	/**
 	 * A default set of providers which should be included in any Angular
@@ -12184,12 +12181,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	exports.APPLICATION_COMMON_PROVIDERS = lang_1.CONST_EXPR([
 	    application_ref_1.APPLICATION_CORE_PROVIDERS,
-	    new di_1.Provider(component_resolver_1.ComponentResolver, { useClass: component_resolver_2.ReflectorComponentResolver }),
+	    new di_1.Provider(component_resolver_1.ComponentResolver, { useClass: component_resolver_1.ReflectorComponentResolver }),
 	    application_tokens_1.APP_ID_RANDOM_PROVIDER,
 	    view_utils_1.ViewUtils,
 	    new di_1.Provider(change_detection_1.IterableDiffers, { useValue: change_detection_1.defaultIterableDiffers }),
 	    new di_1.Provider(change_detection_1.KeyValueDiffers, { useValue: change_detection_1.defaultKeyValueDiffers }),
-	    new di_1.Provider(dynamic_component_loader_1.DynamicComponentLoader, { useClass: dynamic_component_loader_2.DynamicComponentLoader_ })
+	    new di_1.Provider(dynamic_component_loader_1.DynamicComponentLoader, { useClass: dynamic_component_loader_1.DynamicComponentLoader_ })
 	]);
 
 
@@ -17119,7 +17116,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var core_1 = __webpack_require__(2);
 	var lang_1 = __webpack_require__(5);
 	var validators_1 = __webpack_require__(121);
-	var lang_2 = __webpack_require__(5);
 	var REQUIRED = validators_1.Validators.required;
 	var REQUIRED_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, { useValue: REQUIRED, multi: true }));
 	/**
@@ -17159,7 +17155,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var MinLengthValidator = (function () {
 	    function MinLengthValidator(minLength) {
-	        this._validator = validators_1.Validators.minLength(lang_2.NumberWrapper.parseInt(minLength, 10));
+	        this._validator = validators_1.Validators.minLength(lang_1.NumberWrapper.parseInt(minLength, 10));
 	    }
 	    MinLengthValidator.prototype.validate = function (c) { return this._validator(c); };
 	    MinLengthValidator = __decorate([
@@ -17187,7 +17183,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var MaxLengthValidator = (function () {
 	    function MaxLengthValidator(maxLength) {
-	        this._validator = validators_1.Validators.maxLength(lang_2.NumberWrapper.parseInt(maxLength, 10));
+	        this._validator = validators_1.Validators.maxLength(lang_1.NumberWrapper.parseInt(maxLength, 10));
 	    }
 	    MaxLengthValidator.prototype.validate = function (c) { return this._validator(c); };
 	    MaxLengthValidator = __decorate([
@@ -17848,7 +17844,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var collection_1 = __webpack_require__(15);
 	var lang_1 = __webpack_require__(5);
 	var core_1 = __webpack_require__(2);
-	var lang_2 = __webpack_require__(5);
 	var exceptions_1 = __webpack_require__(12);
 	var ast_1 = __webpack_require__(142);
 	var parser_1 = __webpack_require__(143);
@@ -17889,7 +17884,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * This is currently an internal-only feature and not meant for general use.
 	 */
-	exports.TEMPLATE_TRANSFORMS = lang_2.CONST_EXPR(new core_1.OpaqueToken('TemplateTransforms'));
+	exports.TEMPLATE_TRANSFORMS = lang_1.CONST_EXPR(new core_1.OpaqueToken('TemplateTransforms'));
 	var TemplateParseError = (function (_super) {
 	    __extends(TemplateParseError, _super);
 	    function TemplateParseError(message, span) {
@@ -23421,7 +23416,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var di_1 = __webpack_require__(6);
 	var lang_1 = __webpack_require__(5);
 	var application_tokens_1 = __webpack_require__(63);
-	var di_2 = __webpack_require__(6);
 	var _ASSET_SCHEME = 'asset:';
 	/**
 	 * Create a {@link UrlResolver} with no package prefix.
@@ -23437,7 +23431,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * A default provider for {@link PACKAGE_ROOT_URL} that maps to '/'.
 	 */
-	exports.DEFAULT_PACKAGE_URL_PROVIDER = new di_2.Provider(application_tokens_1.PACKAGE_ROOT_URL, { useValue: "/" });
+	exports.DEFAULT_PACKAGE_URL_PROVIDER = new di_1.Provider(application_tokens_1.PACKAGE_ROOT_URL, { useValue: "/" });
 	/**
 	 * Used by the {@link Compiler} when resolving HTML and CSS template URLs.
 	 *
@@ -28879,7 +28873,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var provider_1 = __webpack_require__(24);
 	var reflective_provider_1 = __webpack_require__(17);
 	var metadata_1 = __webpack_require__(7);
-	var di_3 = __webpack_require__(4);
 	var reflector_reader_1 = __webpack_require__(20);
 	var RuntimeMetadataResolver = (function () {
 	    function RuntimeMetadataResolver(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes, _reflector) {
@@ -29037,7 +29030,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return deps.map(function (dep) {
 	            var compileToken;
-	            var p = dep.properties.find(function (p) { return p instanceof di_3.AttributeMetadata; });
+	            var p = dep.properties.find(function (p) { return p instanceof dimd.AttributeMetadata; });
 	            var isAttribute = false;
 	            if (lang_1.isPresent(p)) {
 	                compileToken = _this.getTokenMetadata(p.attributeName);
@@ -31677,7 +31670,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var compiler_1 = __webpack_require__(138);
 	var core_1 = __webpack_require__(2);
 	var reflection_capabilities_1 = __webpack_require__(21);
-	var xhr_impl_1 = __webpack_require__(221);
+	var xhr_impl_1 = __webpack_require__(219);
 	var compiler_2 = __webpack_require__(138);
 	var di_1 = __webpack_require__(6);
 	/**
@@ -31785,21 +31778,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	var dom_adapter_1 = __webpack_require__(201);
 	var dom_events_1 = __webpack_require__(204);
 	var key_events_1 = __webpack_require__(206);
-	var hammer_gestures_1 = __webpack_require__(207);
-	var dom_tokens_1 = __webpack_require__(209);
-	var dom_renderer_1 = __webpack_require__(210);
-	var shared_styles_host_1 = __webpack_require__(218);
-	var shared_styles_host_2 = __webpack_require__(218);
-	var browser_details_1 = __webpack_require__(217);
-	var animation_builder_1 = __webpack_require__(211);
-	var browser_adapter_1 = __webpack_require__(219);
-	var testability_2 = __webpack_require__(222);
-	var xhr_cache_1 = __webpack_require__(223);
-	var wtf_init_1 = __webpack_require__(224);
+	var dom_tokens_1 = __webpack_require__(207);
+	var dom_renderer_1 = __webpack_require__(208);
+	var shared_styles_host_1 = __webpack_require__(216);
+	var browser_details_1 = __webpack_require__(215);
+	var animation_builder_1 = __webpack_require__(209);
+	var browser_adapter_1 = __webpack_require__(217);
+	var testability_2 = __webpack_require__(220);
+	var xhr_cache_1 = __webpack_require__(221);
+	var wtf_init_1 = __webpack_require__(222);
 	var event_manager_1 = __webpack_require__(205);
-	var hammer_gestures_2 = __webpack_require__(207);
+	var hammer_gestures_1 = __webpack_require__(223);
 	var common_dom_1 = __webpack_require__(225);
-	var dom_tokens_2 = __webpack_require__(209);
+	var dom_tokens_2 = __webpack_require__(207);
 	exports.DOCUMENT = dom_tokens_2.DOCUMENT;
 	var title_1 = __webpack_require__(229);
 	exports.Title = title_1.Title;
@@ -31808,14 +31799,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ELEMENT_PROBE_PROVIDERS_PROD_MODE = common_dom_2.ELEMENT_PROBE_PROVIDERS_PROD_MODE;
 	exports.inspectNativeElement = common_dom_2.inspectNativeElement;
 	exports.By = common_dom_2.By;
-	var browser_adapter_2 = __webpack_require__(219);
+	var browser_adapter_2 = __webpack_require__(217);
 	exports.BrowserDomAdapter = browser_adapter_2.BrowserDomAdapter;
 	var tools_1 = __webpack_require__(230);
 	exports.enableDebugTools = tools_1.enableDebugTools;
 	exports.disableDebugTools = tools_1.disableDebugTools;
-	var hammer_gestures_3 = __webpack_require__(207);
-	exports.HAMMER_GESTURE_CONFIG = hammer_gestures_3.HAMMER_GESTURE_CONFIG;
-	exports.HammerGestureConfig = hammer_gestures_3.HammerGestureConfig;
+	var hammer_gestures_2 = __webpack_require__(223);
+	exports.HAMMER_GESTURE_CONFIG = hammer_gestures_2.HAMMER_GESTURE_CONFIG;
+	exports.HammerGestureConfig = hammer_gestures_2.HammerGestureConfig;
 	exports.BROWSER_PLATFORM_MARKER = lang_1.CONST_EXPR(new di_1.OpaqueToken('BrowserPlatformMarker'));
 	/**
 	 * A set of providers to initialize the Angular platform in a web browser.
@@ -31850,10 +31841,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    new di_1.Provider(event_manager_1.EVENT_MANAGER_PLUGINS, { useClass: dom_events_1.DomEventsPlugin, multi: true }),
 	    new di_1.Provider(event_manager_1.EVENT_MANAGER_PLUGINS, { useClass: key_events_1.KeyEventsPlugin, multi: true }),
 	    new di_1.Provider(event_manager_1.EVENT_MANAGER_PLUGINS, { useClass: hammer_gestures_1.HammerGesturesPlugin, multi: true }),
-	    new di_1.Provider(hammer_gestures_2.HAMMER_GESTURE_CONFIG, { useClass: hammer_gestures_2.HammerGestureConfig }),
+	    new di_1.Provider(hammer_gestures_1.HAMMER_GESTURE_CONFIG, { useClass: hammer_gestures_1.HammerGestureConfig }),
 	    new di_1.Provider(dom_renderer_1.DomRootRenderer, { useClass: dom_renderer_1.DomRootRenderer_ }),
 	    new di_1.Provider(core_1.RootRenderer, { useExisting: dom_renderer_1.DomRootRenderer }),
-	    new di_1.Provider(shared_styles_host_2.SharedStylesHost, { useExisting: shared_styles_host_1.DomSharedStylesHost }),
+	    new di_1.Provider(shared_styles_host_1.SharedStylesHost, { useExisting: shared_styles_host_1.DomSharedStylesHost }),
 	    shared_styles_host_1.DomSharedStylesHost,
 	    testability_1.Testability,
 	    browser_details_1.BrowserDetails,
@@ -32118,154 +32109,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var __param = (this && this.__param) || function (paramIndex, decorator) {
-	    return function (target, key) { decorator(target, key, paramIndex); }
-	};
-	var hammer_common_1 = __webpack_require__(208);
-	var lang_1 = __webpack_require__(5);
-	var exceptions_1 = __webpack_require__(12);
-	var core_1 = __webpack_require__(2);
-	exports.HAMMER_GESTURE_CONFIG = lang_1.CONST_EXPR(new core_1.OpaqueToken("HammerGestureConfig"));
-	var HammerGestureConfig = (function () {
-	    function HammerGestureConfig() {
-	        this.events = [];
-	        this.overrides = {};
-	    }
-	    HammerGestureConfig.prototype.buildHammer = function (element) {
-	        var mc = new Hammer(element);
-	        mc.get('pinch').set({ enable: true });
-	        mc.get('rotate').set({ enable: true });
-	        for (var eventName in this.overrides) {
-	            mc.get(eventName).set(this.overrides[eventName]);
-	        }
-	        return mc;
-	    };
-	    HammerGestureConfig = __decorate([
-	        core_1.Injectable(), 
-	        __metadata('design:paramtypes', [])
-	    ], HammerGestureConfig);
-	    return HammerGestureConfig;
-	}());
-	exports.HammerGestureConfig = HammerGestureConfig;
-	var HammerGesturesPlugin = (function (_super) {
-	    __extends(HammerGesturesPlugin, _super);
-	    function HammerGesturesPlugin(_config) {
-	        _super.call(this);
-	        this._config = _config;
-	    }
-	    HammerGesturesPlugin.prototype.supports = function (eventName) {
-	        if (!_super.prototype.supports.call(this, eventName) && !this.isCustomEvent(eventName))
-	            return false;
-	        if (!lang_1.isPresent(window['Hammer'])) {
-	            throw new exceptions_1.BaseException("Hammer.js is not loaded, can not bind " + eventName + " event");
-	        }
-	        return true;
-	    };
-	    HammerGesturesPlugin.prototype.addEventListener = function (element, eventName, handler) {
-	        var _this = this;
-	        var zone = this.manager.getZone();
-	        eventName = eventName.toLowerCase();
-	        return zone.runOutsideAngular(function () {
-	            // Creating the manager bind events, must be done outside of angular
-	            var mc = _this._config.buildHammer(element);
-	            var callback = function (eventObj) { zone.runGuarded(function () { handler(eventObj); }); };
-	            mc.on(eventName, callback);
-	            return function () { mc.off(eventName, callback); };
-	        });
-	    };
-	    HammerGesturesPlugin.prototype.isCustomEvent = function (eventName) { return this._config.events.indexOf(eventName) > -1; };
-	    HammerGesturesPlugin = __decorate([
-	        core_1.Injectable(),
-	        __param(0, core_1.Inject(exports.HAMMER_GESTURE_CONFIG)), 
-	        __metadata('design:paramtypes', [HammerGestureConfig])
-	    ], HammerGesturesPlugin);
-	    return HammerGesturesPlugin;
-	}(hammer_common_1.HammerGesturesPluginCommon));
-	exports.HammerGesturesPlugin = HammerGesturesPlugin;
-
-
-/***/ },
-/* 208 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var event_manager_1 = __webpack_require__(205);
-	var collection_1 = __webpack_require__(15);
-	var _eventNames = {
-	    // pan
-	    'pan': true,
-	    'panstart': true,
-	    'panmove': true,
-	    'panend': true,
-	    'pancancel': true,
-	    'panleft': true,
-	    'panright': true,
-	    'panup': true,
-	    'pandown': true,
-	    // pinch
-	    'pinch': true,
-	    'pinchstart': true,
-	    'pinchmove': true,
-	    'pinchend': true,
-	    'pinchcancel': true,
-	    'pinchin': true,
-	    'pinchout': true,
-	    // press
-	    'press': true,
-	    'pressup': true,
-	    // rotate
-	    'rotate': true,
-	    'rotatestart': true,
-	    'rotatemove': true,
-	    'rotateend': true,
-	    'rotatecancel': true,
-	    // swipe
-	    'swipe': true,
-	    'swipeleft': true,
-	    'swiperight': true,
-	    'swipeup': true,
-	    'swipedown': true,
-	    // tap
-	    'tap': true,
-	};
-	var HammerGesturesPluginCommon = (function (_super) {
-	    __extends(HammerGesturesPluginCommon, _super);
-	    function HammerGesturesPluginCommon() {
-	        _super.call(this);
-	    }
-	    HammerGesturesPluginCommon.prototype.supports = function (eventName) {
-	        eventName = eventName.toLowerCase();
-	        return collection_1.StringMapWrapper.contains(_eventNames, eventName);
-	    };
-	    return HammerGesturesPluginCommon;
-	}(event_manager_1.EventManagerPlugin));
-	exports.HammerGesturesPluginCommon = HammerGesturesPluginCommon;
-
-
-/***/ },
-/* 209 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
 	var di_1 = __webpack_require__(6);
 	var lang_1 = __webpack_require__(5);
 	/**
@@ -32278,7 +32121,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 210 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -32300,15 +32143,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return function (target, key) { decorator(target, key, paramIndex); }
 	};
 	var di_1 = __webpack_require__(6);
-	var animation_builder_1 = __webpack_require__(211);
+	var animation_builder_1 = __webpack_require__(209);
 	var lang_1 = __webpack_require__(5);
 	var exceptions_1 = __webpack_require__(12);
-	var shared_styles_host_1 = __webpack_require__(218);
+	var shared_styles_host_1 = __webpack_require__(216);
 	var event_manager_1 = __webpack_require__(205);
-	var dom_tokens_1 = __webpack_require__(209);
+	var dom_tokens_1 = __webpack_require__(207);
 	var metadata_1 = __webpack_require__(3);
 	var dom_adapter_1 = __webpack_require__(201);
-	var util_1 = __webpack_require__(216);
+	var util_1 = __webpack_require__(214);
 	var NAMESPACE_URIS = lang_1.CONST_EXPR({ 'xlink': 'http://www.w3.org/1999/xlink', 'svg': 'http://www.w3.org/2000/svg' });
 	var TEMPLATE_COMMENT_TEXT = 'template bindings={}';
 	var TEMPLATE_BINDINGS_EXP = /^template bindings=(.*)$/g;
@@ -32606,7 +32449,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 211 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -32620,8 +32463,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var di_1 = __webpack_require__(6);
-	var css_animation_builder_1 = __webpack_require__(212);
-	var browser_details_1 = __webpack_require__(217);
+	var css_animation_builder_1 = __webpack_require__(210);
+	var browser_details_1 = __webpack_require__(215);
 	var AnimationBuilder = (function () {
 	    /**
 	     * Used for DI
@@ -32645,12 +32488,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 212 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var css_animation_options_1 = __webpack_require__(213);
-	var animation_1 = __webpack_require__(214);
+	var css_animation_options_1 = __webpack_require__(211);
+	var animation_1 = __webpack_require__(212);
 	var CssAnimationBuilder = (function () {
 	    /**
 	     * Accepts public properties for CssAnimationBuilder
@@ -32737,7 +32580,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 213 */
+/* 211 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32756,13 +32599,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 214 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var lang_1 = __webpack_require__(5);
-	var math_1 = __webpack_require__(215);
-	var util_1 = __webpack_require__(216);
+	var math_1 = __webpack_require__(213);
+	var util_1 = __webpack_require__(214);
 	var collection_1 = __webpack_require__(15);
 	var dom_adapter_1 = __webpack_require__(201);
 	var Animation = (function () {
@@ -32944,7 +32787,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 215 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -32954,7 +32797,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 216 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -32972,7 +32815,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 217 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -32986,7 +32829,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var di_1 = __webpack_require__(6);
-	var math_1 = __webpack_require__(215);
+	var math_1 = __webpack_require__(213);
 	var dom_adapter_1 = __webpack_require__(201);
 	var BrowserDetails = (function () {
 	    function BrowserDetails() {
@@ -33052,7 +32895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 218 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -33076,7 +32919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var dom_adapter_1 = __webpack_require__(201);
 	var di_1 = __webpack_require__(6);
 	var collection_1 = __webpack_require__(15);
-	var dom_tokens_1 = __webpack_require__(209);
+	var dom_tokens_1 = __webpack_require__(207);
 	var SharedStylesHost = (function () {
 	    function SharedStylesHost() {
 	        /** @internal */
@@ -33139,7 +32982,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 219 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -33151,7 +32994,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var collection_1 = __webpack_require__(15);
 	var lang_1 = __webpack_require__(5);
 	var dom_adapter_1 = __webpack_require__(201);
-	var generic_browser_adapter_1 = __webpack_require__(220);
+	var generic_browser_adapter_1 = __webpack_require__(218);
 	var _attrToPropMap = {
 	    'class': 'className',
 	    'innerHtml': 'innerHTML',
@@ -33540,7 +33383,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 220 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -33552,7 +33395,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var collection_1 = __webpack_require__(15);
 	var lang_1 = __webpack_require__(5);
 	var dom_adapter_1 = __webpack_require__(201);
-	var xhr_impl_1 = __webpack_require__(221);
+	var xhr_impl_1 = __webpack_require__(219);
 	/**
 	 * Provides DOM operations in any browser environment.
 	 */
@@ -33616,7 +33459,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 221 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -33667,7 +33510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 222 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -33747,7 +33590,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 223 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -33790,7 +33633,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 224 */
+/* 222 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -33799,6 +33642,154 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function wtfInit() { }
 	exports.wtfInit = wtfInit;
+
+
+/***/ },
+/* 223 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var __param = (this && this.__param) || function (paramIndex, decorator) {
+	    return function (target, key) { decorator(target, key, paramIndex); }
+	};
+	var hammer_common_1 = __webpack_require__(224);
+	var lang_1 = __webpack_require__(5);
+	var exceptions_1 = __webpack_require__(12);
+	var core_1 = __webpack_require__(2);
+	exports.HAMMER_GESTURE_CONFIG = lang_1.CONST_EXPR(new core_1.OpaqueToken("HammerGestureConfig"));
+	var HammerGestureConfig = (function () {
+	    function HammerGestureConfig() {
+	        this.events = [];
+	        this.overrides = {};
+	    }
+	    HammerGestureConfig.prototype.buildHammer = function (element) {
+	        var mc = new Hammer(element);
+	        mc.get('pinch').set({ enable: true });
+	        mc.get('rotate').set({ enable: true });
+	        for (var eventName in this.overrides) {
+	            mc.get(eventName).set(this.overrides[eventName]);
+	        }
+	        return mc;
+	    };
+	    HammerGestureConfig = __decorate([
+	        core_1.Injectable(), 
+	        __metadata('design:paramtypes', [])
+	    ], HammerGestureConfig);
+	    return HammerGestureConfig;
+	}());
+	exports.HammerGestureConfig = HammerGestureConfig;
+	var HammerGesturesPlugin = (function (_super) {
+	    __extends(HammerGesturesPlugin, _super);
+	    function HammerGesturesPlugin(_config) {
+	        _super.call(this);
+	        this._config = _config;
+	    }
+	    HammerGesturesPlugin.prototype.supports = function (eventName) {
+	        if (!_super.prototype.supports.call(this, eventName) && !this.isCustomEvent(eventName))
+	            return false;
+	        if (!lang_1.isPresent(window['Hammer'])) {
+	            throw new exceptions_1.BaseException("Hammer.js is not loaded, can not bind " + eventName + " event");
+	        }
+	        return true;
+	    };
+	    HammerGesturesPlugin.prototype.addEventListener = function (element, eventName, handler) {
+	        var _this = this;
+	        var zone = this.manager.getZone();
+	        eventName = eventName.toLowerCase();
+	        return zone.runOutsideAngular(function () {
+	            // Creating the manager bind events, must be done outside of angular
+	            var mc = _this._config.buildHammer(element);
+	            var callback = function (eventObj) { zone.runGuarded(function () { handler(eventObj); }); };
+	            mc.on(eventName, callback);
+	            return function () { mc.off(eventName, callback); };
+	        });
+	    };
+	    HammerGesturesPlugin.prototype.isCustomEvent = function (eventName) { return this._config.events.indexOf(eventName) > -1; };
+	    HammerGesturesPlugin = __decorate([
+	        core_1.Injectable(),
+	        __param(0, core_1.Inject(exports.HAMMER_GESTURE_CONFIG)), 
+	        __metadata('design:paramtypes', [HammerGestureConfig])
+	    ], HammerGesturesPlugin);
+	    return HammerGesturesPlugin;
+	}(hammer_common_1.HammerGesturesPluginCommon));
+	exports.HammerGesturesPlugin = HammerGesturesPlugin;
+
+
+/***/ },
+/* 224 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var event_manager_1 = __webpack_require__(205);
+	var collection_1 = __webpack_require__(15);
+	var _eventNames = {
+	    // pan
+	    'pan': true,
+	    'panstart': true,
+	    'panmove': true,
+	    'panend': true,
+	    'pancancel': true,
+	    'panleft': true,
+	    'panright': true,
+	    'panup': true,
+	    'pandown': true,
+	    // pinch
+	    'pinch': true,
+	    'pinchstart': true,
+	    'pinchmove': true,
+	    'pinchend': true,
+	    'pinchcancel': true,
+	    'pinchin': true,
+	    'pinchout': true,
+	    // press
+	    'press': true,
+	    'pressup': true,
+	    // rotate
+	    'rotate': true,
+	    'rotatestart': true,
+	    'rotatemove': true,
+	    'rotateend': true,
+	    'rotatecancel': true,
+	    // swipe
+	    'swipe': true,
+	    'swipeleft': true,
+	    'swiperight': true,
+	    'swipeup': true,
+	    'swipedown': true,
+	    // tap
+	    'tap': true,
+	};
+	var HammerGesturesPluginCommon = (function (_super) {
+	    __extends(HammerGesturesPluginCommon, _super);
+	    function HammerGesturesPluginCommon() {
+	        _super.call(this);
+	    }
+	    HammerGesturesPluginCommon.prototype.supports = function (eventName) {
+	        eventName = eventName.toLowerCase();
+	        return collection_1.StringMapWrapper.contains(_eventNames, eventName);
+	    };
+	    return HammerGesturesPluginCommon;
+	}(event_manager_1.EventManagerPlugin));
+	exports.HammerGesturesPluginCommon = HammerGesturesPluginCommon;
 
 
 /***/ },
@@ -33817,11 +33808,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.DOM = dom_adapter_1.DOM;
 	exports.setRootDomAdapter = dom_adapter_1.setRootDomAdapter;
 	exports.DomAdapter = dom_adapter_1.DomAdapter;
-	var dom_renderer_1 = __webpack_require__(210);
+	var dom_renderer_1 = __webpack_require__(208);
 	exports.DomRenderer = dom_renderer_1.DomRenderer;
-	var dom_tokens_1 = __webpack_require__(209);
+	var dom_tokens_1 = __webpack_require__(207);
 	exports.DOCUMENT = dom_tokens_1.DOCUMENT;
-	var shared_styles_host_1 = __webpack_require__(218);
+	var shared_styles_host_1 = __webpack_require__(216);
 	exports.SharedStylesHost = shared_styles_host_1.SharedStylesHost;
 	exports.DomSharedStylesHost = shared_styles_host_1.DomSharedStylesHost;
 	var dom_events_1 = __webpack_require__(204);
@@ -33893,7 +33884,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var di_1 = __webpack_require__(6);
 	var dom_adapter_1 = __webpack_require__(201);
 	var debug_node_1 = __webpack_require__(84);
-	var dom_renderer_1 = __webpack_require__(210);
+	var dom_renderer_1 = __webpack_require__(208);
 	var core_1 = __webpack_require__(2);
 	var debug_renderer_1 = __webpack_require__(228);
 	var CORE_TOKENS = lang_1.CONST_EXPR({ 'ApplicationRef': core_1.ApplicationRef, 'NgZone': core_1.NgZone });

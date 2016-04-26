@@ -2441,7 +2441,7 @@ System.register("angular2/src/core/change_detection/differs/iterable_differs", [
   return module.exports;
 });
 
-System.register("angular2/src/core/change_detection/differs/default_iterable_differ", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/collection", "angular2/src/facade/lang"], true, function(require, exports, module) {
+System.register("angular2/src/core/change_detection/differs/default_iterable_differ", ["angular2/src/facade/exceptions", "angular2/src/facade/collection", "angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -2462,10 +2462,9 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
       return Reflect.metadata(k, v);
   };
-  var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
   var collection_1 = require("angular2/src/facade/collection");
-  var lang_2 = require("angular2/src/facade/lang");
+  var lang_1 = require("angular2/src/facade/lang");
   var DefaultIterableDifferFactory = (function() {
     function DefaultIterableDifferFactory() {}
     DefaultIterableDifferFactory.prototype.supports = function(obj) {
@@ -2499,7 +2498,7 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
       this._removalsTail = null;
       this._identityChangesHead = null;
       this._identityChangesTail = null;
-      this._trackByFn = lang_2.isPresent(this._trackByFn) ? this._trackByFn : trackByIdentity;
+      this._trackByFn = lang_1.isPresent(this._trackByFn) ? this._trackByFn : trackByIdentity;
     }
     Object.defineProperty(DefaultIterableDiffer.prototype, "collection", {
       get: function() {
@@ -2552,7 +2551,7 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
       }
     };
     DefaultIterableDiffer.prototype.diff = function(collection) {
-      if (lang_2.isBlank(collection))
+      if (lang_1.isBlank(collection))
         collection = [];
       if (!collection_1.isListLikeIterable(collection)) {
         throw new exceptions_1.BaseException("Error trying to diff '" + collection + "'");
@@ -2572,20 +2571,20 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
       var index;
       var item;
       var itemTrackBy;
-      if (lang_2.isArray(collection)) {
+      if (lang_1.isArray(collection)) {
         var list = collection;
         this._length = collection.length;
         for (index = 0; index < this._length; index++) {
           item = list[index];
           itemTrackBy = this._trackByFn(index, item);
-          if (record === null || !lang_2.looseIdentical(record.trackById, itemTrackBy)) {
+          if (record === null || !lang_1.looseIdentical(record.trackById, itemTrackBy)) {
             record = this._mismatch(record, item, itemTrackBy, index);
             mayBeDirty = true;
           } else {
             if (mayBeDirty) {
               record = this._verifyReinsertion(record, item, itemTrackBy, index);
             }
-            if (!lang_2.looseIdentical(record.item, item))
+            if (!lang_1.looseIdentical(record.item, item))
               this._addIdentityChange(record, item);
           }
           record = record._next;
@@ -2594,14 +2593,14 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
         index = 0;
         collection_1.iterateListLike(collection, function(item) {
           itemTrackBy = _this._trackByFn(index, item);
-          if (record === null || !lang_2.looseIdentical(record.trackById, itemTrackBy)) {
+          if (record === null || !lang_1.looseIdentical(record.trackById, itemTrackBy)) {
             record = _this._mismatch(record, item, itemTrackBy, index);
             mayBeDirty = true;
           } else {
             if (mayBeDirty) {
               record = _this._verifyReinsertion(record, item, itemTrackBy, index);
             }
-            if (!lang_2.looseIdentical(record.item, item))
+            if (!lang_1.looseIdentical(record.item, item))
               _this._addIdentityChange(record, item);
           }
           record = record._next;
@@ -2650,13 +2649,13 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
       }
       record = this._linkedRecords === null ? null : this._linkedRecords.get(itemTrackBy, index);
       if (record !== null) {
-        if (!lang_2.looseIdentical(record.item, item))
+        if (!lang_1.looseIdentical(record.item, item))
           this._addIdentityChange(record, item);
         this._moveAfter(record, previousRecord, index);
       } else {
         record = this._unlinkedRecords === null ? null : this._unlinkedRecords.get(itemTrackBy);
         if (record !== null) {
-          if (!lang_2.looseIdentical(record.item, item))
+          if (!lang_1.looseIdentical(record.item, item))
             this._addIdentityChange(record, item);
           this._reinsertAfter(record, previousRecord, index);
         } else {
@@ -2861,7 +2860,7 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
       this._nextIdentityChange = null;
     }
     CollectionChangeRecord.prototype.toString = function() {
-      return this.previousIndex === this.currentIndex ? lang_2.stringify(this.item) : lang_2.stringify(this.item) + '[' + lang_2.stringify(this.previousIndex) + '->' + lang_2.stringify(this.currentIndex) + ']';
+      return this.previousIndex === this.currentIndex ? lang_1.stringify(this.item) : lang_1.stringify(this.item) + '[' + lang_1.stringify(this.previousIndex) + '->' + lang_1.stringify(this.currentIndex) + ']';
     };
     return CollectionChangeRecord;
   }());
@@ -2886,7 +2885,7 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
     _DuplicateItemRecordList.prototype.get = function(trackById, afterIndex) {
       var record;
       for (record = this._head; record !== null; record = record._nextDup) {
-        if ((afterIndex === null || afterIndex < record.currentIndex) && lang_2.looseIdentical(record.trackById, trackById)) {
+        if ((afterIndex === null || afterIndex < record.currentIndex) && lang_1.looseIdentical(record.trackById, trackById)) {
           return record;
         }
       }
@@ -2914,9 +2913,9 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
       this.map = new Map();
     }
     _DuplicateMap.prototype.put = function(record) {
-      var key = lang_2.getMapKey(record.trackById);
+      var key = lang_1.getMapKey(record.trackById);
       var duplicates = this.map.get(key);
-      if (!lang_2.isPresent(duplicates)) {
+      if (!lang_1.isPresent(duplicates)) {
         duplicates = new _DuplicateItemRecordList();
         this.map.set(key, duplicates);
       }
@@ -2926,12 +2925,12 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
       if (afterIndex === void 0) {
         afterIndex = null;
       }
-      var key = lang_2.getMapKey(trackById);
+      var key = lang_1.getMapKey(trackById);
       var recordList = this.map.get(key);
-      return lang_2.isBlank(recordList) ? null : recordList.get(trackById, afterIndex);
+      return lang_1.isBlank(recordList) ? null : recordList.get(trackById, afterIndex);
     };
     _DuplicateMap.prototype.remove = function(record) {
-      var key = lang_2.getMapKey(record.trackById);
+      var key = lang_1.getMapKey(record.trackById);
       var recordList = this.map.get(key);
       if (recordList.remove(record)) {
         this.map.delete(key);
@@ -2949,7 +2948,7 @@ System.register("angular2/src/core/change_detection/differs/default_iterable_dif
       this.map.clear();
     };
     _DuplicateMap.prototype.toString = function() {
-      return '_DuplicateMap(' + lang_2.stringify(this.map) + ')';
+      return '_DuplicateMap(' + lang_1.stringify(this.map) + ')';
     };
     return _DuplicateMap;
   }());
@@ -4605,7 +4604,7 @@ System.register("angular2/src/core/platform_common_providers", ["angular2/src/fa
   return module.exports;
 });
 
-System.register("angular2/src/core/application_common_providers", ["angular2/src/facade/lang", "angular2/src/core/di", "angular2/src/core/application_tokens", "angular2/src/core/application_ref", "angular2/src/core/change_detection/change_detection", "angular2/src/core/linker/view_utils", "angular2/src/core/linker/component_resolver", "angular2/src/core/linker/component_resolver", "angular2/src/core/linker/dynamic_component_loader", "angular2/src/core/linker/dynamic_component_loader"], true, function(require, exports, module) {
+System.register("angular2/src/core/application_common_providers", ["angular2/src/facade/lang", "angular2/src/core/di", "angular2/src/core/application_tokens", "angular2/src/core/application_ref", "angular2/src/core/change_detection/change_detection", "angular2/src/core/linker/view_utils", "angular2/src/core/linker/component_resolver", "angular2/src/core/linker/dynamic_component_loader"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -4617,11 +4616,9 @@ System.register("angular2/src/core/application_common_providers", ["angular2/src
   var change_detection_1 = require("angular2/src/core/change_detection/change_detection");
   var view_utils_1 = require("angular2/src/core/linker/view_utils");
   var component_resolver_1 = require("angular2/src/core/linker/component_resolver");
-  var component_resolver_2 = require("angular2/src/core/linker/component_resolver");
   var dynamic_component_loader_1 = require("angular2/src/core/linker/dynamic_component_loader");
-  var dynamic_component_loader_2 = require("angular2/src/core/linker/dynamic_component_loader");
   var __unused;
-  exports.APPLICATION_COMMON_PROVIDERS = lang_1.CONST_EXPR([application_ref_1.APPLICATION_CORE_PROVIDERS, new di_1.Provider(component_resolver_1.ComponentResolver, {useClass: component_resolver_2.ReflectorComponentResolver}), application_tokens_1.APP_ID_RANDOM_PROVIDER, view_utils_1.ViewUtils, new di_1.Provider(change_detection_1.IterableDiffers, {useValue: change_detection_1.defaultIterableDiffers}), new di_1.Provider(change_detection_1.KeyValueDiffers, {useValue: change_detection_1.defaultKeyValueDiffers}), new di_1.Provider(dynamic_component_loader_1.DynamicComponentLoader, {useClass: dynamic_component_loader_2.DynamicComponentLoader_})]);
+  exports.APPLICATION_COMMON_PROVIDERS = lang_1.CONST_EXPR([application_ref_1.APPLICATION_CORE_PROVIDERS, new di_1.Provider(component_resolver_1.ComponentResolver, {useClass: component_resolver_1.ReflectorComponentResolver}), application_tokens_1.APP_ID_RANDOM_PROVIDER, view_utils_1.ViewUtils, new di_1.Provider(change_detection_1.IterableDiffers, {useValue: change_detection_1.defaultIterableDiffers}), new di_1.Provider(change_detection_1.KeyValueDiffers, {useValue: change_detection_1.defaultKeyValueDiffers}), new di_1.Provider(dynamic_component_loader_1.DynamicComponentLoader, {useClass: dynamic_component_loader_1.DynamicComponentLoader_})]);
   global.define = __define;
   return module.exports;
 });
@@ -7972,7 +7969,7 @@ System.register("angular2/src/common/forms/directives/ng_control_status", ["angu
   return module.exports;
 });
 
-System.register("angular2/src/common/forms/directives/validators", ["angular2/core", "angular2/src/facade/lang", "angular2/src/common/forms/validators", "angular2/src/facade/lang"], true, function(require, exports, module) {
+System.register("angular2/src/common/forms/directives/validators", ["angular2/core", "angular2/src/facade/lang", "angular2/src/common/forms/validators"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -8001,7 +7998,6 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
   var core_1 = require("angular2/core");
   var lang_1 = require("angular2/src/facade/lang");
   var validators_1 = require("angular2/src/common/forms/validators");
-  var lang_2 = require("angular2/src/facade/lang");
   var REQUIRED = validators_1.Validators.required;
   var REQUIRED_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, {
     useValue: REQUIRED,
@@ -8024,7 +8020,7 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
   }));
   var MinLengthValidator = (function() {
     function MinLengthValidator(minLength) {
-      this._validator = validators_1.Validators.minLength(lang_2.NumberWrapper.parseInt(minLength, 10));
+      this._validator = validators_1.Validators.minLength(lang_1.NumberWrapper.parseInt(minLength, 10));
     }
     MinLengthValidator.prototype.validate = function(c) {
       return this._validator(c);
@@ -8044,7 +8040,7 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
   }));
   var MaxLengthValidator = (function() {
     function MaxLengthValidator(maxLength) {
-      this._validator = validators_1.Validators.maxLength(lang_2.NumberWrapper.parseInt(maxLength, 10));
+      this._validator = validators_1.Validators.maxLength(lang_1.NumberWrapper.parseInt(maxLength, 10));
     }
     MaxLengthValidator.prototype.validate = function(c) {
       return this._validator(c);
@@ -17034,7 +17030,7 @@ System.register("angular2/src/core/metadata/lifecycle_hooks", [], true, function
   return module.exports;
 });
 
-System.register("angular2/src/compiler/url_resolver", ["angular2/src/core/di", "angular2/src/facade/lang", "angular2/src/core/application_tokens", "angular2/src/core/di"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/url_resolver", ["angular2/src/core/di", "angular2/src/facade/lang", "angular2/src/core/application_tokens"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -17063,7 +17059,6 @@ System.register("angular2/src/compiler/url_resolver", ["angular2/src/core/di", "
   var di_1 = require("angular2/src/core/di");
   var lang_1 = require("angular2/src/facade/lang");
   var application_tokens_1 = require("angular2/src/core/application_tokens");
-  var di_2 = require("angular2/src/core/di");
   var _ASSET_SCHEME = 'asset:';
   function createUrlResolverWithoutPackagePrefix() {
     return new UrlResolver();
@@ -17073,7 +17068,7 @@ System.register("angular2/src/compiler/url_resolver", ["angular2/src/core/di", "
     return new UrlResolver(_ASSET_SCHEME);
   }
   exports.createOfflineCompileUrlResolver = createOfflineCompileUrlResolver;
-  exports.DEFAULT_PACKAGE_URL_PROVIDER = new di_2.Provider(application_tokens_1.PACKAGE_ROOT_URL, {useValue: "/"});
+  exports.DEFAULT_PACKAGE_URL_PROVIDER = new di_1.Provider(application_tokens_1.PACKAGE_ROOT_URL, {useValue: "/"});
   var UrlResolver = (function() {
     function UrlResolver(_packagePrefix) {
       if (_packagePrefix === void 0) {
@@ -28244,7 +28239,7 @@ System.register("angular2/src/compiler/view_compiler/property_binder", ["angular
   return module.exports;
 });
 
-System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di", "angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/facade/exceptions", "angular2/src/core/di/reflective_exceptions", "angular2/src/compiler/compile_metadata", "angular2/src/core/metadata/directives", "angular2/src/core/metadata/di", "angular2/src/compiler/directive_resolver", "angular2/src/compiler/pipe_resolver", "angular2/src/compiler/view_resolver", "angular2/src/compiler/directive_lifecycle_reflector", "angular2/src/core/metadata/lifecycle_hooks", "angular2/src/core/reflection/reflection", "angular2/src/core/di", "angular2/src/core/platform_directives_and_pipes", "angular2/src/compiler/util", "angular2/src/compiler/assertions", "angular2/src/compiler/url_resolver", "angular2/src/core/di/provider", "angular2/src/core/di/reflective_provider", "angular2/src/core/di/metadata", "angular2/src/core/metadata/di", "angular2/src/core/reflection/reflector_reader"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di", "angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/facade/exceptions", "angular2/src/core/di/reflective_exceptions", "angular2/src/compiler/compile_metadata", "angular2/src/core/metadata/directives", "angular2/src/core/metadata/di", "angular2/src/compiler/directive_resolver", "angular2/src/compiler/pipe_resolver", "angular2/src/compiler/view_resolver", "angular2/src/compiler/directive_lifecycle_reflector", "angular2/src/core/metadata/lifecycle_hooks", "angular2/src/core/reflection/reflection", "angular2/src/core/di", "angular2/src/core/platform_directives_and_pipes", "angular2/src/compiler/util", "angular2/src/compiler/assertions", "angular2/src/compiler/url_resolver", "angular2/src/core/di/provider", "angular2/src/core/di/reflective_provider", "angular2/src/core/di/metadata", "angular2/src/core/reflection/reflector_reader"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -28292,7 +28287,6 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
   var provider_1 = require("angular2/src/core/di/provider");
   var reflective_provider_1 = require("angular2/src/core/di/reflective_provider");
   var metadata_1 = require("angular2/src/core/di/metadata");
-  var di_3 = require("angular2/src/core/metadata/di");
   var reflector_reader_1 = require("angular2/src/core/reflection/reflector_reader");
   var RuntimeMetadataResolver = (function() {
     function RuntimeMetadataResolver(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes, _reflector) {
@@ -28455,7 +28449,7 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
       return deps.map(function(dep) {
         var compileToken;
         var p = dep.properties.find(function(p) {
-          return p instanceof di_3.AttributeMetadata;
+          return p instanceof dimd.AttributeMetadata;
         });
         var isAttribute = false;
         if (lang_1.isPresent(p)) {
@@ -30165,7 +30159,7 @@ System.register("angular2/src/common/forms/directives/ng_control_name", ["angula
   return module.exports;
 });
 
-System.register("angular2/src/web_workers/shared/client_message_broker", ["angular2/src/web_workers/shared/message_bus", "angular2/src/facade/lang", "angular2/src/facade/async", "angular2/src/facade/collection", "angular2/src/web_workers/shared/serializer", "angular2/src/core/di", "angular2/src/facade/lang", "angular2/src/facade/lang"], true, function(require, exports, module) {
+System.register("angular2/src/web_workers/shared/client_message_broker", ["angular2/src/web_workers/shared/message_bus", "angular2/src/facade/lang", "angular2/src/facade/async", "angular2/src/facade/collection", "angular2/src/web_workers/shared/serializer", "angular2/src/core/di", "angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -30202,8 +30196,7 @@ System.register("angular2/src/web_workers/shared/client_message_broker", ["angul
   var serializer_1 = require("angular2/src/web_workers/shared/serializer");
   var di_1 = require("angular2/src/core/di");
   var lang_2 = require("angular2/src/facade/lang");
-  var lang_3 = require("angular2/src/facade/lang");
-  exports.Type = lang_3.Type;
+  exports.Type = lang_2.Type;
   var ClientMessageBrokerFactory = (function() {
     function ClientMessageBrokerFactory() {}
     return ClientMessageBrokerFactory;
@@ -30300,10 +30293,10 @@ System.register("angular2/src/web_workers/shared/client_message_broker", ["angul
     };
     ClientMessageBroker_.prototype._handleMessage = function(message) {
       var data = new MessageData(message);
-      if (lang_2.StringWrapper.equals(data.type, "result") || lang_2.StringWrapper.equals(data.type, "error")) {
+      if (lang_1.StringWrapper.equals(data.type, "result") || lang_1.StringWrapper.equals(data.type, "error")) {
         var id = data.id;
         if (this._pending.has(id)) {
-          if (lang_2.StringWrapper.equals(data.type, "result")) {
+          if (lang_1.StringWrapper.equals(data.type, "result")) {
             this._pending.get(id).resolve(data.value);
           } else {
             this._pending.get(id).reject(data.value, null);
@@ -38635,7 +38628,7 @@ System.register("angular2/src/platform/dom/dom_renderer", ["angular2/src/core/di
   return module.exports;
 });
 
-System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/core", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/compiler/expression_parser/ast", "angular2/src/compiler/expression_parser/parser", "angular2/src/compiler/html_parser", "angular2/src/compiler/html_tags", "angular2/src/compiler/parse_util", "angular2/src/core/linker/view_utils", "angular2/src/compiler/template_ast", "angular2/src/compiler/selector", "angular2/src/compiler/schema/element_schema_registry", "angular2/src/compiler/template_preparser", "angular2/src/compiler/style_url_resolver", "angular2/src/compiler/html_ast", "angular2/src/compiler/util", "angular2/src/compiler/provider_parser"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/core", "angular2/src/facade/exceptions", "angular2/src/compiler/expression_parser/ast", "angular2/src/compiler/expression_parser/parser", "angular2/src/compiler/html_parser", "angular2/src/compiler/html_tags", "angular2/src/compiler/parse_util", "angular2/src/core/linker/view_utils", "angular2/src/compiler/template_ast", "angular2/src/compiler/selector", "angular2/src/compiler/schema/element_schema_registry", "angular2/src/compiler/template_preparser", "angular2/src/compiler/style_url_resolver", "angular2/src/compiler/html_ast", "angular2/src/compiler/util", "angular2/src/compiler/provider_parser"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -38673,7 +38666,6 @@ System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/c
   var collection_1 = require("angular2/src/facade/collection");
   var lang_1 = require("angular2/src/facade/lang");
   var core_1 = require("angular2/core");
-  var lang_2 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
   var ast_1 = require("angular2/src/compiler/expression_parser/ast");
   var parser_1 = require("angular2/src/compiler/expression_parser/parser");
@@ -38699,7 +38691,7 @@ System.register("angular2/src/compiler/template_parser", ["angular2/src/facade/c
   var CLASS_PREFIX = 'class';
   var STYLE_PREFIX = 'style';
   var TEXT_CSS_SELECTOR = selector_1.CssSelector.parse('*')[0];
-  exports.TEMPLATE_TRANSFORMS = lang_2.CONST_EXPR(new core_1.OpaqueToken('TemplateTransforms'));
+  exports.TEMPLATE_TRANSFORMS = lang_1.CONST_EXPR(new core_1.OpaqueToken('TemplateTransforms'));
   var TemplateParseError = (function(_super) {
     __extends(TemplateParseError, _super);
     function TemplateParseError(message, span) {
