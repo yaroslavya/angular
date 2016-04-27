@@ -12,7 +12,7 @@ import {
   it,
   xit,
   TestComponentBuilder
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {SpyRouter, SpyLocation} from '../spies';
 import {provide, Component} from '@angular/core';

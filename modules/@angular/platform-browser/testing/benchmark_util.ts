@@ -1,7 +1,7 @@
 import {BrowserDomAdapter} from '../platform_browser_private';
-import {document, window} from '../../core-testing/src/facade/browser';
-import {NumberWrapper, isBlank} from '../../core-testing/src/facade/lang';
-import {BaseException, WrappedException} from '../../core-testing/src/facade/exceptions';
+import {document, window} from '../src/facade/browser';
+import {NumberWrapper, isBlank} from '../src/facade/lang';
+import {BaseException, WrappedException} from '../src/facade/exceptions';
 
 var DOM = new BrowserDomAdapter();
 

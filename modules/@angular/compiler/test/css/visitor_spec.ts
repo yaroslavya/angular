@@ -7,7 +7,7 @@ import {
   expect,
   beforeEach,
   afterEach
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {NumberWrapper, StringWrapper, isPresent} from '../../src/facade/lang';
 import {BaseException} from '../../src/facade/exceptions';

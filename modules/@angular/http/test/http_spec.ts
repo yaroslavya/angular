@@ -9,7 +9,7 @@ import {
   inject,
   it,
   xit
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {Injector, provide, ReflectiveInjector} from '@angular/core';
 import {MockBackend, MockConnection} from '../testing/mock_backend';
 import {

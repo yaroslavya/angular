@@ -4,18 +4,21 @@ import {
   AsyncTestCompleter,
   beforeEach,
   beforeEachProviders,
-  ComponentFixture,
   ddescribe,
   describe,
   expect,
-  fakeAsync,
   iit,
   inject,
   it,
-  TestComponentBuilder,
-  tick,
   xit
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
+import {
+  fakeAsync,
+  flushMicrotasks,
+  Log,
+  tick,
+} from '@angular/core/testing';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 import {BaseException} from '../../src/facade/exceptions';
 import {CachedXHR} from '../../src/xhr/xhr_cache';
 import {setTemplateCache} from './xhr_cache_setter';

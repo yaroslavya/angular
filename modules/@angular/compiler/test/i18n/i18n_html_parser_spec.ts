@@ -9,7 +9,7 @@ import {
   it,
   xdescribe,
   xit
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {I18nHtmlParser} from '@angular/compiler/src/i18n/i18n_html_parser';
 import {Message, id} from '@angular/compiler/src/i18n/message';

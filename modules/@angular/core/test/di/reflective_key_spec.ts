@@ -1,4 +1,4 @@
-import {describe, iit, it, expect, beforeEach} from '@angular/testing/testing_internal';
+import {describe, iit, it, expect, beforeEach} from '@angular/core/testing/testing_internal';
 import {ReflectiveKey, KeyRegistry} from '@angular/core/src/di/reflective_key';
 
 export function main() {

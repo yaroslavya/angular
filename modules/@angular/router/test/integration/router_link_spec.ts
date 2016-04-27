@@ -15,7 +15,7 @@ import {
   TestComponentBuilder,
   proxy,
   SpyObject
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {Location} from '@angular/common';
 import {NumberWrapper} from '../../src/facade/lang';

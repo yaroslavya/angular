@@ -10,7 +10,7 @@ import {
   xdescribe,
   xit,
   Log
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {BaseException, WrappedException, ExceptionHandler} from '../src/exceptions';
 
 class _CustomException {

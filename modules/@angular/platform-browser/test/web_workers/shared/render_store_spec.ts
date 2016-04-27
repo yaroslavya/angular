@@ -6,7 +6,7 @@ import {
   beforeEach,
   it,
   expect
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {RenderStore} from '@angular/platform-browser/src/web_workers/shared/render_store';
 
 export function main() {

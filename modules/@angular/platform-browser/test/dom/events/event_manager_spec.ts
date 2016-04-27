@@ -8,7 +8,7 @@ import {
   expect,
   beforeEach,
   el
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {DomEventsPlugin} from '@angular/platform-browser/src/dom/events/dom_events';
 import {NgZone} from '@angular/core/src/zone/ng_zone';
 import {ListWrapper, Map} from '../../../src/facade/collection';

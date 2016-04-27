@@ -1,6 +1,6 @@
 import {Location} from '@angular/common';
 import {Router, RouterOutlet} from '@angular/router';
-import {SpyObject, proxy} from '@angular/testing/testing_internal';
+import {SpyObject, proxy} from '@angular/core/testing/testing_internal';
 
 export class SpyRouter extends SpyObject {
   constructor() { super(Router); }

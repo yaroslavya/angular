@@ -12,7 +12,7 @@ import {
   it,
   xit,
   TestComponentBuilder
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 

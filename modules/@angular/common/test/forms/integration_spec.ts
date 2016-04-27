@@ -7,7 +7,6 @@ import {
   beforeEach,
   ddescribe,
   describe,
-  dispatchEvent,
   fakeAsync,
   tick,
   flushMicrotasks,
@@ -15,8 +14,7 @@ import {
   it,
   inject,
   iit,
-  xit,
-  browserDetection
+  xit
 } from '@angular/core/testing';
 
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
@@ -40,6 +38,8 @@ import {By} from '@angular/platform-browser/src/dom/debug/by';
 import {ListWrapper} from '../../src/facade/collection';
 import {ObservableWrapper, TimerWrapper} from '../../src/facade/async';
 import {PromiseWrapper} from '../../src/facade/promise';
+import {browserDetection} from '@angular/platform-browser/testing';
+import {dispatchEvent} from '@angular/platform-browser/testing';
 
 export function main() {
   describe("integration tests", () => {

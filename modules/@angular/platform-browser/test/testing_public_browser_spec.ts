@@ -15,11 +15,10 @@ import {
   tick
 } from '@angular/testing';
 
-import {Injectable, bind} from '../';
-import {Directive, Component, ViewMetadata} from '../';
-import {PromiseWrapper} from '../../http/src/facade/promise';
-import {XHR} from '../../compiler/src/xhr';
-import {XHRImpl} from '../../platform-browser-dynamic/src/xhr/xhr_impl';
+import {Component, bind} from '@angular/core';
+import {PromiseWrapper} from '../src/facade/promise';
+import {XHR} from '@angular/compiler';
+import {XHRImpl} from '../src/xhr/xhr_impl';
 
 // Components for the tests.
 class FancyService {

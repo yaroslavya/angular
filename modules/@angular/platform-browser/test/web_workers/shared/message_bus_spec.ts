@@ -8,7 +8,7 @@ import {
   beforeEachProviders,
   SpyObject,
   proxy
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {ObservableWrapper, TimerWrapper} from '../../../src/facade/async';
 import {MessageBus} from '@angular/platform-browser/src/web_workers/shared/message_bus';
 import {createConnectedMessageBus} from './message_bus_util';

@@ -10,7 +10,7 @@ import {
   TestComponentBuilder,
   ComponentFixture,
   xit,
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {specs, compile, TEST_ROUTER_PROVIDERS, clickOnElement, getHref} from '../util';
 import {Location} from '@angular/common';

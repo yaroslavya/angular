@@ -10,7 +10,7 @@ import {
   inject,
   beforeEach,
   beforeEachProviders
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {SpyRouterOutlet} from './spies';
 import {Type} from '../src/facade/lang';
 import {PromiseWrapper, ObservableWrapper} from '../src/facade/async';

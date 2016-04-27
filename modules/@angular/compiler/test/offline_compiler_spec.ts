@@ -11,8 +11,7 @@ import {
   AsyncTestCompleter,
   inject,
   beforeEachProviders,
-  el
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {IS_DART} from '../src/facade/lang';
 import {Injector} from '@angular/core';

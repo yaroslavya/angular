@@ -10,7 +10,7 @@ import {
   beforeEach,
   beforeEachProviders,
   SpyObject
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {Injector, provide, ReflectiveInjector} from '@angular/core';
 import {Location, LocationStrategy, APP_BASE_HREF} from '@angular/common';

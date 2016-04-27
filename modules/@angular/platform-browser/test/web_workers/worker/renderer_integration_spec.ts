@@ -9,9 +9,9 @@ import {
   expect,
   beforeEach,
   beforeEachProviders,
-  TestInjector,
-  TestComponentBuilder
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
+import { TestInjector } from '@angular/core/testing';
+import { TestComponentBuilder } from '@angular/compiler/testing';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {
   bind,
@@ -47,7 +47,7 @@ import {CompilerConfig} from '@angular/compiler';
 import {
   TEST_BROWSER_PLATFORM_PROVIDERS,
   TEST_BROWSER_APPLICATION_PROVIDERS
-} from '@angular/testing/browser';
+} from '@angular/platform-browser/testing';
 
 export function main() {
   function createWebWorkerBrokerFactory(

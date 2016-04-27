@@ -12,13 +12,12 @@ import {
   fakeAsync,
   tick,
   withProviders,
-  beforeEachProviders,
-  TestComponentBuilder
-} from '../../core/testing';
-
-import {Injectable, bind} from '../';
-import {NgIf} from '../';
-import {Directive, Component, ViewMetadata} from '../';
+  beforeEachProviders
+} from '@angular/core/testing';
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {Injectable, bind} from '@angular/core';
+import {NgIf} from '@angular/common';
+import {Directive, Component, ViewMetadata} from '@angular/core';
 import {PromiseWrapper} from '../../http/src/facade/promise';
 
 // Services, and components for the tests.

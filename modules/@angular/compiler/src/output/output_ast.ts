@@ -400,7 +400,6 @@ export class LiteralArrayExpr extends Expression {
 
 export class LiteralMapExpr extends Expression {
   public valueType: Type = null;
-  ;
   constructor(public entries: Array<Array<string | Expression>>, type: MapType = null) {
     super(type);
     if (isPresent(type)) {

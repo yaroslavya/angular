@@ -11,12 +11,12 @@ import {
   beforeEachProviders,
   it,
   xit,
-  TestComponentBuilder
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 
-import {Injectable, provide} from '.';
-import {NgIf} from '../.';
-import {Directive, Component, ViewMetadata} from '../src/metadata';
+import {Injectable, provide} from '@angular/core';
+import {NgIf} from '@angular/common';
+import {Directive, Component, ViewMetadata} from '@angular/core';
 
 @Component(
     {selector: 'child-comp', template: `<span>Original {{childBinding}}</span>`, directives: []})

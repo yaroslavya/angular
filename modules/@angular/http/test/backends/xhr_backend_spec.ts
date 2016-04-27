@@ -10,7 +10,7 @@ import {
   it,
   xit,
   SpyObject
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {ObservableWrapper} from '../../src/facade/async';
 import {BrowserXhr} from '../../src/backends/browser_xhr';
 import {XHRConnection, XHRBackend} from '../../src/backends/xhr_backend';

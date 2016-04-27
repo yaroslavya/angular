@@ -6,7 +6,7 @@ import {
   expect,
   beforeEach,
   browserDetection
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {OnInit} from '@angular/core';
 import {Reflector, ReflectionInfo} from '@angular/core/src/reflection/reflection';
 import {ReflectionCapabilities} from '@angular/core/src/reflection/reflection_capabilities';

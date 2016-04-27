@@ -1,4 +1,4 @@
-import {ddescribe, describe, it, iit, xit, expect, afterEach} from '@angular/testing/testing_internal';
+import {ddescribe, describe, it, iit, xit, expect, afterEach} from '@angular/core/testing/testing_internal';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {Title} from '@angular/platform-browser';
 

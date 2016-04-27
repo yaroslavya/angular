@@ -1,18 +1,17 @@
 import {
   AsyncTestCompleter,
-  TestComponentBuilder,
   beforeEach,
   beforeEachProviders,
   ddescribe,
   xdescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 
 import {StringMapWrapper} from '../../src/facade/collection';
 

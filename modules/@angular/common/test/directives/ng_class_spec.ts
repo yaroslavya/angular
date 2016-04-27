@@ -1,19 +1,20 @@
 import {
-  ComponentFixture,
   AsyncTestCompleter,
-  TestComponentBuilder,
   beforeEach,
   beforeEachProviders,
   ddescribe,
   xdescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
+import {
+  ComponentFixture,
+  TestComponentBuilder
+} from '@angular/compiler/testing';
 import {ListWrapper, StringMapWrapper, SetWrapper} from '../../src/facade/collection';
 import {Component, provide} from '@angular/core';
 import {NgFor, NgClass} from '@angular/common';

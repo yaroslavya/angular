@@ -6,9 +6,9 @@ import {
   xit,
   expect,
   beforeEach,
-  afterEach,
-  browserDetection
-} from '@angular/testing/testing_internal';
+  afterEach
+} from '@angular/core/testing/testing_internal';
+import {browserDetection} from '@angular/platform-browser/testing';
 
 import {DatePipe} from '@angular/common';
 import {DateWrapper} from '../../src/facade/lang';

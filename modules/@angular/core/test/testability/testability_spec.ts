@@ -11,7 +11,7 @@ import {
   expect,
   beforeEach,
   SpyObject
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {Testability} from '@angular/core/src/testability/testability';
 import {NgZone} from '@angular/core/src/zone/ng_zone';
 import {normalizeBlank, scheduleMicroTask} from '../../src/facade/lang';

@@ -11,7 +11,7 @@ import {
   beforeEachProviders,
   it,
   xit
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {provide, Component} from '@angular/core';
 import {isBlank} from '../../src/facade/lang';
 import {BaseException} from '../../src/facade/exceptions';
@@ -21,7 +21,7 @@ import {Location} from '@angular/common';
 import {RouteRegistry} from '@angular/router/src/route_registry';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {SpyLocation} from '@angular/testing';
-export {ComponentFixture} from '@angular/testing/testing_internal';
+export {ComponentFixture} from '@angular/core/testing/testing_internal';
 
 
 /**

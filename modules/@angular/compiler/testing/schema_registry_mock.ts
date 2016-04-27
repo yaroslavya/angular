@@ -1,5 +1,5 @@
-import {isPresent} from '../../core-testing/src/facade/lang';
-import {ElementSchemaRegistry} from '.';
+import {isPresent} from '../src/facade/lang';
+import {ElementSchemaRegistry} from '../index';
 
 export class MockSchemaRegistry implements ElementSchemaRegistry {
   constructor(public existingProperties: {[key: string]: boolean},

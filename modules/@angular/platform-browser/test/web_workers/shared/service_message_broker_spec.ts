@@ -10,7 +10,7 @@ import {
   SpyObject,
   proxy,
   browserDetection
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {createPairedMessageBuses} from './web_worker_test_util';
 import {Serializer, PRIMITIVE} from '@angular/platform-browser/src/web_workers/shared/serializer';
 import {

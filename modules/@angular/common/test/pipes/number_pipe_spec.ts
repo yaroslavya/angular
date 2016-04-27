@@ -7,8 +7,8 @@ import {
   expect,
   beforeEach,
   afterEach,
-  browserDetection
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
+import {browserDetection} from '@angular/platform-browser/testing';
 
 import {DecimalPipe, PercentPipe, CurrencyPipe} from '@angular/common';
 

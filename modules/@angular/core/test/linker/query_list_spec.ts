@@ -9,7 +9,7 @@ import {
   el,
   fakeAsync,
   tick
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {MapWrapper, ListWrapper, iterateListLike} from '../../src/facade/collection';
 import {IS_DART, StringWrapper} from '../../src/facade/lang';
 import {ObservableWrapper} from '../../src/facade/async';

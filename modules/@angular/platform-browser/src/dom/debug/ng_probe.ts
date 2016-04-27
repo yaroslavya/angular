@@ -1,6 +1,6 @@
 import {DebugNode, getDebugNode, Provider, RootRenderer, NgZone, ApplicationRef} from '@angular/core';
-import {DebugDomRootRenderer} from '../../../core_private';
-import {assertionsEnabled} from '../../../src/facade/lang';
+import {DebugDomRootRenderer} from '../core_private';
+import {assertionsEnabled} from '../../facade/lang';
 import {getDOM} from '../dom_adapter';
 import {DomRootRenderer} from '../dom_renderer';
 
@@ -35,8 +35,8 @@ function _createRootRenderer(rootRenderer) {
 /**
  * Providers which support debugging Angular applications (e.g. via `ng.probe`).
  */
-export const ELEMENT_PROBE_PROVIDERS: any[] = /*@ts2dart_const*/ 
+export const ELEMENT_PROBE_PROVIDERS: any[] = /*@ts2dart_const*/
     [{provide: RootRenderer, useFactory: _createConditionalRootRenderer, deps: [DomRootRenderer]}];
 
-export const ELEMENT_PROBE_PROVIDERS_PROD_MODE: any[] = /*@ts2dart_const*/ 
+export const ELEMENT_PROBE_PROVIDERS_PROD_MODE: any[] = /*@ts2dart_const*/
     [{provide: RootRenderer, useFactory: _createRootRenderer, deps: [DomRootRenderer]}];

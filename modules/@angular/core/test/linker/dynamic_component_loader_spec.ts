@@ -14,7 +14,7 @@ import {
   xit,
   TestComponentBuilder,
   ComponentFixture
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {Predicate} from '../../src/facade/collection';
 import {Injector, OnDestroy, DebugElement, Type, ViewContainerRef, ViewChild} from '@angular/core';

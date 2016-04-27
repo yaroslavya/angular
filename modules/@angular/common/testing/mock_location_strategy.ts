@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {EventEmitter, ObservableWrapper} from '../src/facade/async';
-import {LocationStrategy} from '@angular/common';
+import {LocationStrategy} from '../index';
 
 
 /**

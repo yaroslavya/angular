@@ -7,7 +7,7 @@ import {
   expect,
   beforeEach,
   afterEach
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {HtmlTokenType} from '@angular/compiler/src/html_lexer';
 import {HtmlParser, HtmlParseTreeResult, HtmlTreeError} from '@angular/compiler/src/html_parser';

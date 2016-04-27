@@ -8,7 +8,7 @@
     "moduleResolution": "node",
     "outDir": "../../../dist/packages-dist/http/",
     "paths": {
-      "@angular/core": ["../../../dist/packages-dist/core/"]
+      "@angular/core": ["../../../dist/packages-dist/core"]
     },
     "rootDir": ".",
     "sourceMap": true,
@@ -17,6 +17,7 @@
   },
   "files": [
     "index.ts",
+    "testing.ts",
     "../typings/es6-collections/es6-collections.d.ts",
     "../typings/es6-promise/es6-promise.d.ts",
     "../manual_typings/globals.d.ts",

@@ -10,7 +10,7 @@ import {
   it,
   xit,
   TestComponentBuilder,
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {isPresent} from '../../src/facade/lang';
 import {ObservableWrapper} from '../../src/facade/async';

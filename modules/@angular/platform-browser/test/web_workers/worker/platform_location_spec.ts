@@ -6,7 +6,7 @@ import {
   expect,
   beforeEach,
   beforeEachProviders
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {SpyMessageBroker} from './spies';
 import {WebWorkerPlatformLocation} from '@angular/platform-browser/src/web_workers/worker/platform_location';
 import {LocationType} from '@angular/platform-browser/src/web_workers/shared/serialized_types';

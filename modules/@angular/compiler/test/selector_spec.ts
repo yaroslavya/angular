@@ -1,8 +1,8 @@
-import {describe, it, expect, beforeEach, ddescribe, iit, xit, el} from '@angular/testing/testing_internal';
+import {describe, it, expect, beforeEach, ddescribe, iit, xit} from '@angular/core/testing/testing_internal';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {SelectorMatcher} from '@angular/compiler/src/selector';
 import {CssSelector} from '@angular/compiler/src/selector';
-import {ListWrapper, MapWrapper} from '../src/facade/collection';
+import {el} from '@angular/platform-browser/testing';
 
 export function main() {
   describe('SelectorMatcher', () => {

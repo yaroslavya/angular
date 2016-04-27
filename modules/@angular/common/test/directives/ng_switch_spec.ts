@@ -1,18 +1,17 @@
 import {
   AsyncTestCompleter,
-  TestComponentBuilder,
   beforeEach,
   ddescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {Component} from '@angular/core';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 
 import {NgSwitch, NgSwitchWhen, NgSwitchDefault} from '@angular/common';
 

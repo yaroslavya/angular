@@ -3,22 +3,20 @@ import {
   beforeEach,
   ddescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
-  TestComponentBuilder,
   beforeEachProviders
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {CompileTypeMetadata, CompileTemplateMetadata} from '@angular/compiler/src/compile_metadata';
 import {ViewEncapsulation} from '@angular/core/src/metadata/view';
 
 import {DirectiveNormalizer} from '@angular/compiler/src/directive_normalizer';
 import {XHR} from '@angular/compiler/src/xhr';
-import {MockXHR} from '@angular/testing';
+import {MockXHR} from '@angular/compiler/testing';
 import {TEST_PROVIDERS} from './test_bindings';
 
 export function main() {

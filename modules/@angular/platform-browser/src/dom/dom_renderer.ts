@@ -7,7 +7,7 @@ import {
   RenderComponentType,
   ViewEncapsulation
 } from '@angular/core';
-import {RenderDebugInfo} from '../../core_private'
+import {RenderDebugInfo} from '../core_private'
 import {AnimationBuilder} from '../animate/animation_builder';
 import {
   isPresent,

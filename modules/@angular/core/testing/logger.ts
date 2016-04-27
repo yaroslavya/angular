@@ -1,4 +1,4 @@
-import {Injectable} from '..';
+import {Injectable} from '../index';
 
 @Injectable()
 export class Log {

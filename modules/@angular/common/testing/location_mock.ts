@@ -1,6 +1,6 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import {ObservableWrapper} from '../../core-testing/src/facade/async';
-import {Location} from '..';
+import {ObservableWrapper} from '../src/facade/async';
+import {Location} from '../index';
 
 /**
  * A spy for {@link Location} that allows tests to fire simulated location events.

@@ -1,4 +1,4 @@
-import {ddescribe, describe, it, expect} from '@angular/testing/testing_internal';
+import {ddescribe, describe, it, expect} from '@angular/core/testing/testing_internal';
 
 import {Lexer, Token} from '@angular/compiler/src/expression_parser/lexer';
 

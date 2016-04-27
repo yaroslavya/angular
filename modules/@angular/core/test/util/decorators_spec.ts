@@ -8,7 +8,7 @@ import {
   inject,
   it,
   xit,
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {makeDecorator, makeParamDecorator, Class} from '@angular/core/src/util/decorators';
 import {global} from '../../src/facade/lang';

@@ -1,5 +1,5 @@
-import {isPresent, isBlank} from './src/facade/lang';
-import {PromiseWrapper} from './src/facade/async';
+import {isPresent, isBlank} from './facade/lang';
+import {PromiseWrapper} from './facade/async';
 import {
   ApplicationRef,
   PlatformRef,
@@ -8,34 +8,34 @@ import {
   getPlatform,
   createPlatform,
   assertPlatform
-} from '@angular/core';
-import {WORKER_RENDER_APPLICATION} from './src/webworker/worker_render';
+} from '../.';
+import {WORKER_RENDER_APPLICATION} from './webworker/worker_render';
 import {
   WORKER_SCRIPT,
   WORKER_RENDER_PLATFORM,
   WORKER_RENDER_PLATFORM_MARKER
-} from './src/webworker/worker_render_common';
+} from './webworker/worker_render_common';
 
 export {
   WORKER_SCRIPT,
   WORKER_RENDER_PLATFORM,
   initializeGenericWorkerRenderer,
   WORKER_RENDER_APPLICATION_COMMON
-} from './src/webworker/worker_render_common';
-export {WORKER_RENDER_APPLICATION, WebWorkerInstance} from './src/webworker/worker_render';
+} from './webworker/worker_render_common';
+export {WORKER_RENDER_APPLICATION, WebWorkerInstance} from './webworker/worker_render';
 export {
   ClientMessageBroker,
   ClientMessageBrokerFactory,
   FnArg,
   UiArguments
-} from './src/web_workers/shared/client_message_broker';
+} from './web_workers/shared/client_message_broker';
 export {
   ReceivedMessage,
   ServiceMessageBroker,
   ServiceMessageBrokerFactory
-} from './src/web_workers/shared/service_message_broker';
-export {PRIMITIVE} from './src/web_workers/shared/serializer';
-export * from './src/web_workers/shared/message_bus';
+} from './web_workers/shared/service_message_broker';
+export {PRIMITIVE} from './web_workers/shared/serializer';
+export * from './web_workers/shared/message_bus';
 
 /**
  * @deprecated Use WORKER_RENDER_APPLICATION

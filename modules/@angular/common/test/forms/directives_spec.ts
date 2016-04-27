@@ -1,19 +1,21 @@
 import {
   ddescribe,
   describe,
-  fakeAsync,
-  flushMicrotasks,
   it,
   iit,
   xit,
   expect,
   beforeEach,
   afterEach,
-  el,
   AsyncTestCompleter,
   inject,
-  tick
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
+import {
+  fakeAsync,
+  flushMicrotasks,
+  Log,
+  tick,
+} from '@angular/core/testing';
 
 import {SpyNgControl, SpyValueAccessor} from '../spies';
 

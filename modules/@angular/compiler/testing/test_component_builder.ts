@@ -8,12 +8,12 @@ import {
   ChangeDetectorRef,
   DebugElement,
   getDebugNode
-} from '..';
-import {DirectiveResolver, ViewResolver} from '@angular/compiler';
+} from '@angular/core';
+import {DirectiveResolver, ViewResolver} from '../index';
 import {Type, isPresent} from '../src/facade/lang';
 import {PromiseWrapper} from '../src/facade/async';
 import {MapWrapper} from '../src/facade/collection';
-import {tick} from './fake_async';
+import {tick} from '@angular/core/testing';
 
 /**
  * An abstract class for inserting the root test component element in a platform independent way.

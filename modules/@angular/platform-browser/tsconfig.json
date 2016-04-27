@@ -8,9 +8,12 @@
     "moduleResolution": "node",
     "outDir": "../../../dist/packages-dist/platform-browser/",
     "paths": {
-      "@angular/core": ["../../../dist/packages-dist/core/"],
-      "@angular/common": ["../../../dist/packages-dist/common/"],
-      "@angular/compiler": ["../../../dist/packages-dist/compiler/"]
+      "@angular/core": ["../../../dist/packages-dist/core"],
+      "@angular/core/testing": ["../../../dist/packages-dist/core/testing"],
+      "@angular/common": ["../../../dist/packages-dist/common"],
+      "@angular/common/testing": ["../../../dist/packages-dist/common/testing"],
+      "@angular/compiler": ["../../../dist/packages-dist/compiler"],
+      "@angular/compiler/testing": ["../../../dist/packages-dist/compiler/testinc"]
     },
     "rootDir": ".",
     "sourceMap": true,
@@ -19,6 +22,7 @@
   },
   "files": [
     "index.ts",
+    "testing.ts",
     "../typings/es6-collections/es6-collections.d.ts",
     "../typings/es6-promise/es6-promise.d.ts",
     "../manual_typings/globals.d.ts",

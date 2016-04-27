@@ -1,4 +1,4 @@
-import {Injectable} from '../../core-testing';
+import {Injectable} from '@angular/core';
 import {
   AnimationBuilder,
   CssAnimationBuilder,

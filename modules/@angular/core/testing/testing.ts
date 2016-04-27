@@ -13,7 +13,7 @@ import {
 
 export {inject, async, injectAsync} from './test_injector';
 
-export {expect, NgMatchers} from '../../platform-browser/testing/matchers';
+declare var global;
 
 var _global = <any>(typeof window === 'undefined' ? global : window);
 

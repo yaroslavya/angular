@@ -1,11 +1,9 @@
-import {StringMapWrapper} from '../../core-testing/src/facade/collection';
-import {global, isFunction, Math} from '../../core-testing/src/facade/lang';
-import {provide} from '..';
+import {StringMapWrapper} from '../src/facade/collection';
+import {global, isFunction, Math} from '../src/facade/lang';
+import {provide} from '../index';
 import {getTestInjector, FunctionWithParamTokens, inject} from './test_injector';
 
 export {inject} from './test_injector';
-
-export {expect, NgMatchers} from '../../platform-browser/testing/matchers';
 
 export var proxy: ClassDecorator = (t) => t;
 

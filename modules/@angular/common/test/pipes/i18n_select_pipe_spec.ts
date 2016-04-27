@@ -7,7 +7,7 @@ import {
   expect,
   beforeEach,
   afterEach
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {I18nSelectPipe} from '@angular/common';
 import {PipeResolver} from '@angular/compiler/src/pipe_resolver';

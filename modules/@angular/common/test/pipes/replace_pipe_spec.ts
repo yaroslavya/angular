@@ -7,11 +7,9 @@ import {
   expect,
   beforeEach,
   afterEach,
-  browserDetection,
   inject,
-  TestComponentBuilder,
   AsyncTestCompleter
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {ReplacePipe} from '@angular/common';
 import {RegExpWrapper, StringJoiner} from '../../src/facade/lang';

@@ -11,7 +11,7 @@ import {
   xdescribe,
   Log,
   xit
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {IS_DART, isPresent, stringify} from '../../src/facade/lang';
 import {BROWSER_PROVIDERS, BROWSER_APP_PROVIDERS} from '@angular/platform-browser';
 import {bootstrap} from '@angular/platform-browser-dynamic';

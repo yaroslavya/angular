@@ -9,7 +9,7 @@ import {
   it,
   xdescribe,
   xit,
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {Component} from '@angular/core';
 import {getComponentInfo, parseFields} from '@angular/upgrade/src/metadata';

@@ -9,7 +9,7 @@ import {
   afterEach,
   inject,
   beforeEachProviders
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {provide} from '@angular/core/src/di';
 
 import {
@@ -47,7 +47,7 @@ import {
 } from '@angular/compiler/src/template_ast';
 
 import {ElementSchemaRegistry} from '@angular/compiler/src/schema/element_schema_registry';
-import {MockSchemaRegistry} from '../../testing/src/mock/schema_registry_mock';
+import {MockSchemaRegistry} from '@angular/compiler/testing';
 
 import {Unparser} from './expression_parser/unparser';
 import {TEST_PROVIDERS} from './test_bindings';

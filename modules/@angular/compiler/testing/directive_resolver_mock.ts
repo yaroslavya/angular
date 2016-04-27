@@ -1,7 +1,7 @@
-import {Map} from '../../core-testing/src/facade/collection';
-import {Type, isPresent} from '../../core-testing/src/facade/lang';
-import {DirectiveMetadata, ComponentMetadata, Injectable} from './';
-import {DirectiveResolver} from '../../../../../';
+import {Map} from '../src/facade/collection';
+import {Type, isPresent} from '../src/facade/lang';
+import {DirectiveMetadata, ComponentMetadata, Injectable} from '@angular/core';
+import {DirectiveResolver} from '@angular/compiler';
 
 /**
  * An implementation of {@link DirectiveResolver} that allows overriding

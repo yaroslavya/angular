@@ -11,7 +11,7 @@ import {
   inject,
   it,
   xit
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 export function main() {
   describe('Headers', () => {

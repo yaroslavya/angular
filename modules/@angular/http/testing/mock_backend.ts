@@ -1,4 +1,4 @@
-import {Injectable} from '../../http-testing';
+import {Injectable} from '@angular/core';
 import {Request} from '../src/static_request';
 import {Response} from '../src/static_response';
 import {ReadyState} from '../src/enums';

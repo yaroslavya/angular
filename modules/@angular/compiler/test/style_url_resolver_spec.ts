@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeEach, ddescribe, iit, xit, el} from '@angular/testing/testing_internal';
+import {describe, it, expect, beforeEach, ddescribe, iit, xit} from '@angular/core/testing/testing_internal';
 import {extractStyleUrls, isStyleUrlResolvable} from '@angular/compiler/src/style_url_resolver';
 
 import {UrlResolver} from '@angular/compiler/src/url_resolver';

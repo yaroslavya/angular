@@ -8,7 +8,7 @@ import {
   inject,
   beforeEach,
   SpyObject
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {GeneratedUrl} from '../../../../router/src/rules/route_paths/route_path';
 import {RegexRoutePath} from '../../../../router/src/rules/route_paths/regex_route_path';

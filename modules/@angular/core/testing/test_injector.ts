@@ -1,4 +1,4 @@
-import {ReflectiveInjector, Provider, PLATFORM_INITIALIZER, Type} from '..';
+import {ReflectiveInjector, Provider, PLATFORM_INITIALIZER, Type} from '../index';
 import {BaseException} from '../src/facade/exceptions';
 import {ListWrapper} from '../src/facade/collection';
 import {FunctionWrapper, isPresent} from '../src/facade/lang';

@@ -9,8 +9,7 @@ import {
   afterEach,
   AsyncTestCompleter,
   inject,
-  browserDetection
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 import {SpyChangeDetectorRef} from '../spies';
 
 import {isBlank} from '../../src/facade/lang';
@@ -24,6 +23,7 @@ import {
 } from '../../src/facade/async';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {PromiseCompleter} from '../../src/facade/promise';
+import {browserDetection} from '@angular/platform-browser/testing';
 
 export function main() {
   describe("AsyncPipe", () => {

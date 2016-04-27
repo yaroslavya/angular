@@ -10,7 +10,7 @@ import {
   it,
   xit,
   TestComponentBuilder
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing/testing_internal';
 
 import {getImportModulePath, ImportEnv} from '@angular/compiler/src/output/path_util';
 

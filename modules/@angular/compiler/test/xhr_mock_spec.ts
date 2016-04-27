@@ -3,13 +3,12 @@ import {
   beforeEach,
   ddescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
-} from '@angular/testing/testing_internal';
-import {MockXHR} from '@angular/testing';
+} from '@angular/core/testing/testing_internal';
+import {MockXHR} from '@angular/compiler/testing';
 import {PromiseWrapper} from '../src/facade/async';
 import {isPresent} from '../src/facade/lang';
 

@@ -13,19 +13,18 @@ import {Parse5DomAdapter} from '..';
 
 import {AnimationBuilder} from '../../platform-browser/src/animate/animation_builder';
 import {MockAnimationBuilder} from '../../platform-browser/testing/animation_builder_mock';
-import {MockDirectiveResolver} from '../../core/testing/directive_resolver_mock';
-import {MockViewResolver} from '../../compiler/testing/view_resolver_mock';
+import {MockDirectiveResolver, MockViewResolver} from '@angular/compiler/testing';
 import {MockLocationStrategy} from '../../common/testing/mock_location_strategy';
-import {MockNgZone} from '../../core/testing/ng_zone_mock';
+import {MockNgZone} from '@angular/core/testing';
 
-import {TestComponentBuilder} from '@angular/core/testing';
+import {TestComponentBuilder} from '@angular/compiler/testing';
 import {XHR} from '@angular/compiler';
 import {BrowserDetection} from '@angular/platform-browser/testing';
 
 import {COMPILER_PROVIDERS} from '@angular/compiler';
 import {DOCUMENT} from '@angular/platform-browser';
-import {getDOM} from '../../platform-browser/src/dom/dom_adapter';
-import {RootRenderer} from '../../core/src/render/api';
+import {getDOM} from '../platform_browser_private';
+import {RootRenderer} from '@angular/core';
 import {DomRootRenderer, DomRootRenderer_} from '../../platform-browser/src/dom/dom_renderer';
 import {DomSharedStylesHost, SharedStylesHost} from '../../platform-browser/src/dom/shared_styles_host';
 
@@ -33,8 +32,8 @@ import {
   EventManager,
   EVENT_MANAGER_PLUGINS,
   ELEMENT_PROBE_PROVIDERS
-} from '../.';
-import {DomEventsPlugin} from '../../platform-browser/src/dom/events/dom_events';
+} from '@angular/platform-browser';
+import {DomEventsPlugin} from '@angular/platform-browser';
 import {LocationStrategy} from '@angular/common';
 import {Log} from '@angular/core/testing';
 

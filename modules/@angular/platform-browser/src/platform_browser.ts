@@ -5,11 +5,12 @@ import {
   createPlatform,
   assertPlatform
 } from '@angular/core';
-import {isBlank} from './src/facade/lang';
+import {isBlank} from './facade/lang';
 import {BROWSER_PROVIDERS, BROWSER_PLATFORM_MARKER} from './browser_common';
+export {DomEventsPlugin} from './dom/events/dom_events';
 
-export {EventManager, EVENT_MANAGER_PLUGINS} from './src/dom/events/event_manager';
-export {ELEMENT_PROBE_PROVIDERS} from './src/dom/debug/ng_probe';
+export {EventManager, EVENT_MANAGER_PLUGINS} from './dom/events/event_manager';
+export {ELEMENT_PROBE_PROVIDERS} from './dom/debug/ng_probe';
 export {
   BROWSER_APP_COMMON_PROVIDERS,
   BROWSER_PROVIDERS,
@@ -21,8 +22,8 @@ export {
   HammerGestureConfig
 } from './browser_common';
 
-export * from './private_export';
-export {DOCUMENT} from './src/dom/dom_tokens';
+export * from '../private_export';
+export {DOCUMENT} from './dom/dom_tokens';
 
 
 export {

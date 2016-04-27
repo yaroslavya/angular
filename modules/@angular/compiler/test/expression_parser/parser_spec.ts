@@ -1,4 +1,4 @@
-import {ddescribe, describe, it, xit, iit, expect, beforeEach} from '@angular/testing/testing_internal';
+import {ddescribe, describe, it, xit, iit, expect, beforeEach} from '@angular/core/testing/testing_internal';
 import {isBlank, isPresent} from '../../src/facade/lang';
 import {Parser} from '@angular/compiler/src/expression_parser/parser';
 import {Unparser} from './unparser';

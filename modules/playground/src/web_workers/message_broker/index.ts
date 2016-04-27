@@ -5,7 +5,7 @@ import {
   FnArg,
   PRIMITIVE,
   ClientMessageBrokerFactory
-} from '@angular/platform-browser/worker_render';
+} from '../../../../@angular/platform-browser/src/worker_render';
 
 const ECHO_CHANNEL = "ECHO";
 
