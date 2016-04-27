@@ -58,6 +58,7 @@ class ViewBinderVisitor {
             bindDirectiveAfterViewLifecycleCallbacks(directiveAst.directive, directiveInstance, compileElement);
             bindDirectiveDestroyLifecycleCallbacks(directiveAst.directive, directiveInstance, compileElement);
         });
+        bindView(compileElement.embeddedView, ast.children);
         return null;
     }
     visitAttr(ast, ctx) { return null; }

@@ -26444,6 +26444,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var compile_element_1 = __webpack_require__(170);
 	var compile_view_1 = __webpack_require__(175);
 	var view_builder_1 = __webpack_require__(177);
+	var view_binder_1 = __webpack_require__(178);
 	var config_1 = __webpack_require__(163);
 	var ViewCompileResult = (function () {
 	    function ViewCompileResult(statements, viewFactoryVar, dependencies) {
@@ -26462,7 +26463,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var statements = [];
 	        var dependencies = [];
 	        var view = new compile_view_1.CompileView(component, this._genConfig, pipes, styles, 0, compile_element_1.CompileElement.createNull(), []);
-	        view_builder_1.buildView(view, template, dependencies, statements);
+	        view_builder_1.buildView(view, template, dependencies);
+	        // Need to separate binding from creation to be able to refer to
+	        // variables that have been declared after usage.
+	        view_binder_1.bindView(view, template);
+	        view_builder_1.finishView(view, statements);
 	        return new ViewCompileResult(statements, view.viewFactory.name, dependencies);
 	    };
 	    ViewCompiler = __decorate([
@@ -27485,7 +27490,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var view_type_1 = __webpack_require__(69);
 	var view_1 = __webpack_require__(36);
 	var compile_metadata_1 = __webpack_require__(156);
-	var view_binder_1 = __webpack_require__(178);
 	var IMPLICIT_TEMPLATE_VAR = '\$implicit';
 	var CLASS_ATTR = 'class';
 	var STYLE_ATTR = 'style';
@@ -27499,24 +27503,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return ViewCompileDependency;
 	}());
 	exports.ViewCompileDependency = ViewCompileDependency;
-	function buildView(view, template, targetDependencies, targetStatements) {
-	    var builderVisitor = new ViewBuilderVisitor(view, targetDependencies, targetStatements);
+	function buildView(view, template, targetDependencies) {
+	    var builderVisitor = new ViewBuilderVisitor(view, targetDependencies);
 	    template_ast_1.templateVisitAll(builderVisitor, template, view.declarationElement.isNull() ?
 	        view.declarationElement :
 	        view.declarationElement.parent);
-	    // Need to separate binding from creation to be able to refer to
-	    // variables that have been declared after usage.
-	    view_binder_1.bindView(view, template);
-	    view.afterNodes();
-	    createViewTopLevelStmts(view, targetStatements);
 	    return builderVisitor.nestedViewCount;
 	}
 	exports.buildView = buildView;
+	function finishView(view, targetStatements) {
+	    view.afterNodes();
+	    createViewTopLevelStmts(view, targetStatements);
+	    view.nodes.forEach(function (node) {
+	        if (node instanceof compile_element_1.CompileElement && node.hasEmbeddedView) {
+	            finishView(node.embeddedView, targetStatements);
+	        }
+	    });
+	}
+	exports.finishView = finishView;
 	var ViewBuilderVisitor = (function () {
-	    function ViewBuilderVisitor(view, targetDependencies, targetStatements) {
+	    function ViewBuilderVisitor(view, targetDependencies) {
 	        this.view = view;
 	        this.targetDependencies = targetDependencies;
-	        this.targetStatements = targetStatements;
 	        this.nestedViewCount = 0;
 	    }
 	    ViewBuilderVisitor.prototype._isRootNode = function (parent) { return parent.view !== this.view; };
@@ -27673,8 +27681,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.view.nodes.push(compileElement);
 	        this.nestedViewCount++;
 	        var embeddedView = new compile_view_1.CompileView(this.view.component, this.view.genConfig, this.view.pipeMetas, o.NULL_EXPR, this.view.viewIndex + this.nestedViewCount, compileElement, templateVariableBindings);
-	        this.nestedViewCount +=
-	            buildView(embeddedView, ast.children, this.targetDependencies, this.targetStatements);
+	        this.nestedViewCount += buildView(embeddedView, ast.children, this.targetDependencies);
 	        compileElement.beforeChildren();
 	        this._addRootNodeAndProject(compileElement, ast.ngContentIndex, parent);
 	        compileElement.afterChildren(0);
@@ -28007,6 +28014,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            lifecycle_binder_1.bindDirectiveAfterViewLifecycleCallbacks(directiveAst.directive, directiveInstance, compileElement);
 	            lifecycle_binder_1.bindDirectiveDestroyLifecycleCallbacks(directiveAst.directive, directiveInstance, compileElement);
 	        });
+	        bindView(compileElement.embeddedView, ast.children);
 	        return null;
 	    };
 	    ViewBinderVisitor.prototype.visitAttr = function (ast, ctx) { return null; };
@@ -29893,13 +29901,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return null;
 	    };
 	    AbstractEmitterVisitor.prototype.visitConditionalExpr = function (ast, ctx) {
-	        ctx.print("(");
 	        ast.condition.visitExpression(this, ctx);
 	        ctx.print('? ');
 	        ast.trueCase.visitExpression(this, ctx);
 	        ctx.print(': ');
 	        ast.falseCase.visitExpression(this, ctx);
-	        ctx.print(")");
 	        return null;
 	    };
 	    AbstractEmitterVisitor.prototype.visitNotExpr = function (ast, ctx) {
