@@ -21011,13 +21011,11 @@ System.register("angular2/src/compiler/output/abstract_emitter", ["angular2/src/
       return null;
     };
     AbstractEmitterVisitor.prototype.visitConditionalExpr = function(ast, ctx) {
-      ctx.print("(");
       ast.condition.visitExpression(this, ctx);
       ctx.print('? ');
       ast.trueCase.visitExpression(this, ctx);
       ctx.print(': ');
       ast.falseCase.visitExpression(this, ctx);
-      ctx.print(")");
       return null;
     };
     AbstractEmitterVisitor.prototype.visitNotExpr = function(ast, ctx) {
