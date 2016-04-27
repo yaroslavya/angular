@@ -138,7 +138,7 @@ main() {
       expect(emitStmt(someVar
               .conditional(o.variable("trueCase"), o.variable("falseCase"))
               .toStmt()))
-          .toEqual("(someVar? trueCase: falseCase);");
+          .toEqual("someVar? trueCase: falseCase;");
       expect(emitStmt(lhs.equals(rhs).toStmt())).toEqual("(lhs == rhs);");
       expect(emitStmt(lhs.notEquals(rhs).toStmt())).toEqual("(lhs != rhs);");
       expect(emitStmt(lhs.identical(rhs).toStmt())).toEqual("(lhs === rhs);");

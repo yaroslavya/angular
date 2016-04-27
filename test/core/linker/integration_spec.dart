@@ -638,16 +638,13 @@ declareTests(bool isJit) {
                       MyComp,
                       new ViewMetadata(
                           template:
-                              "<p>{{alice.ctxProp}}<child-cmp var-alice></child-cmp></p>",
-                          directives: [ChildComp]))
+                              "<template [ngIf]=\"true\">{{alice.ctxProp}}</template>|{{alice.ctxProp}}|<child-cmp var-alice></child-cmp>",
+                          directives: [ChildComp, NgIf]))
                   .createAsync(MyComp)
                   .then((fixture) {
                 fixture.detectChanges();
                 expect(fixture.debugElement.nativeElement)
-                    .toHaveText("hellohello");
-                // component, the second one is
-
-                // the text binding
+                    .toHaveText("hello|hello|hello");
                 async.done();
               });
             }));

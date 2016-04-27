@@ -4,7 +4,8 @@ import "package:angular2/src/core/di.dart" show Injectable;
 import "../output/output_ast.dart" as o;
 import "compile_element.dart" show CompileElement;
 import "compile_view.dart" show CompileView;
-import "view_builder.dart" show buildView, ViewCompileDependency;
+import "view_builder.dart" show buildView, finishView, ViewCompileDependency;
+import "view_binder.dart" show bindView;
 import "../compile_metadata.dart"
     show CompileDirectiveMetadata, CompilePipeMetadata;
 import "../template_ast.dart" show TemplateAst;
@@ -30,7 +31,12 @@ class ViewCompiler {
     var dependencies = [];
     var view = new CompileView(component, this._genConfig, pipes, styles, 0,
         CompileElement.createNull(), []);
-    buildView(view, template, dependencies, statements);
+    buildView(view, template, dependencies);
+    // Need to separate binding from creation to be able to refer to
+
+    // variables that have been declared after usage.
+    bindView(view, template);
+    finishView(view, statements);
     return new ViewCompileResult(
         statements, view.viewFactory.name, dependencies);
   }
