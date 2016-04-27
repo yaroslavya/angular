@@ -298,11 +298,13 @@ abstract class AbstractEmitterVisitor
   dynamic visitExternalExpr(o.ExternalExpr ast, EmitterVisitorContext ctx);
   dynamic visitConditionalExpr(
       o.ConditionalExpr ast, EmitterVisitorContext ctx) {
+    ctx.print('''(''');
     ast.condition.visitExpression(this, ctx);
     ctx.print("? ");
     ast.trueCase.visitExpression(this, ctx);
     ctx.print(": ");
     ast.falseCase.visitExpression(this, ctx);
+    ctx.print(''')''');
     return null;
   }
 
