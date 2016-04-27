@@ -13,10 +13,14 @@ import {DirectiveResolver, ViewResolver} from '@angular/compiler';
 import {Type, isPresent} from '../src/facade/lang';
 import {PromiseWrapper} from '../src/facade/async';
 import {MapWrapper} from '../src/facade/collection';
-import {el} from '../src/utils';
-import {DOCUMENT} from '../.';
-import {getDOM} from '../platform_browser_private';
-import {tick} from '../src/fake_async';
+import {tick} from './fake_async';
+
+/**
+ * An abstract class for inserting the root test component element in a platform independent way.
+ */
+export class TestComponentRenderer {
+  insertRootElement(rootElementId: string) {}
+}
 
 /**
  * Fixture for debugging and testing a component.
@@ -236,16 +240,9 @@ export class TestComponentBuilder {
     this._viewBindingsOverrides.forEach(
         (bindings, type) => mockDirectiveResolver.setViewBindingsOverride(type, bindings));
 
+    var testComponentRenderer: TestComponentRenderer = this._injector.get(TestComponentRenderer);
     var rootElId = `root${_nextRootElementId++}`;
-    var rootEl = el(`<div id="${rootElId}"></div>`);
-    var doc = this._injector.get(DOCUMENT);
-
-    // TODO(juliemr): can/should this be optional?
-    var oldRoots = getDOM().querySelectorAll(doc, '[id^=root]');
-    for (var i = 0; i < oldRoots.length; i++) {
-      getDOM().remove(oldRoots[i]);
-    }
-    getDOM().appendChild(doc.body, rootEl);
+    testComponentRenderer.insertRootElement(rootElId);
 
     var promise: Promise<ComponentRef> =
         this._injector.get(DynamicComponentLoader)

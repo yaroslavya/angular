@@ -35,7 +35,7 @@ export function fakeAsync(fn: Function | FunctionWithParamTokens): Function {
     }
     innerTestFn = () => { getTestInjector().execute(fn as FunctionWithParamTokens); };
   } else {
-    innerTestFn = fn;
+    innerTestFn = <Function>fn;
   }
 
   return function(...args) {

@@ -86,4 +86,5 @@ export const TEST_SERVER_APPLICATION_PROVIDERS: Array<any /*Type | Provider | an
       {provide: NgZone, useClass: MockNgZone},
       {provide: LocationStrategy, useClass: MockLocationStrategy},
       {provide: AnimationBuilder, useClass: MockAnimationBuilder},
+      {provide: TestComponentRenderer, useClass: DOMTestComponentRenderer}
     ];
