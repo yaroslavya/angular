@@ -13,7 +13,7 @@ import {
 } from '@angular/testing/testing_internal';
 import {ObservableWrapper} from '../../src/facade/async';
 import {BrowserXhr} from '../../src/backends/browser_xhr';
-import {MockConnection, MockBackend} from '../../src/backends/mock_backend';
+import {MockConnection, MockBackend} from '../../testing/mock_backend';
 import {provide, Injector, ReflectiveInjector} from '@angular/core';
 import {Request} from '../../src/static_request';
 import {Response} from '../../src/static_response';

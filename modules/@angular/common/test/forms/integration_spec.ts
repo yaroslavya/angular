@@ -17,7 +17,7 @@ import {
   iit,
   xit,
   browserDetection
-} from '@angular/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {

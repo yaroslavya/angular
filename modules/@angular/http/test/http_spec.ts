@@ -11,7 +11,7 @@ import {
   xit
 } from '@angular/testing/testing_internal';
 import {Injector, provide, ReflectiveInjector} from '@angular/core';
-import {MockBackend, MockConnection} from '../src/backends/mock_backend';
+import {MockBackend, MockConnection} from '../testing/mock_backend';
 import {
   BaseRequestOptions,
   ConnectionBackend,
