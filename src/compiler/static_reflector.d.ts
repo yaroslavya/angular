@@ -12,7 +12,7 @@ export interface StaticReflectorHost {
      * @param moduleId is a string identifier for a module as an absolute path.
      * @returns the metadata for the given module.
      */
-    getMetadataFor(moduleId: string): {
+    getMetadataFor(modulePath: string): {
         [key: string]: any;
     };
     /**
@@ -21,6 +21,10 @@ export interface StaticReflectorHost {
      * @param containingFile for relative imports, the path of the file containing the import
      */
     resolveModule(moduleName: string, containingFile?: string): string;
+    findDeclaration(modulePath: string, symbolName: string): {
+        declarationPath: string;
+        declaredName: string;
+    };
 }
 /**
  * A token representing the a reference to a static type.
@@ -43,6 +47,7 @@ export declare class StaticReflector implements ReflectorReader {
     private propertyCache;
     private parameterCache;
     private metadataCache;
+    private conversionMap;
     constructor(host: StaticReflectorHost);
     importUri(typeOrFunc: any): string;
     /**
@@ -58,13 +63,8 @@ export declare class StaticReflector implements ReflectorReader {
         [key: string]: any;
     };
     parameters(type: StaticType): any[];
-    private conversionMap;
+    private registerDecoratorOrConstructor(type, ctor, crossModuleProps?);
     private initializeConversionMap();
-    private convertKnownDecorator(moduleContext, expression);
-    private getDecoratorType(moduleContext, expression);
-    private getDecoratorParameter(moduleContext, expression, index);
-    private getPropertyMetadata(moduleContext, value);
-    private getMemberData(moduleContext, member);
     /**
      * @param module an absolute path to a module file.
      */

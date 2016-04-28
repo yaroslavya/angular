@@ -17,7 +17,7 @@ import { StyleCompiler } from './style_compiler';
 import { ViewCompiler } from './view_compiler/view_compiler';
 import { TemplateParser } from './template_parser';
 import { DirectiveNormalizer } from './directive_normalizer';
-import { RuntimeMetadataResolver } from './runtime_metadata';
+import { CompileMetadataResolver } from './metadata_resolver';
 import { ComponentFactory } from 'angular2/src/core/linker/component_factory';
 import { CompilerConfig } from './config';
 import * as ir from './output/output_ast';
@@ -31,8 +31,8 @@ import { XHR } from 'angular2/src/compiler/xhr';
  * ready for linking into an application.
  */
 export let RuntimeCompiler = class RuntimeCompiler {
-    constructor(_runtimeMetadataResolver, _templateNormalizer, _templateParser, _styleCompiler, _viewCompiler, _xhr, _genConfig) {
-        this._runtimeMetadataResolver = _runtimeMetadataResolver;
+    constructor(_metadataResolver, _templateNormalizer, _templateParser, _styleCompiler, _viewCompiler, _xhr, _genConfig) {
+        this._metadataResolver = _metadataResolver;
         this._templateNormalizer = _templateNormalizer;
         this._templateParser = _templateParser;
         this._styleCompiler = _styleCompiler;
@@ -45,7 +45,7 @@ export let RuntimeCompiler = class RuntimeCompiler {
         this._compiledTemplateDone = new Map();
     }
     resolveComponent(componentType) {
-        var compMeta = this._runtimeMetadataResolver.getDirectiveMetadata(componentType);
+        var compMeta = this._metadataResolver.getDirectiveMetadata(componentType);
         var hostCacheKey = this._hostCacheKeys.get(componentType);
         if (isBlank(hostCacheKey)) {
             hostCacheKey = new Object();
@@ -88,8 +88,8 @@ export let RuntimeCompiler = class RuntimeCompiler {
         compileResult.dependencies.forEach((dep) => {
             var childCompilingComponentsPath = ListWrapper.clone(compilingComponentsPath);
             var childCacheKey = dep.comp.type.runtime;
-            var childViewDirectives = this._runtimeMetadataResolver.getViewDirectivesMetadata(dep.comp.type.runtime);
-            var childViewPipes = this._runtimeMetadataResolver.getViewPipesMetadata(dep.comp.type.runtime);
+            var childViewDirectives = this._metadataResolver.getViewDirectivesMetadata(dep.comp.type.runtime);
+            var childViewPipes = this._metadataResolver.getViewPipesMetadata(dep.comp.type.runtime);
             var childIsRecursive = ListWrapper.contains(childCompilingComponentsPath, childCacheKey);
             childCompilingComponentsPath.push(childCacheKey);
             var childComp = this._loadAndCompileComponent(dep.comp.type.runtime, dep.comp, childViewDirectives, childViewPipes, childCompilingComponentsPath);
@@ -152,7 +152,7 @@ export let RuntimeCompiler = class RuntimeCompiler {
 };
 RuntimeCompiler = __decorate([
     Injectable(), 
-    __metadata('design:paramtypes', [RuntimeMetadataResolver, DirectiveNormalizer, TemplateParser, StyleCompiler, ViewCompiler, XHR, CompilerConfig])
+    __metadata('design:paramtypes', [CompileMetadataResolver, DirectiveNormalizer, TemplateParser, StyleCompiler, ViewCompiler, XHR, CompilerConfig])
 ], RuntimeCompiler);
 class CompiledTemplate {
     constructor() {

@@ -3,7 +3,7 @@ import { StyleCompiler } from './style_compiler';
 import { ViewCompiler } from './view_compiler/view_compiler';
 import { TemplateParser } from './template_parser';
 import { DirectiveNormalizer } from './directive_normalizer';
-import { RuntimeMetadataResolver } from './runtime_metadata';
+import { CompileMetadataResolver } from './metadata_resolver';
 import { ComponentFactory } from 'angular2/src/core/linker/component_factory';
 import { ComponentResolver } from 'angular2/src/core/linker/component_resolver';
 import { CompilerConfig } from './config';
@@ -14,7 +14,7 @@ import { XHR } from 'angular2/src/compiler/xhr';
  * ready for linking into an application.
  */
 export declare class RuntimeCompiler implements ComponentResolver {
-    private _runtimeMetadataResolver;
+    private _metadataResolver;
     private _templateNormalizer;
     private _templateParser;
     private _styleCompiler;
@@ -25,7 +25,7 @@ export declare class RuntimeCompiler implements ComponentResolver {
     private _hostCacheKeys;
     private _compiledTemplateCache;
     private _compiledTemplateDone;
-    constructor(_runtimeMetadataResolver: RuntimeMetadataResolver, _templateNormalizer: DirectiveNormalizer, _templateParser: TemplateParser, _styleCompiler: StyleCompiler, _viewCompiler: ViewCompiler, _xhr: XHR, _genConfig: CompilerConfig);
+    constructor(_metadataResolver: CompileMetadataResolver, _templateNormalizer: DirectiveNormalizer, _templateParser: TemplateParser, _styleCompiler: StyleCompiler, _viewCompiler: ViewCompiler, _xhr: XHR, _genConfig: CompilerConfig);
     resolveComponent(componentType: Type): Promise<ComponentFactory>;
     clearCache(): void;
     private _loadAndCompileComponent(cacheKey, compMeta, viewDirectives, pipes, compilingComponentsPath);

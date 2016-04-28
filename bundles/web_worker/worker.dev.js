@@ -29068,7 +29068,7 @@ System.register("angular2/src/compiler/view_compiler/property_binder", ["angular
   return module.exports;
 });
 
-System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di", "angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/facade/exceptions", "angular2/src/core/di/reflective_exceptions", "angular2/src/compiler/compile_metadata", "angular2/src/core/metadata/directives", "angular2/src/core/metadata/di", "angular2/src/compiler/directive_resolver", "angular2/src/compiler/pipe_resolver", "angular2/src/compiler/view_resolver", "angular2/src/compiler/directive_lifecycle_reflector", "angular2/src/core/metadata/lifecycle_hooks", "angular2/src/core/reflection/reflection", "angular2/src/core/di", "angular2/src/core/platform_directives_and_pipes", "angular2/src/compiler/util", "angular2/src/compiler/assertions", "angular2/src/compiler/url_resolver", "angular2/src/core/di/provider", "angular2/src/core/di/reflective_provider", "angular2/src/core/di/metadata", "angular2/src/core/reflection/reflector_reader"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/metadata_resolver", ["angular2/src/core/di", "angular2/src/facade/lang", "angular2/src/facade/collection", "angular2/src/facade/exceptions", "angular2/src/compiler/compile_metadata", "angular2/src/core/metadata/directives", "angular2/src/compiler/directive_resolver", "angular2/src/compiler/pipe_resolver", "angular2/src/compiler/view_resolver", "angular2/src/compiler/directive_lifecycle_reflector", "angular2/src/core/metadata/lifecycle_hooks", "angular2/src/core/reflection/reflection", "angular2/src/core/di", "angular2/src/core/platform_directives_and_pipes", "angular2/src/compiler/util", "angular2/src/compiler/assertions", "angular2/src/compiler/url_resolver", "angular2/src/core/di/provider", "angular2/src/core/di/metadata", "angular2/src/core/metadata/di", "angular2/src/core/reflection/reflector_reader"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -29098,10 +29098,8 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
   var lang_1 = require("angular2/src/facade/lang");
   var collection_1 = require("angular2/src/facade/collection");
   var exceptions_1 = require("angular2/src/facade/exceptions");
-  var reflective_exceptions_1 = require("angular2/src/core/di/reflective_exceptions");
   var cpl = require("angular2/src/compiler/compile_metadata");
   var md = require("angular2/src/core/metadata/directives");
-  var dimd = require("angular2/src/core/metadata/di");
   var directive_resolver_1 = require("angular2/src/compiler/directive_resolver");
   var pipe_resolver_1 = require("angular2/src/compiler/pipe_resolver");
   var view_resolver_1 = require("angular2/src/compiler/view_resolver");
@@ -29114,11 +29112,11 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
   var assertions_1 = require("angular2/src/compiler/assertions");
   var url_resolver_1 = require("angular2/src/compiler/url_resolver");
   var provider_1 = require("angular2/src/core/di/provider");
-  var reflective_provider_1 = require("angular2/src/core/di/reflective_provider");
   var metadata_1 = require("angular2/src/core/di/metadata");
+  var di_3 = require("angular2/src/core/metadata/di");
   var reflector_reader_1 = require("angular2/src/core/reflection/reflector_reader");
-  var RuntimeMetadataResolver = (function() {
-    function RuntimeMetadataResolver(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes, _reflector) {
+  var CompileMetadataResolver = (function() {
+    function CompileMetadataResolver(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes, _reflector) {
       this._directiveResolver = _directiveResolver;
       this._pipeResolver = _pipeResolver;
       this._viewResolver = _viewResolver;
@@ -29134,7 +29132,7 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
         this._reflector = reflection_1.reflector;
       }
     }
-    RuntimeMetadataResolver.prototype.sanitizeTokenName = function(token) {
+    CompileMetadataResolver.prototype.sanitizeTokenName = function(token) {
       var identifier = lang_1.stringify(token);
       if (identifier.indexOf('(') >= 0) {
         var found = this._anonymousTypes.get(token);
@@ -29146,11 +29144,11 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
       }
       return util_1.sanitizeIdentifier(identifier);
     };
-    RuntimeMetadataResolver.prototype.getDirectiveMetadata = function(directiveType) {
+    CompileMetadataResolver.prototype.getDirectiveMetadata = function(directiveType) {
       var meta = this._directiveCache.get(directiveType);
       if (lang_1.isBlank(meta)) {
         var dirMeta = this._directiveResolver.resolve(directiveType);
-        var moduleUrl = null;
+        var moduleUrl = staticTypeModuleUrl(directiveType);
         var templateMeta = null;
         var changeDetectionStrategy = null;
         var viewProviders = [];
@@ -29204,7 +29202,17 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
       }
       return meta;
     };
-    RuntimeMetadataResolver.prototype.getTypeMetadata = function(type, moduleUrl) {
+    CompileMetadataResolver.prototype.maybeGetDirectiveMetadata = function(someType) {
+      try {
+        return this.getDirectiveMetadata(someType);
+      } catch (e) {
+        if (e.message.indexOf('No Directive annotation') !== -1) {
+          return null;
+        }
+        throw e;
+      }
+    };
+    CompileMetadataResolver.prototype.getTypeMetadata = function(type, moduleUrl) {
       return new cpl.CompileTypeMetadata({
         name: this.sanitizeTokenName(type),
         moduleUrl: moduleUrl,
@@ -29212,7 +29220,7 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
         diDeps: this.getDependenciesMetadata(type, null)
       });
     };
-    RuntimeMetadataResolver.prototype.getFactoryMetadata = function(factory, moduleUrl) {
+    CompileMetadataResolver.prototype.getFactoryMetadata = function(factory, moduleUrl) {
       return new cpl.CompileFactoryMetadata({
         name: this.sanitizeTokenName(factory),
         moduleUrl: moduleUrl,
@@ -29220,13 +29228,12 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
         diDeps: this.getDependenciesMetadata(factory, null)
       });
     };
-    RuntimeMetadataResolver.prototype.getPipeMetadata = function(pipeType) {
+    CompileMetadataResolver.prototype.getPipeMetadata = function(pipeType) {
       var meta = this._pipeCache.get(pipeType);
       if (lang_1.isBlank(meta)) {
         var pipeMeta = this._pipeResolver.resolve(pipeType);
-        var moduleUrl = this._reflector.importUri(pipeType);
         meta = new cpl.CompilePipeMetadata({
-          type: this.getTypeMetadata(pipeType, moduleUrl),
+          type: this.getTypeMetadata(pipeType, staticTypeModuleUrl(pipeType)),
           name: pipeMeta.name,
           pure: pipeMeta.pure,
           lifecycleHooks: lifecycle_hooks_1.LIFECYCLE_HOOKS_VALUES.filter(function(hook) {
@@ -29237,7 +29244,7 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
       }
       return meta;
     };
-    RuntimeMetadataResolver.prototype.getViewDirectivesMetadata = function(component) {
+    CompileMetadataResolver.prototype.getViewDirectivesMetadata = function(component) {
       var _this = this;
       var view = this._viewResolver.resolve(component);
       var directives = flattenDirectives(view, this._platformDirectives);
@@ -29250,7 +29257,7 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
         return _this.getDirectiveMetadata(type);
       });
     };
-    RuntimeMetadataResolver.prototype.getViewPipesMetadata = function(component) {
+    CompileMetadataResolver.prototype.getViewPipesMetadata = function(component) {
       var _this = this;
       var view = this._viewResolver.resolve(component);
       var pipes = flattenPipes(view, this._platformPipes);
@@ -29263,50 +29270,68 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
         return _this.getPipeMetadata(type);
       });
     };
-    RuntimeMetadataResolver.prototype.getDependenciesMetadata = function(typeOrFunc, dependencies) {
+    CompileMetadataResolver.prototype.getDependenciesMetadata = function(typeOrFunc, dependencies) {
       var _this = this;
-      var deps;
-      try {
-        deps = reflective_provider_1.constructDependencies(typeOrFunc, dependencies);
-      } catch (e) {
-        if (e instanceof reflective_exceptions_1.NoAnnotationError) {
-          deps = [];
-        } else {
-          throw e;
-        }
+      var params = lang_1.isPresent(dependencies) ? dependencies : this._reflector.parameters(typeOrFunc);
+      if (lang_1.isBlank(params)) {
+        params = [];
       }
-      return deps.map(function(dep) {
-        var compileToken;
-        var p = dep.properties.find(function(p) {
-          return p instanceof dimd.AttributeMetadata;
-        });
-        var isAttribute = false;
-        if (lang_1.isPresent(p)) {
-          compileToken = _this.getTokenMetadata(p.attributeName);
-          isAttribute = true;
-        } else {
-          compileToken = _this.getTokenMetadata(dep.key.token);
+      return params.map(function(param) {
+        if (lang_1.isBlank(param)) {
+          return null;
         }
-        var compileQuery = null;
-        var q = dep.properties.find(function(p) {
-          return p instanceof dimd.QueryMetadata;
-        });
-        if (lang_1.isPresent(q)) {
-          compileQuery = _this.getQueryMetadata(q, null);
+        var isAttribute = false;
+        var isHost = false;
+        var isSelf = false;
+        var isSkipSelf = false;
+        var isOptional = false;
+        var query = null;
+        var viewQuery = null;
+        var token = null;
+        if (lang_1.isArray(param)) {
+          param.forEach(function(paramEntry) {
+            if (paramEntry instanceof metadata_1.HostMetadata) {
+              isHost = true;
+            } else if (paramEntry instanceof metadata_1.SelfMetadata) {
+              isSelf = true;
+            } else if (paramEntry instanceof metadata_1.SkipSelfMetadata) {
+              isSkipSelf = true;
+            } else if (paramEntry instanceof metadata_1.OptionalMetadata) {
+              isOptional = true;
+            } else if (paramEntry instanceof di_3.AttributeMetadata) {
+              isAttribute = true;
+              token = paramEntry.attributeName;
+            } else if (paramEntry instanceof di_3.QueryMetadata) {
+              if (paramEntry.isViewQuery) {
+                viewQuery = paramEntry;
+              } else {
+                query = paramEntry;
+              }
+            } else if (paramEntry instanceof metadata_1.InjectMetadata) {
+              token = paramEntry.token;
+            } else if (isValidType(paramEntry) && lang_1.isBlank(token)) {
+              token = paramEntry;
+            }
+          });
+        } else {
+          token = param;
+        }
+        if (lang_1.isBlank(token)) {
+          return null;
         }
         return new cpl.CompileDiDependencyMetadata({
           isAttribute: isAttribute,
-          isHost: dep.upperBoundVisibility instanceof metadata_1.HostMetadata,
-          isSelf: dep.upperBoundVisibility instanceof metadata_1.SelfMetadata,
-          isSkipSelf: dep.lowerBoundVisibility instanceof metadata_1.SkipSelfMetadata,
-          isOptional: dep.optional,
-          query: lang_1.isPresent(q) && !q.isViewQuery ? compileQuery : null,
-          viewQuery: lang_1.isPresent(q) && q.isViewQuery ? compileQuery : null,
-          token: compileToken
+          isHost: isHost,
+          isSelf: isSelf,
+          isSkipSelf: isSkipSelf,
+          isOptional: isOptional,
+          query: lang_1.isPresent(query) ? _this.getQueryMetadata(query, null) : null,
+          viewQuery: lang_1.isPresent(viewQuery) ? _this.getQueryMetadata(viewQuery, null) : null,
+          token: _this.getTokenMetadata(token)
         });
       });
     };
-    RuntimeMetadataResolver.prototype.getTokenMetadata = function(token) {
+    CompileMetadataResolver.prototype.getTokenMetadata = function(token) {
       token = di_1.resolveForwardRef(token);
       var compileToken;
       if (lang_1.isString(token)) {
@@ -29314,12 +29339,13 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
       } else {
         compileToken = new cpl.CompileTokenMetadata({identifier: new cpl.CompileIdentifierMetadata({
             runtime: token,
-            name: this.sanitizeTokenName(token)
+            name: this.sanitizeTokenName(token),
+            moduleUrl: staticTypeModuleUrl(token)
           })});
       }
       return compileToken;
     };
-    RuntimeMetadataResolver.prototype.getProvidersMetadata = function(providers) {
+    CompileMetadataResolver.prototype.getProvidersMetadata = function(providers) {
       var _this = this;
       return providers.map(function(provider) {
         provider = di_1.resolveForwardRef(provider);
@@ -29328,11 +29354,11 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
         } else if (provider instanceof provider_1.Provider) {
           return _this.getProviderMetadata(provider);
         } else {
-          return _this.getTypeMetadata(provider, null);
+          return _this.getTypeMetadata(provider, staticTypeModuleUrl(provider));
         }
       });
     };
-    RuntimeMetadataResolver.prototype.getProviderMetadata = function(provider) {
+    CompileMetadataResolver.prototype.getProviderMetadata = function(provider) {
       var compileDeps;
       if (lang_1.isPresent(provider.useClass)) {
         compileDeps = this.getDependenciesMetadata(provider.useClass, provider.dependencies);
@@ -29341,15 +29367,15 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
       }
       return new cpl.CompileProviderMetadata({
         token: this.getTokenMetadata(provider.token),
-        useClass: lang_1.isPresent(provider.useClass) ? this.getTypeMetadata(provider.useClass, null) : null,
+        useClass: lang_1.isPresent(provider.useClass) ? this.getTypeMetadata(provider.useClass, staticTypeModuleUrl(provider.useClass)) : null,
         useValue: lang_1.isPresent(provider.useValue) ? new cpl.CompileIdentifierMetadata({runtime: provider.useValue}) : null,
-        useFactory: lang_1.isPresent(provider.useFactory) ? this.getFactoryMetadata(provider.useFactory, null) : null,
+        useFactory: lang_1.isPresent(provider.useFactory) ? this.getFactoryMetadata(provider.useFactory, staticTypeModuleUrl(provider.useFactory)) : null,
         useExisting: lang_1.isPresent(provider.useExisting) ? this.getTokenMetadata(provider.useExisting) : null,
         deps: compileDeps,
         multi: provider.multi
       });
     };
-    RuntimeMetadataResolver.prototype.getQueriesMetadata = function(queries, isViewQuery) {
+    CompileMetadataResolver.prototype.getQueriesMetadata = function(queries, isViewQuery) {
       var _this = this;
       var compileQueries = [];
       collection_1.StringMapWrapper.forEach(queries, function(query, propertyName) {
@@ -29359,7 +29385,7 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
       });
       return compileQueries;
     };
-    RuntimeMetadataResolver.prototype.getQueryMetadata = function(q, propertyName) {
+    CompileMetadataResolver.prototype.getQueryMetadata = function(q, propertyName) {
       var _this = this;
       var selectors;
       if (q.isVarBindingQuery) {
@@ -29377,10 +29403,10 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
         read: lang_1.isPresent(q.read) ? this.getTokenMetadata(q.read) : null
       });
     };
-    RuntimeMetadataResolver = __decorate([di_2.Injectable(), __param(3, di_2.Optional()), __param(3, di_2.Inject(platform_directives_and_pipes_1.PLATFORM_DIRECTIVES)), __param(4, di_2.Optional()), __param(4, di_2.Inject(platform_directives_and_pipes_1.PLATFORM_PIPES)), __metadata('design:paramtypes', [directive_resolver_1.DirectiveResolver, pipe_resolver_1.PipeResolver, view_resolver_1.ViewResolver, Array, Array, reflector_reader_1.ReflectorReader])], RuntimeMetadataResolver);
-    return RuntimeMetadataResolver;
+    CompileMetadataResolver = __decorate([di_2.Injectable(), __param(3, di_2.Optional()), __param(3, di_2.Inject(platform_directives_and_pipes_1.PLATFORM_DIRECTIVES)), __param(4, di_2.Optional()), __param(4, di_2.Inject(platform_directives_and_pipes_1.PLATFORM_PIPES)), __metadata('design:paramtypes', [directive_resolver_1.DirectiveResolver, pipe_resolver_1.PipeResolver, view_resolver_1.ViewResolver, Array, Array, reflector_reader_1.ReflectorReader])], CompileMetadataResolver);
+    return CompileMetadataResolver;
   }());
-  exports.RuntimeMetadataResolver = RuntimeMetadataResolver;
+  exports.CompileMetadataResolver = CompileMetadataResolver;
   function flattenDirectives(view, platformDirectives) {
     var directives = [];
     if (lang_1.isPresent(platformDirectives)) {
@@ -29411,8 +29437,14 @@ System.register("angular2/src/compiler/runtime_metadata", ["angular2/src/core/di
       }
     }
   }
+  function isStaticType(value) {
+    return lang_1.isStringMap(value) && lang_1.isPresent(value['name']) && lang_1.isPresent(value['moduleId']);
+  }
   function isValidType(value) {
-    return lang_1.isPresent(value) && (value instanceof lang_1.Type);
+    return isStaticType(value) || (value instanceof lang_1.Type);
+  }
+  function staticTypeModuleUrl(value) {
+    return isStaticType(value) ? value['moduleId'] : null;
   }
   function calcModuleUrl(reflector, type, cmpMetadata) {
     var moduleId = cmpMetadata.moduleId;
@@ -39479,7 +39511,7 @@ System.register("angular2/src/platform/dom/dom_renderer", ["angular2/src/core/di
   return module.exports;
 });
 
-System.register("angular2/src/compiler/runtime_compiler", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/collection", "angular2/src/facade/async", "angular2/src/compiler/compile_metadata", "angular2/src/core/di", "angular2/src/compiler/style_compiler", "angular2/src/compiler/view_compiler/view_compiler", "angular2/src/compiler/template_parser", "angular2/src/compiler/directive_normalizer", "angular2/src/compiler/runtime_metadata", "angular2/src/core/linker/component_factory", "angular2/src/compiler/config", "angular2/src/compiler/output/output_ast", "angular2/src/compiler/output/output_jit", "angular2/src/compiler/output/output_interpreter", "angular2/src/compiler/output/interpretive_view", "angular2/src/compiler/xhr"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/runtime_compiler", ["angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/facade/collection", "angular2/src/facade/async", "angular2/src/compiler/compile_metadata", "angular2/src/core/di", "angular2/src/compiler/style_compiler", "angular2/src/compiler/view_compiler/view_compiler", "angular2/src/compiler/template_parser", "angular2/src/compiler/directive_normalizer", "angular2/src/compiler/metadata_resolver", "angular2/src/core/linker/component_factory", "angular2/src/compiler/config", "angular2/src/compiler/output/output_ast", "angular2/src/compiler/output/output_jit", "angular2/src/compiler/output/output_interpreter", "angular2/src/compiler/output/interpretive_view", "angular2/src/compiler/xhr"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -39510,7 +39542,7 @@ System.register("angular2/src/compiler/runtime_compiler", ["angular2/src/facade/
   var view_compiler_1 = require("angular2/src/compiler/view_compiler/view_compiler");
   var template_parser_1 = require("angular2/src/compiler/template_parser");
   var directive_normalizer_1 = require("angular2/src/compiler/directive_normalizer");
-  var runtime_metadata_1 = require("angular2/src/compiler/runtime_metadata");
+  var metadata_resolver_1 = require("angular2/src/compiler/metadata_resolver");
   var component_factory_1 = require("angular2/src/core/linker/component_factory");
   var config_1 = require("angular2/src/compiler/config");
   var ir = require("angular2/src/compiler/output/output_ast");
@@ -39519,8 +39551,8 @@ System.register("angular2/src/compiler/runtime_compiler", ["angular2/src/facade/
   var interpretive_view_1 = require("angular2/src/compiler/output/interpretive_view");
   var xhr_1 = require("angular2/src/compiler/xhr");
   var RuntimeCompiler = (function() {
-    function RuntimeCompiler(_runtimeMetadataResolver, _templateNormalizer, _templateParser, _styleCompiler, _viewCompiler, _xhr, _genConfig) {
-      this._runtimeMetadataResolver = _runtimeMetadataResolver;
+    function RuntimeCompiler(_metadataResolver, _templateNormalizer, _templateParser, _styleCompiler, _viewCompiler, _xhr, _genConfig) {
+      this._metadataResolver = _metadataResolver;
       this._templateNormalizer = _templateNormalizer;
       this._templateParser = _templateParser;
       this._styleCompiler = _styleCompiler;
@@ -39533,7 +39565,7 @@ System.register("angular2/src/compiler/runtime_compiler", ["angular2/src/facade/
       this._compiledTemplateDone = new Map();
     }
     RuntimeCompiler.prototype.resolveComponent = function(componentType) {
-      var compMeta = this._runtimeMetadataResolver.getDirectiveMetadata(componentType);
+      var compMeta = this._metadataResolver.getDirectiveMetadata(componentType);
       var hostCacheKey = this._hostCacheKeys.get(componentType);
       if (lang_1.isBlank(hostCacheKey)) {
         hostCacheKey = new Object();
@@ -39581,8 +39613,8 @@ System.register("angular2/src/compiler/runtime_compiler", ["angular2/src/facade/
       compileResult.dependencies.forEach(function(dep) {
         var childCompilingComponentsPath = collection_1.ListWrapper.clone(compilingComponentsPath);
         var childCacheKey = dep.comp.type.runtime;
-        var childViewDirectives = _this._runtimeMetadataResolver.getViewDirectivesMetadata(dep.comp.type.runtime);
-        var childViewPipes = _this._runtimeMetadataResolver.getViewPipesMetadata(dep.comp.type.runtime);
+        var childViewDirectives = _this._metadataResolver.getViewDirectivesMetadata(dep.comp.type.runtime);
+        var childViewPipes = _this._metadataResolver.getViewPipesMetadata(dep.comp.type.runtime);
         var childIsRecursive = collection_1.ListWrapper.contains(childCompilingComponentsPath, childCacheKey);
         childCompilingComponentsPath.push(childCacheKey);
         var childComp = _this._loadAndCompileComponent(dep.comp.type.runtime, dep.comp, childViewDirectives, childViewPipes, childCompilingComponentsPath);
@@ -39640,7 +39672,7 @@ System.register("angular2/src/compiler/runtime_compiler", ["angular2/src/facade/
       }
       return cssTextPromise;
     };
-    RuntimeCompiler = __decorate([di_1.Injectable(), __metadata('design:paramtypes', [runtime_metadata_1.RuntimeMetadataResolver, directive_normalizer_1.DirectiveNormalizer, template_parser_1.TemplateParser, style_compiler_1.StyleCompiler, view_compiler_1.ViewCompiler, xhr_1.XHR, config_1.CompilerConfig])], RuntimeCompiler);
+    RuntimeCompiler = __decorate([di_1.Injectable(), __metadata('design:paramtypes', [metadata_resolver_1.CompileMetadataResolver, directive_normalizer_1.DirectiveNormalizer, template_parser_1.TemplateParser, style_compiler_1.StyleCompiler, view_compiler_1.ViewCompiler, xhr_1.XHR, config_1.CompilerConfig])], RuntimeCompiler);
     return RuntimeCompiler;
   }());
   exports.RuntimeCompiler = RuntimeCompiler;
@@ -40460,7 +40492,7 @@ System.register("angular2/platform/common_dom", ["angular2/src/platform/dom/dom_
   return module.exports;
 });
 
-System.register("angular2/src/compiler/compiler", ["angular2/src/core/platform_directives_and_pipes", "angular2/src/compiler/template_ast", "angular2/src/compiler/template_parser", "angular2/src/compiler/config", "angular2/src/compiler/compile_metadata", "angular2/src/compiler/offline_compiler", "angular2/src/compiler/runtime_compiler", "angular2/src/compiler/url_resolver", "angular2/src/compiler/xhr", "angular2/src/compiler/view_resolver", "angular2/src/compiler/directive_resolver", "angular2/src/compiler/pipe_resolver", "angular2/src/facade/lang", "angular2/src/core/di", "angular2/src/compiler/template_parser", "angular2/src/compiler/html_parser", "angular2/src/compiler/directive_normalizer", "angular2/src/compiler/runtime_metadata", "angular2/src/compiler/style_compiler", "angular2/src/compiler/view_compiler/view_compiler", "angular2/src/compiler/config", "angular2/src/core/linker/component_resolver", "angular2/src/compiler/runtime_compiler", "angular2/src/compiler/schema/element_schema_registry", "angular2/src/compiler/schema/dom_element_schema_registry", "angular2/src/compiler/url_resolver", "angular2/src/compiler/expression_parser/parser", "angular2/src/compiler/expression_parser/lexer", "angular2/src/compiler/view_resolver", "angular2/src/compiler/directive_resolver", "angular2/src/compiler/pipe_resolver"], true, function(require, exports, module) {
+System.register("angular2/src/compiler/compiler", ["angular2/src/core/platform_directives_and_pipes", "angular2/src/compiler/template_ast", "angular2/src/compiler/template_parser", "angular2/src/compiler/config", "angular2/src/compiler/compile_metadata", "angular2/src/compiler/offline_compiler", "angular2/src/compiler/runtime_compiler", "angular2/src/compiler/url_resolver", "angular2/src/compiler/xhr", "angular2/src/compiler/view_resolver", "angular2/src/compiler/directive_resolver", "angular2/src/compiler/pipe_resolver", "angular2/src/facade/lang", "angular2/src/core/di", "angular2/src/compiler/template_parser", "angular2/src/compiler/html_parser", "angular2/src/compiler/directive_normalizer", "angular2/src/compiler/metadata_resolver", "angular2/src/compiler/style_compiler", "angular2/src/compiler/view_compiler/view_compiler", "angular2/src/compiler/config", "angular2/src/core/linker/component_resolver", "angular2/src/compiler/runtime_compiler", "angular2/src/compiler/schema/element_schema_registry", "angular2/src/compiler/schema/dom_element_schema_registry", "angular2/src/compiler/url_resolver", "angular2/src/compiler/expression_parser/parser", "angular2/src/compiler/expression_parser/lexer", "angular2/src/compiler/view_resolver", "angular2/src/compiler/directive_resolver", "angular2/src/compiler/pipe_resolver"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -40496,7 +40528,7 @@ System.register("angular2/src/compiler/compiler", ["angular2/src/core/platform_d
   var template_parser_2 = require("angular2/src/compiler/template_parser");
   var html_parser_1 = require("angular2/src/compiler/html_parser");
   var directive_normalizer_1 = require("angular2/src/compiler/directive_normalizer");
-  var runtime_metadata_1 = require("angular2/src/compiler/runtime_metadata");
+  var metadata_resolver_1 = require("angular2/src/compiler/metadata_resolver");
   var style_compiler_1 = require("angular2/src/compiler/style_compiler");
   var view_compiler_1 = require("angular2/src/compiler/view_compiler/view_compiler");
   var config_2 = require("angular2/src/compiler/config");
@@ -40513,7 +40545,7 @@ System.register("angular2/src/compiler/compiler", ["angular2/src/core/platform_d
   function _createCompilerConfig() {
     return new config_2.CompilerConfig(lang_1.assertionsEnabled(), false, true);
   }
-  exports.COMPILER_PROVIDERS = lang_1.CONST_EXPR([lexer_1.Lexer, parser_1.Parser, html_parser_1.HtmlParser, template_parser_2.TemplateParser, directive_normalizer_1.DirectiveNormalizer, runtime_metadata_1.RuntimeMetadataResolver, url_resolver_2.DEFAULT_PACKAGE_URL_PROVIDER, style_compiler_1.StyleCompiler, view_compiler_1.ViewCompiler, new di_1.Provider(config_2.CompilerConfig, {
+  exports.COMPILER_PROVIDERS = lang_1.CONST_EXPR([lexer_1.Lexer, parser_1.Parser, html_parser_1.HtmlParser, template_parser_2.TemplateParser, directive_normalizer_1.DirectiveNormalizer, metadata_resolver_1.CompileMetadataResolver, url_resolver_2.DEFAULT_PACKAGE_URL_PROVIDER, style_compiler_1.StyleCompiler, view_compiler_1.ViewCompiler, new di_1.Provider(config_2.CompilerConfig, {
     useFactory: _createCompilerConfig,
     deps: []
   }), runtime_compiler_2.RuntimeCompiler, new di_1.Provider(component_resolver_1.ComponentResolver, {useExisting: runtime_compiler_2.RuntimeCompiler}), dom_element_schema_registry_1.DomElementSchemaRegistry, new di_1.Provider(element_schema_registry_1.ElementSchemaRegistry, {useExisting: dom_element_schema_registry_1.DomElementSchemaRegistry}), url_resolver_2.UrlResolver, view_resolver_2.ViewResolver, directive_resolver_2.DirectiveResolver, pipe_resolver_2.PipeResolver]);

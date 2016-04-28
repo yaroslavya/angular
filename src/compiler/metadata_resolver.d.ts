@@ -6,7 +6,7 @@ import { PipeResolver } from './pipe_resolver';
 import { ViewResolver } from './view_resolver';
 import { Provider } from 'angular2/src/core/di/provider';
 import { ReflectorReader } from 'angular2/src/core/reflection/reflector_reader';
-export declare class RuntimeMetadataResolver {
+export declare class CompileMetadataResolver {
     private _directiveResolver;
     private _pipeResolver;
     private _viewResolver;
@@ -20,6 +20,11 @@ export declare class RuntimeMetadataResolver {
     constructor(_directiveResolver: DirectiveResolver, _pipeResolver: PipeResolver, _viewResolver: ViewResolver, _platformDirectives: Type[], _platformPipes: Type[], _reflector?: ReflectorReader);
     private sanitizeTokenName(token);
     getDirectiveMetadata(directiveType: Type): cpl.CompileDirectiveMetadata;
+    /**
+     * @param someType a symbol which may or may not be a directive type
+     * @returns {cpl.CompileDirectiveMetadata} if possible, otherwise null.
+     */
+    maybeGetDirectiveMetadata(someType: Type): cpl.CompileDirectiveMetadata;
     getTypeMetadata(type: Type, moduleUrl: string): cpl.CompileTypeMetadata;
     getFactoryMetadata(factory: Function, moduleUrl: string): cpl.CompileFactoryMetadata;
     getPipeMetadata(pipeType: Type): cpl.CompilePipeMetadata;

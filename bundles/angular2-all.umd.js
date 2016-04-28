@@ -17500,7 +17500,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var template_parser_2 = __webpack_require__(141);
 	var html_parser_1 = __webpack_require__(145);
 	var directive_normalizer_1 = __webpack_require__(184);
-	var runtime_metadata_1 = __webpack_require__(186);
+	var metadata_resolver_1 = __webpack_require__(186);
 	var style_compiler_1 = __webpack_require__(167);
 	var view_compiler_1 = __webpack_require__(169);
 	var config_2 = __webpack_require__(163);
@@ -17527,7 +17527,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    html_parser_1.HtmlParser,
 	    template_parser_2.TemplateParser,
 	    directive_normalizer_1.DirectiveNormalizer,
-	    runtime_metadata_1.RuntimeMetadataResolver,
+	    metadata_resolver_1.CompileMetadataResolver,
 	    url_resolver_2.DEFAULT_PACKAGE_URL_PROVIDER,
 	    style_compiler_1.StyleCompiler,
 	    view_compiler_1.ViewCompiler,
@@ -25759,7 +25759,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var view_compiler_1 = __webpack_require__(169);
 	var template_parser_1 = __webpack_require__(141);
 	var directive_normalizer_1 = __webpack_require__(184);
-	var runtime_metadata_1 = __webpack_require__(186);
+	var metadata_resolver_1 = __webpack_require__(186);
 	var component_factory_1 = __webpack_require__(66);
 	var config_1 = __webpack_require__(163);
 	var ir = __webpack_require__(165);
@@ -25773,8 +25773,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * ready for linking into an application.
 	 */
 	var RuntimeCompiler = (function () {
-	    function RuntimeCompiler(_runtimeMetadataResolver, _templateNormalizer, _templateParser, _styleCompiler, _viewCompiler, _xhr, _genConfig) {
-	        this._runtimeMetadataResolver = _runtimeMetadataResolver;
+	    function RuntimeCompiler(_metadataResolver, _templateNormalizer, _templateParser, _styleCompiler, _viewCompiler, _xhr, _genConfig) {
+	        this._metadataResolver = _metadataResolver;
 	        this._templateNormalizer = _templateNormalizer;
 	        this._templateParser = _templateParser;
 	        this._styleCompiler = _styleCompiler;
@@ -25787,7 +25787,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._compiledTemplateDone = new Map();
 	    }
 	    RuntimeCompiler.prototype.resolveComponent = function (componentType) {
-	        var compMeta = this._runtimeMetadataResolver.getDirectiveMetadata(componentType);
+	        var compMeta = this._metadataResolver.getDirectiveMetadata(componentType);
 	        var hostCacheKey = this._hostCacheKeys.get(componentType);
 	        if (lang_1.isBlank(hostCacheKey)) {
 	            hostCacheKey = new Object();
@@ -25832,8 +25832,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        compileResult.dependencies.forEach(function (dep) {
 	            var childCompilingComponentsPath = collection_1.ListWrapper.clone(compilingComponentsPath);
 	            var childCacheKey = dep.comp.type.runtime;
-	            var childViewDirectives = _this._runtimeMetadataResolver.getViewDirectivesMetadata(dep.comp.type.runtime);
-	            var childViewPipes = _this._runtimeMetadataResolver.getViewPipesMetadata(dep.comp.type.runtime);
+	            var childViewDirectives = _this._metadataResolver.getViewDirectivesMetadata(dep.comp.type.runtime);
+	            var childViewPipes = _this._metadataResolver.getViewPipesMetadata(dep.comp.type.runtime);
 	            var childIsRecursive = collection_1.ListWrapper.contains(childCompilingComponentsPath, childCacheKey);
 	            childCompilingComponentsPath.push(childCacheKey);
 	            var childComp = _this._loadAndCompileComponent(dep.comp.type.runtime, dep.comp, childViewDirectives, childViewPipes, childCompilingComponentsPath);
@@ -25896,7 +25896,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    RuntimeCompiler = __decorate([
 	        di_1.Injectable(), 
-	        __metadata('design:paramtypes', [runtime_metadata_1.RuntimeMetadataResolver, directive_normalizer_1.DirectiveNormalizer, template_parser_1.TemplateParser, style_compiler_1.StyleCompiler, view_compiler_1.ViewCompiler, xhr_1.XHR, config_1.CompilerConfig])
+	        __metadata('design:paramtypes', [metadata_resolver_1.CompileMetadataResolver, directive_normalizer_1.DirectiveNormalizer, template_parser_1.TemplateParser, style_compiler_1.StyleCompiler, view_compiler_1.ViewCompiler, xhr_1.XHR, config_1.CompilerConfig])
 	    ], RuntimeCompiler);
 	    return RuntimeCompiler;
 	}());
@@ -28935,10 +28935,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var lang_1 = __webpack_require__(5);
 	var collection_1 = __webpack_require__(15);
 	var exceptions_1 = __webpack_require__(12);
-	var reflective_exceptions_1 = __webpack_require__(23);
 	var cpl = __webpack_require__(156);
 	var md = __webpack_require__(26);
-	var dimd = __webpack_require__(4);
 	var directive_resolver_1 = __webpack_require__(187);
 	var pipe_resolver_1 = __webpack_require__(188);
 	var view_resolver_1 = __webpack_require__(189);
@@ -28951,11 +28949,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var assertions_1 = __webpack_require__(191);
 	var url_resolver_1 = __webpack_require__(158);
 	var provider_1 = __webpack_require__(24);
-	var reflective_provider_1 = __webpack_require__(17);
 	var metadata_1 = __webpack_require__(7);
+	var di_3 = __webpack_require__(4);
 	var reflector_reader_1 = __webpack_require__(20);
-	var RuntimeMetadataResolver = (function () {
-	    function RuntimeMetadataResolver(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes, _reflector) {
+	var CompileMetadataResolver = (function () {
+	    function CompileMetadataResolver(_directiveResolver, _pipeResolver, _viewResolver, _platformDirectives, _platformPipes, _reflector) {
 	        this._directiveResolver = _directiveResolver;
 	        this._pipeResolver = _pipeResolver;
 	        this._viewResolver = _viewResolver;
@@ -28972,7 +28970,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this._reflector = reflection_1.reflector;
 	        }
 	    }
-	    RuntimeMetadataResolver.prototype.sanitizeTokenName = function (token) {
+	    CompileMetadataResolver.prototype.sanitizeTokenName = function (token) {
 	        var identifier = lang_1.stringify(token);
 	        if (identifier.indexOf('(') >= 0) {
 	            // case: anonymous functions!
@@ -28985,11 +28983,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return util_1.sanitizeIdentifier(identifier);
 	    };
-	    RuntimeMetadataResolver.prototype.getDirectiveMetadata = function (directiveType) {
+	    CompileMetadataResolver.prototype.getDirectiveMetadata = function (directiveType) {
 	        var meta = this._directiveCache.get(directiveType);
 	        if (lang_1.isBlank(meta)) {
 	            var dirMeta = this._directiveResolver.resolve(directiveType);
-	            var moduleUrl = null;
+	            var moduleUrl = staticTypeModuleUrl(directiveType);
 	            var templateMeta = null;
 	            var changeDetectionStrategy = null;
 	            var viewProviders = [];
@@ -29041,7 +29039,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return meta;
 	    };
-	    RuntimeMetadataResolver.prototype.getTypeMetadata = function (type, moduleUrl) {
+	    /**
+	     * @param someType a symbol which may or may not be a directive type
+	     * @returns {cpl.CompileDirectiveMetadata} if possible, otherwise null.
+	     */
+	    CompileMetadataResolver.prototype.maybeGetDirectiveMetadata = function (someType) {
+	        try {
+	            return this.getDirectiveMetadata(someType);
+	        }
+	        catch (e) {
+	            if (e.message.indexOf('No Directive annotation') !== -1) {
+	                return null;
+	            }
+	            throw e;
+	        }
+	    };
+	    CompileMetadataResolver.prototype.getTypeMetadata = function (type, moduleUrl) {
 	        return new cpl.CompileTypeMetadata({
 	            name: this.sanitizeTokenName(type),
 	            moduleUrl: moduleUrl,
@@ -29049,7 +29062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            diDeps: this.getDependenciesMetadata(type, null)
 	        });
 	    };
-	    RuntimeMetadataResolver.prototype.getFactoryMetadata = function (factory, moduleUrl) {
+	    CompileMetadataResolver.prototype.getFactoryMetadata = function (factory, moduleUrl) {
 	        return new cpl.CompileFactoryMetadata({
 	            name: this.sanitizeTokenName(factory),
 	            moduleUrl: moduleUrl,
@@ -29057,13 +29070,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            diDeps: this.getDependenciesMetadata(factory, null)
 	        });
 	    };
-	    RuntimeMetadataResolver.prototype.getPipeMetadata = function (pipeType) {
+	    CompileMetadataResolver.prototype.getPipeMetadata = function (pipeType) {
 	        var meta = this._pipeCache.get(pipeType);
 	        if (lang_1.isBlank(meta)) {
 	            var pipeMeta = this._pipeResolver.resolve(pipeType);
-	            var moduleUrl = this._reflector.importUri(pipeType);
 	            meta = new cpl.CompilePipeMetadata({
-	                type: this.getTypeMetadata(pipeType, moduleUrl),
+	                type: this.getTypeMetadata(pipeType, staticTypeModuleUrl(pipeType)),
 	                name: pipeMeta.name,
 	                pure: pipeMeta.pure,
 	                lifecycleHooks: lifecycle_hooks_1.LIFECYCLE_HOOKS_VALUES.filter(function (hook) { return directive_lifecycle_reflector_1.hasLifecycleHook(hook, pipeType); }),
@@ -29072,7 +29084,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return meta;
 	    };
-	    RuntimeMetadataResolver.prototype.getViewDirectivesMetadata = function (component) {
+	    CompileMetadataResolver.prototype.getViewDirectivesMetadata = function (component) {
 	        var _this = this;
 	        var view = this._viewResolver.resolve(component);
 	        var directives = flattenDirectives(view, this._platformDirectives);
@@ -29083,7 +29095,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return directives.map(function (type) { return _this.getDirectiveMetadata(type); });
 	    };
-	    RuntimeMetadataResolver.prototype.getViewPipesMetadata = function (component) {
+	    CompileMetadataResolver.prototype.getViewPipesMetadata = function (component) {
 	        var _this = this;
 	        var view = this._viewResolver.resolve(component);
 	        var pipes = flattenPipes(view, this._platformPipes);
@@ -29094,49 +29106,78 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return pipes.map(function (type) { return _this.getPipeMetadata(type); });
 	    };
-	    RuntimeMetadataResolver.prototype.getDependenciesMetadata = function (typeOrFunc, dependencies) {
+	    CompileMetadataResolver.prototype.getDependenciesMetadata = function (typeOrFunc, dependencies) {
 	        var _this = this;
-	        var deps;
-	        try {
-	            deps = reflective_provider_1.constructDependencies(typeOrFunc, dependencies);
+	        var params = lang_1.isPresent(dependencies) ? dependencies : this._reflector.parameters(typeOrFunc);
+	        if (lang_1.isBlank(params)) {
+	            params = [];
 	        }
-	        catch (e) {
-	            if (e instanceof reflective_exceptions_1.NoAnnotationError) {
-	                deps = [];
+	        return params.map(function (param) {
+	            if (lang_1.isBlank(param)) {
+	                return null;
 	            }
-	            else {
-	                throw e;
-	            }
-	        }
-	        return deps.map(function (dep) {
-	            var compileToken;
-	            var p = dep.properties.find(function (p) { return p instanceof dimd.AttributeMetadata; });
 	            var isAttribute = false;
-	            if (lang_1.isPresent(p)) {
-	                compileToken = _this.getTokenMetadata(p.attributeName);
-	                isAttribute = true;
+	            var isHost = false;
+	            var isSelf = false;
+	            var isSkipSelf = false;
+	            var isOptional = false;
+	            var query = null;
+	            var viewQuery = null;
+	            var token = null;
+	            if (lang_1.isArray(param)) {
+	                param
+	                    .forEach(function (paramEntry) {
+	                    if (paramEntry instanceof metadata_1.HostMetadata) {
+	                        isHost = true;
+	                    }
+	                    else if (paramEntry instanceof metadata_1.SelfMetadata) {
+	                        isSelf = true;
+	                    }
+	                    else if (paramEntry instanceof metadata_1.SkipSelfMetadata) {
+	                        isSkipSelf = true;
+	                    }
+	                    else if (paramEntry instanceof metadata_1.OptionalMetadata) {
+	                        isOptional = true;
+	                    }
+	                    else if (paramEntry instanceof di_3.AttributeMetadata) {
+	                        isAttribute = true;
+	                        token = paramEntry.attributeName;
+	                    }
+	                    else if (paramEntry instanceof di_3.QueryMetadata) {
+	                        if (paramEntry.isViewQuery) {
+	                            viewQuery = paramEntry;
+	                        }
+	                        else {
+	                            query = paramEntry;
+	                        }
+	                    }
+	                    else if (paramEntry instanceof metadata_1.InjectMetadata) {
+	                        token = paramEntry.token;
+	                    }
+	                    else if (isValidType(paramEntry) && lang_1.isBlank(token)) {
+	                        token = paramEntry;
+	                    }
+	                });
 	            }
 	            else {
-	                compileToken = _this.getTokenMetadata(dep.key.token);
+	                token = param;
 	            }
-	            var compileQuery = null;
-	            var q = dep.properties.find(function (p) { return p instanceof dimd.QueryMetadata; });
-	            if (lang_1.isPresent(q)) {
-	                compileQuery = _this.getQueryMetadata(q, null);
+	            if (lang_1.isBlank(token)) {
+	                return null;
 	            }
 	            return new cpl.CompileDiDependencyMetadata({
 	                isAttribute: isAttribute,
-	                isHost: dep.upperBoundVisibility instanceof metadata_1.HostMetadata,
-	                isSelf: dep.upperBoundVisibility instanceof metadata_1.SelfMetadata,
-	                isSkipSelf: dep.lowerBoundVisibility instanceof metadata_1.SkipSelfMetadata,
-	                isOptional: dep.optional,
-	                query: lang_1.isPresent(q) && !q.isViewQuery ? compileQuery : null,
-	                viewQuery: lang_1.isPresent(q) && q.isViewQuery ? compileQuery : null,
-	                token: compileToken
+	                isHost: isHost,
+	                isSelf: isSelf,
+	                isSkipSelf: isSkipSelf,
+	                isOptional: isOptional,
+	                query: lang_1.isPresent(query) ? _this.getQueryMetadata(query, null) : null,
+	                viewQuery: lang_1.isPresent(viewQuery) ? _this.getQueryMetadata(viewQuery, null) : null,
+	                token: _this.getTokenMetadata(token)
 	            });
 	        });
 	    };
-	    RuntimeMetadataResolver.prototype.getTokenMetadata = function (token) {
+	    CompileMetadataResolver.prototype.getTokenMetadata = function (token) {
 	        token = di_1.resolveForwardRef(token);
 	        var compileToken;
 	        if (lang_1.isString(token)) {
@@ -29144,12 +29185,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        else {
 	            compileToken = new cpl.CompileTokenMetadata({
-	                identifier: new cpl.CompileIdentifierMetadata({ runtime: token, name: this.sanitizeTokenName(token) })
+	                identifier: new cpl.CompileIdentifierMetadata({
+	                    runtime: token,
+	                    name: this.sanitizeTokenName(token),
+	                    moduleUrl: staticTypeModuleUrl(token)
+	                })
 	            });
 	        }
 	        return compileToken;
 	    };
-	    RuntimeMetadataResolver.prototype.getProvidersMetadata = function (providers) {
+	    CompileMetadataResolver.prototype.getProvidersMetadata = function (providers) {
 	        var _this = this;
 	        return providers.map(function (provider) {
 	            provider = di_1.resolveForwardRef(provider);
@@ -29160,11 +29205,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return _this.getProviderMetadata(provider);
 	            }
 	            else {
-	                return _this.getTypeMetadata(provider, null);
+	                return _this.getTypeMetadata(provider, staticTypeModuleUrl(provider));
 	            }
 	        });
 	    };
-	    RuntimeMetadataResolver.prototype.getProviderMetadata = function (provider) {
+	    CompileMetadataResolver.prototype.getProviderMetadata = function (provider) {
 	        var compileDeps;
 	        if (lang_1.isPresent(provider.useClass)) {
 	            compileDeps = this.getDependenciesMetadata(provider.useClass, provider.dependencies);
@@ -29174,12 +29219,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return new cpl.CompileProviderMetadata({
 	            token: this.getTokenMetadata(provider.token),
-	            useClass: lang_1.isPresent(provider.useClass) ? this.getTypeMetadata(provider.useClass, null) : null,
+	            useClass: lang_1.isPresent(provider.useClass) ?
+	                this.getTypeMetadata(provider.useClass, staticTypeModuleUrl(provider.useClass)) :
+	                null,
 	            useValue: lang_1.isPresent(provider.useValue) ?
 	                new cpl.CompileIdentifierMetadata({ runtime: provider.useValue }) :
 	                null,
 	            useFactory: lang_1.isPresent(provider.useFactory) ?
-	                this.getFactoryMetadata(provider.useFactory, null) :
+	                this.getFactoryMetadata(provider.useFactory, staticTypeModuleUrl(provider.useFactory)) :
 	                null,
 	            useExisting: lang_1.isPresent(provider.useExisting) ? this.getTokenMetadata(provider.useExisting) :
 	                null,
@@ -29187,7 +29234,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            multi: provider.multi
 	        });
 	    };
-	    RuntimeMetadataResolver.prototype.getQueriesMetadata = function (queries, isViewQuery) {
+	    CompileMetadataResolver.prototype.getQueriesMetadata = function (queries, isViewQuery) {
 	        var _this = this;
 	        var compileQueries = [];
 	        collection_1.StringMapWrapper.forEach(queries, function (query, propertyName) {
@@ -29197,7 +29244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        return compileQueries;
 	    };
-	    RuntimeMetadataResolver.prototype.getQueryMetadata = function (q, propertyName) {
+	    CompileMetadataResolver.prototype.getQueryMetadata = function (q, propertyName) {
 	        var _this = this;
 	        var selectors;
 	        if (q.isVarBindingQuery) {
@@ -29214,17 +29261,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	            read: lang_1.isPresent(q.read) ? this.getTokenMetadata(q.read) : null
 	        });
 	    };
-	    RuntimeMetadataResolver = __decorate([
+	    CompileMetadataResolver = __decorate([
 	        di_2.Injectable(),
 	        __param(3, di_2.Optional()),
 	        __param(3, di_2.Inject(platform_directives_and_pipes_1.PLATFORM_DIRECTIVES)),
 	        __param(4, di_2.Optional()),
 	        __param(4, di_2.Inject(platform_directives_and_pipes_1.PLATFORM_PIPES)), 
 	        __metadata('design:paramtypes', [directive_resolver_1.DirectiveResolver, pipe_resolver_1.PipeResolver, view_resolver_1.ViewResolver, Array, Array, reflector_reader_1.ReflectorReader])
-	    ], RuntimeMetadataResolver);
-	    return RuntimeMetadataResolver;
+	    ], CompileMetadataResolver);
+	    return CompileMetadataResolver;
 	}());
-	exports.RuntimeMetadataResolver = RuntimeMetadataResolver;
+	exports.CompileMetadataResolver = CompileMetadataResolver;
 	function flattenDirectives(view, platformDirectives) {
 	    var directives = [];
 	    if (lang_1.isPresent(platformDirectives)) {
@@ -29256,8 +29303,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 	}
+	function isStaticType(value) {
+	    return lang_1.isStringMap(value) && lang_1.isPresent(value['name']) && lang_1.isPresent(value['moduleId']);
+	}
 	function isValidType(value) {
-	    return lang_1.isPresent(value) && (value instanceof lang_1.Type);
+	    return isStaticType(value) || (value instanceof lang_1.Type);
+	}
+	function staticTypeModuleUrl(value) {
+	    return isStaticType(value) ? value['moduleId'] : null;
 	}
 	function calcModuleUrl(reflector, type, cmpMetadata) {
 	    var moduleId = cmpMetadata.moduleId;
