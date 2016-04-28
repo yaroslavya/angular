@@ -184,7 +184,7 @@ System.register("angular2/src/mock/directive_resolver_mock", ["angular2/src/core
   return module.exports;
 });
 
-System.register("angular2/src/mock/view_resolver_mock", ["angular2/src/core/di", "angular2/src/core/di", "angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/core/metadata", "angular2/src/compiler/view_resolver"], true, function(require, exports, module) {
+System.register("angular2/src/mock/view_resolver_mock", ["angular2/src/core/di", "angular2/src/facade/collection", "angular2/src/facade/lang", "angular2/src/facade/exceptions", "angular2/src/core/metadata", "angular2/src/compiler/view_resolver"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -215,7 +215,6 @@ System.register("angular2/src/mock/view_resolver_mock", ["angular2/src/core/di",
       return Reflect.metadata(k, v);
   };
   var di_1 = require("angular2/src/core/di");
-  var di_2 = require("angular2/src/core/di");
   var collection_1 = require("angular2/src/facade/collection");
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
@@ -255,10 +254,10 @@ System.register("angular2/src/mock/view_resolver_mock", ["angular2/src/core/di",
       if (lang_1.isBlank(view)) {
         view = _super.prototype.resolve.call(this, component);
       }
-      var directives = [];
+      var directives = view.directives;
       var overrides = this._directiveOverrides.get(component);
-      if (lang_1.isPresent(overrides) && lang_1.isPresent(view.directives)) {
-        flattenArray(view.directives, directives);
+      if (lang_1.isPresent(overrides) && lang_1.isPresent(directives)) {
+        directives = collection_1.ListWrapper.clone(view.directives);
         overrides.forEach(function(to, from) {
           var srcIndex = directives.indexOf(from);
           if (srcIndex == -1) {
@@ -289,20 +288,10 @@ System.register("angular2/src/mock/view_resolver_mock", ["angular2/src/core/di",
         throw new exceptions_1.BaseException("The component " + lang_1.stringify(component) + " has already been compiled, its configuration can not be changed");
       }
     };
-    MockViewResolver = __decorate([di_2.Injectable(), __metadata('design:paramtypes', [])], MockViewResolver);
+    MockViewResolver = __decorate([di_1.Injectable(), __metadata('design:paramtypes', [])], MockViewResolver);
     return MockViewResolver;
   }(view_resolver_1.ViewResolver));
   exports.MockViewResolver = MockViewResolver;
-  function flattenArray(tree, out) {
-    for (var i = 0; i < tree.length; i++) {
-      var item = di_1.resolveForwardRef(tree[i]);
-      if (lang_1.isArray(item)) {
-        flattenArray(item, out);
-      } else {
-        out.push(item);
-      }
-    }
-  }
   global.define = __define;
   return module.exports;
 });
