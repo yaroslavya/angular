@@ -1,7 +1,7 @@
 import {Map} from '../src/facade/collection';
 import {Type, isPresent} from '../src/facade/lang';
 import {DirectiveMetadata, ComponentMetadata, Injectable} from '@angular/core';
-import {DirectiveResolver} from '@angular/compiler';
+import {DirectiveResolver} from '../src/directive_resolver';
 
 /**
  * An implementation of {@link DirectiveResolver} that allows overriding
@@ -27,7 +27,7 @@ export class MockDirectiveResolver extends DirectiveResolver {
     if (dm instanceof ComponentMetadata) {
       var viewProviders = dm.viewProviders;
       if (isPresent(viewProviderOverrides)) {
-        var originalViewProviders = isPresent(dm.viewProviders) ? dm.viewProviders : [];
+        var originalViewProviders: any[] = isPresent(dm.viewProviders) ? dm.viewProviders : [];
         viewProviders = originalViewProviders.concat(viewProviderOverrides);
       }
 

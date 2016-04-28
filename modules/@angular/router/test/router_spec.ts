@@ -1,7 +1,5 @@
 import {
-  AsyncTestCompleter,
   describe,
-  proxy,
   it,
   iit,
   xit,
@@ -10,13 +8,14 @@ import {
   inject,
   beforeEach,
   beforeEachProviders
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {SpyRouterOutlet} from './spies';
 import {Type} from '../src/facade/lang';
 import {PromiseWrapper, ObservableWrapper} from '../src/facade/async';
 import {ListWrapper} from '../src/facade/collection';
 import {Router, RootRouter} from '@angular/router/src/router';
-import {SpyLocation} from '@angular/testing';
+import {SpyLocation} from '@angular/common/testing';
 import {Location} from '@angular/common';
 import {RouteRegistry, ROUTER_PRIMARY_COMPONENT} from '@angular/router/src/route_registry';
 import {

@@ -7,7 +7,7 @@ import {
   iit,
   xit,
   inject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {IS_DART} from '../src/facade/lang';
 import {UrlResolver, createOfflineCompileUrlResolver} from '@angular/compiler/src/url_resolver';
 

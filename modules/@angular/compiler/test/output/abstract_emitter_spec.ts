@@ -1,16 +1,13 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
-  TestComponentBuilder
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {escapeSingleQuoteString} from '@angular/compiler/src/output/abstract_emitter';
 

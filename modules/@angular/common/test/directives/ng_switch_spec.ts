@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -8,8 +7,8 @@ import {
   inject,
   it,
   xit,
-} from '@angular/core/testing/testing_internal';
-
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {Component} from '@angular/core';
 import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 

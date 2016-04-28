@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -10,7 +9,7 @@ import {
   xdescribe,
   xit,
   Log
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {BaseException, WrappedException, ExceptionHandler} from '../src/exceptions';
 
 class _CustomException {

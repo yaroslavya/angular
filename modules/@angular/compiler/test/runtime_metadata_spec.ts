@@ -8,10 +8,9 @@ import {
   expect,
   beforeEach,
   afterEach,
-  AsyncTestCompleter,
   inject,
   beforeEachProviders
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {stringify} from '../src/facade/lang';
 import {RuntimeMetadataResolver} from '@angular/compiler/src/runtime_metadata';

@@ -1,19 +1,17 @@
 import {
-  ComponentFixture,
-  AsyncTestCompleter,
-  TestComponentBuilder,
   beforeEach,
   ddescribe,
   xdescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   beforeEachProviders,
   it,
   xit
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
 import {provide, Component, Injector, Inject} from '@angular/core';
 import {isPresent} from '../../src/facade/lang';

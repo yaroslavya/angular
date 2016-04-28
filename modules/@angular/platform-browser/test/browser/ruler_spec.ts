@@ -1,11 +1,10 @@
 import {
-  AsyncTestCompleter,
   inject,
   describe,
   it,
   expect,
-  SpyObject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter, SpyObject} from '@angular/core/testing/testing_internal';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {Ruler, Rectangle} from '@angular/platform-browser/src/browser/ruler';
 import {createRectangle} from './rectangle_mock';

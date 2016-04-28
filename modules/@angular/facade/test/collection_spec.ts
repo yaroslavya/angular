@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeEach, ddescribe, iit, xit} from '@angular/core/testing/testing_internal';
+import {describe, it, expect, beforeEach, ddescribe, iit, xit} from '@angular/core/testing';
 
 import {ListWrapper, StringMapWrapper, MapWrapper} from '../src/collection';
 

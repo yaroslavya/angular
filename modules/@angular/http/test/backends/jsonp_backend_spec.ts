@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   afterEach,
   beforeEach,
   ddescribe,
@@ -9,8 +8,8 @@ import {
   inject,
   it,
   xit,
-  SpyObject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter, SpyObject} from '@angular/core/testing/testing_internal';
 import {ObservableWrapper} from '../../src/facade/async';
 import {BrowserJsonp} from '../../src/backends/browser_jsonp';
 import {

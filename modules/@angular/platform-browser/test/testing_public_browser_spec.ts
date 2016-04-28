@@ -10,15 +10,15 @@ import {
   beforeEachProviders,
   inject,
   async,
-  TestComponentBuilder,
   fakeAsync,
   tick
-} from '@angular/testing';
+} from '@angular/core/testing';
 
 import {Component, bind} from '@angular/core';
 import {PromiseWrapper} from '../src/facade/promise';
 import {XHR} from '@angular/compiler';
-import {XHRImpl} from '../src/xhr/xhr_impl';
+import {XHRImpl} from '../../platform-browser-dynamic/src/xhr/xhr_impl';
+import {TestComponentBuilder} from '@angular/compiler/testing';
 
 // Components for the tests.
 class FancyService {

@@ -8,10 +8,10 @@ import {
   expect,
   beforeEach,
   afterEach,
-  AsyncTestCompleter,
   inject,
   beforeEachProviders
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
 import {provide} from '@angular/core';
 import {

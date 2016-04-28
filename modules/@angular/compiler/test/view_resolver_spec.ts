@@ -1,4 +1,4 @@
-import {ddescribe, describe, it, iit, expect, beforeEach} from '@angular/core/testing/testing_internal';
+import {ddescribe, describe, it, iit, expect, beforeEach} from '@angular/core/testing';
 import {ViewResolver} from '@angular/compiler/src/view_resolver';
 import {Component, ViewMetadata} from '@angular/core/src/metadata';
 

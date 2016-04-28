@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -9,8 +8,8 @@ import {
   it,
   xit,
   beforeEachProviders
-} from '@angular/core/testing/testing_internal';
-
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {CompileTypeMetadata, CompileTemplateMetadata} from '@angular/compiler/src/compile_metadata';
 import {ViewEncapsulation} from '@angular/core/src/metadata/view';
 

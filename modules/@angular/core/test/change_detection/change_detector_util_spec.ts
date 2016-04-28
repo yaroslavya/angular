@@ -7,7 +7,7 @@ import {
   expect,
   beforeEach,
   afterEach
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {devModeEqual} from '@angular/core/src/change_detection/change_detection_util';
 

@@ -7,11 +7,10 @@ import {
   expect,
   beforeEach,
   afterEach,
-  AsyncTestCompleter,
   inject,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {SpyChangeDetectorRef} from '../spies';
-
 import {isBlank} from '../../src/facade/lang';
 import {AsyncPipe} from '@angular/common';
 import {WrappedValue} from '@angular/core';

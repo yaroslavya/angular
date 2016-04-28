@@ -6,11 +6,9 @@ import {
   ddescribe,
   iit,
   xit,
-  el,
-  SpyObject,
-  AsyncTestCompleter,
   inject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
 import {Observable, Subject, EventEmitter, PromiseWrapper} from '../../src/facade/async';
 

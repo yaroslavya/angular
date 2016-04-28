@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -8,11 +7,12 @@ import {
   inject,
   it,
   xit,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {Component, Directive} from '@angular/core';
 import {ElementRef} from '@angular/core/src/linker/element_ref';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
 export function main() {
   describe('non-bindable', () => {

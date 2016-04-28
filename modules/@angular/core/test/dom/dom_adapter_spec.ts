@@ -1,20 +1,17 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
   beforeEachProviders,
-  SpyObject,
-  stringifyElement
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
+import {el, stringifyElement} from '@angular/platform-browser/testing';
 
 export function main() {
   describe('dom adapter', () => {

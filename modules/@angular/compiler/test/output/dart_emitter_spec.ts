@@ -1,16 +1,13 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
-  TestComponentBuilder
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {isBlank} from '../../src/facade/lang';
 import {DartEmitter} from '@angular/compiler/src/output/dart_emitter';

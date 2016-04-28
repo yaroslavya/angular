@@ -8,7 +8,7 @@ import {
   getPlatform,
   createPlatform,
   assertPlatform
-} from '../.';
+} from '@angular/core';
 import {WORKER_RENDER_APPLICATION} from './webworker/worker_render';
 import {
   WORKER_SCRIPT,
@@ -41,7 +41,7 @@ export * from './web_workers/shared/message_bus';
  * @deprecated Use WORKER_RENDER_APPLICATION
  */
 export const WORKER_RENDER_APP = WORKER_RENDER_APPLICATION;
-export {WORKER_RENDER_ROUTER} from './src/web_workers//ui/router_providers';
+export {WORKER_RENDER_ROUTER} from '../src/web_workers/ui/router_providers';
 
 export function workerRenderPlatform(): PlatformRef {
   if (isBlank(getPlatform())) {

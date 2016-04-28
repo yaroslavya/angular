@@ -9,11 +9,10 @@ import {
   afterEach,
   tick,
   fakeAsync,
-  TestComponentBuilder,
-  ComponentFixture,
   inject,
   beforeEachProviders
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 
 import {
   isPresent,
@@ -69,7 +68,7 @@ import {By} from '@angular/platform-browser/src/dom/debug/by';
 import {AsyncPipe} from '@angular/common';
 
 import {ElementSchemaRegistry} from '@angular/compiler/src/schema/element_schema_registry';
-import {MockSchemaRegistry} from '@angular/testing';
+import {MockSchemaRegistry} from '@angular/compiler/testing';
 import {TEST_PROVIDERS} from '@angular/compiler/test/test_bindings';
 import {DebugDomRenderer} from '@angular/core/src/debug/debug_renderer';
 import {DomRootRenderer} from '@angular/platform-browser/src/dom/dom_renderer';

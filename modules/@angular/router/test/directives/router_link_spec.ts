@@ -1,18 +1,17 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   xdescribe,
   describe,
-  dispatchEvent,
   expect,
   iit,
   inject,
   beforeEachProviders,
   it,
   xit,
-  TestComponentBuilder
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
 import {SpyRouter, SpyLocation} from '../spies';
 import {provide, Component} from '@angular/core';

@@ -7,7 +7,7 @@ import {
   expect,
   beforeEach,
   afterEach
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {BaseException} from '../src/facade/exceptions';
 
 import {

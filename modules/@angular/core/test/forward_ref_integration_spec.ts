@@ -1,6 +1,4 @@
 import {
-  AsyncTestCompleter,
-  TestComponentBuilder,
   beforeEach,
   ddescribe,
   describe,
@@ -9,7 +7,7 @@ import {
   inject,
   it,
   xit
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {
   bind,
   provide,
@@ -21,6 +19,8 @@ import {
   Query,
   QueryList
 } from '@angular/core';
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {NgFor} from '@angular/common';
 import {Type} from '../src/facade/lang';
 import {asNativeElements} from '@angular/core';

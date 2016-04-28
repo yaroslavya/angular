@@ -8,10 +8,9 @@ import {
   expect,
   beforeEach,
   afterEach,
-  AsyncTestCompleter,
   inject,
   beforeEachProviders,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {IS_DART} from '../src/facade/lang';
 import {Injector} from '@angular/core';

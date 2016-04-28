@@ -1,7 +1,5 @@
 import {
-  AsyncTestCompleter,
   describe,
-  proxy,
   it,
   iit,
   ddescribe,
@@ -9,8 +7,7 @@ import {
   inject,
   beforeEach,
   beforeEachProviders,
-  SpyObject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {Injector, provide} from '@angular/core';
 

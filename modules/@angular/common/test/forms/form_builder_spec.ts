@@ -7,7 +7,7 @@ import {
   expect,
   beforeEach,
   afterEach
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {Control, FormBuilder} from '@angular/common';
 import {PromiseWrapper} from '../../src/facade/promise';
 

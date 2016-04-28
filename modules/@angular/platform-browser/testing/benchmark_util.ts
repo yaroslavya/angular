@@ -1,4 +1,4 @@
-import {BrowserDomAdapter} from '../platform_browser_private';
+import {BrowserDomAdapter} from '../src/browser/browser_adapter';
 import {document, window} from '../src/facade/browser';
 import {NumberWrapper, isBlank} from '../src/facade/lang';
 import {BaseException, WrappedException} from '../src/facade/exceptions';

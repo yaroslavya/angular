@@ -2,7 +2,7 @@ import {Type, isArray, isPresent, serializeEnum} from '../../../src/facade/lang'
 import {BaseException} from '../../../src/facade/exceptions';
 import {Map, StringMapWrapper, MapWrapper} from '../../../src/facade/collection';
 import {RenderComponentType, Injectable, ViewEncapsulation} from '@angular/core';
-import {VIEW_ENCAPSULATION_VALUES} from '../core_private';
+import {VIEW_ENCAPSULATION_VALUES} from '../../../core_private';
 import {RenderStore} from './render_store';
 import {LocationType} from './serialized_types';
 

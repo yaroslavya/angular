@@ -7,10 +7,7 @@ import {
   expect,
   beforeEach,
   afterEach,
-  AsyncTestCompleter,
   inject,
-} from '@angular/core/testing/testing_internal';
-import {
   fakeAsync,
   flushMicrotasks,
   Log,
@@ -71,7 +68,7 @@ function asyncValidator(expected, timeout = 0) {
 
 export function main() {
   describe("Form Directives", () => {
-    var defaultAccessor;
+    var defaultAccessor: DefaultValueAccessor;
 
     beforeEach(() => { defaultAccessor = new DefaultValueAccessor(null, null); });
 
@@ -108,7 +105,7 @@ export function main() {
         it("should return custom accessor when provided", () => {
           var customAccessor = new SpyValueAccessor();
           var checkboxAccessor = new CheckboxControlValueAccessor(null, null);
-          expect(selectValueAccessor(dir, [defaultAccessor, customAccessor, checkboxAccessor]))
+          expect(selectValueAccessor(dir, <any>[defaultAccessor, customAccessor, checkboxAccessor]))
               .toEqual(customAccessor);
         });
 

@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   xdescribe,
   ddescribe,
@@ -8,9 +7,7 @@ import {
   iit,
   inject,
   it,
-  SpyObject,
-  proxy
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {hasLifecycleHook} from '@angular/compiler/src/directive_lifecycle_reflector';
 import {LifecycleHooks} from '@angular/core/src/metadata/lifecycle_hooks';

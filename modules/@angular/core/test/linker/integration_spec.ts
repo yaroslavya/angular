@@ -1,11 +1,8 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   xdescribe,
   describe,
-  el,
-  dispatchEvent,
   expect,
   iit,
   inject,
@@ -13,15 +10,12 @@ import {
   it,
   xit,
   containsRegexp,
-  stringifyElement,
-  TestComponentBuilder,
   fakeAsync,
   tick,
   clearPendingTimers,
-  ComponentFixture
-} from '@angular/core/testing/testing_internal';
-
-
+} from '@angular/core/testing';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {
   Type,
@@ -92,6 +86,7 @@ import {TemplateRef} from '@angular/core/src/linker/template_ref';
 
 import {Renderer} from '@angular/core/src/render';
 import {IS_DART} from '../../src/facade/lang';
+import {el, dispatchEvent} from '@angular/platform-browser/testing';
 
 const ANCHOR_ELEMENT = /*@ts2dart_const*/ new OpaqueToken('AnchorElement');
 

@@ -1,17 +1,13 @@
 import {
-  ComponentFixture,
-  AsyncTestCompleter,
-  TestComponentBuilder,
   beforeEach,
   ddescribe,
   xdescribe,
   describe,
-  el,
   inject,
   beforeEachProviders,
   it,
   xit
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {provide, Component} from '@angular/core';
 import {isBlank} from '../../src/facade/lang';
 import {BaseException} from '../../src/facade/exceptions';
@@ -20,8 +16,8 @@ import {Router, ROUTER_DIRECTIVES, ROUTER_PRIMARY_COMPONENT} from '@angular/rout
 import {Location} from '@angular/common';
 import {RouteRegistry} from '@angular/router/src/route_registry';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
-import {SpyLocation} from '@angular/testing';
-export {ComponentFixture} from '@angular/core/testing/testing_internal';
+import {SpyLocation} from '@angular/common/testing';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 
 
 /**
@@ -39,7 +35,7 @@ export class RootCmp {
 }
 
 export function compile(tcb: TestComponentBuilder,
-                        template: string = "<router-outlet></router-outlet>") {
+                        template: string = "<router-outlet></router-outlet>"): Promise<ComponentFixture> {
   return tcb.overrideTemplate(RootCmp, ('<div>' + template + '</div>')).createAsync(RootCmp);
 }
 

@@ -5,11 +5,10 @@ import {
   ddescribe,
   expect,
   tick,
-  SpyObject,
   beforeEach,
-  proxy,
   containsRegexp
 } from '../testing';
+import {SpyObject} from '@angular/core/testing/testing_internal';
 
 import {MapWrapper} from '../../platform-browser/src/facade/collection';
 import {RegExpWrapper} from '../../router/src/facade/lang';

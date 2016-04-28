@@ -5,8 +5,7 @@ import {
   expect,
   ddescribe,
   iit,
-  SpyObject,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {ShadowCss, processRules, CssRule} from '@angular/compiler/src/shadow_css';
 
 import {RegExpWrapper, StringWrapper, isPresent} from '../src/facade/lang';

@@ -7,8 +7,7 @@ import {
   xdescribe,
   expect,
   beforeEach,
-  el
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {KeyEventsPlugin} from '@angular/platform-browser/src/dom/events/key_events';
 
 export function main() {

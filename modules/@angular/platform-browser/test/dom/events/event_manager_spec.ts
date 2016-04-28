@@ -7,13 +7,13 @@ import {
   xdescribe,
   expect,
   beforeEach,
-  el
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {DomEventsPlugin} from '@angular/platform-browser/src/dom/events/dom_events';
 import {NgZone} from '@angular/core/src/zone/ng_zone';
 import {ListWrapper, Map} from '../../../src/facade/collection';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {EventManager, EventManagerPlugin} from '@angular/platform-browser/src/dom/events/event_manager';
+import {el} from '../../../testing/browser_util';
 
 export function main() {
   var domEventPlugin;

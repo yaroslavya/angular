@@ -8,7 +8,7 @@
     "moduleResolution": "node",
     "outDir": "../../../dist/packages-dist/common/esm",
     "paths": {
-      "@angular/core": ["../../../dist/packages-dist/core"],
+      "@angular/core": ["../../../dist/packages-dist/core"]
     },
     "rootDir": ".",
     "sourceMap": true,

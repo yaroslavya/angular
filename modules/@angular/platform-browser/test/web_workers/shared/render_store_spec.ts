@@ -1,12 +1,11 @@
 import {
-  AsyncTestCompleter,
   inject,
   describe,
   ddescribe,
   beforeEach,
   it,
   expect
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {RenderStore} from '@angular/platform-browser/src/web_workers/shared/render_store';
 
 export function main() {

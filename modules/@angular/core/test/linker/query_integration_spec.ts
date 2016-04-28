@@ -1,16 +1,15 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
-  TestComponentBuilder,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
 import {isPresent} from '../../src/facade/lang';
 import {ObservableWrapper} from '../../src/facade/async';

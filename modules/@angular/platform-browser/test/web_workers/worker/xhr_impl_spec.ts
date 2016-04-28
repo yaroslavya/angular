@@ -1,12 +1,12 @@
 import {
-  AsyncTestCompleter,
   inject,
   describe,
   it,
   expect,
   beforeEach,
   beforeEachProviders
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {SpyMessageBroker} from './spies';
 import {WebWorkerXHRImpl} from '@angular/platform-browser/src/web_workers/worker/xhr_impl';
 import {PromiseWrapper} from '../../../src/facade/async';

@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -9,7 +8,7 @@ import {
   it,
   xdescribe,
   xit
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {HtmlAst} from '@angular/compiler/src/html_ast';
 import {Message, id} from '@angular/compiler/src/i18n/message';

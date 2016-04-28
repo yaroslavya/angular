@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   ddescribe,
   describe,
   it,
@@ -10,7 +9,7 @@ import {
   afterEach,
   beforeEachProviders,
   inject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {
   HtmlAst,

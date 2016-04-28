@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -8,7 +7,7 @@ import {
   inject,
   it,
   xit,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {bind, provide} from '@angular/core';
 

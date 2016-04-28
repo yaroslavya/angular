@@ -29,7 +29,7 @@ export {
   ServiceMessageBrokerFactory
 } from './web_workers/shared/service_message_broker';
 export {PRIMITIVE} from './web_workers/shared/serializer';
-export * from 'web_workers/shared/message_bus';
+export * from './web_workers/shared/message_bus';
 export {WORKER_APP_ROUTER} from './web_workers/worker/router_providers';
 
 export function workerAppPlatform(): PlatformRef {

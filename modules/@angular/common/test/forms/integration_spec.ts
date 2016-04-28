@@ -1,9 +1,6 @@
 import {Component, Directive, Output, EventEmitter} from '@angular/core';
 import {
-  ComponentFixture,
   afterEach,
-  AsyncTestCompleter,
-  TestComponentBuilder,
   beforeEach,
   ddescribe,
   describe,
@@ -16,7 +13,9 @@ import {
   iit,
   xit
 } from '@angular/core/testing';
-
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {ComponentFixture} from '@angular/compiler/testing';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {
   Control,

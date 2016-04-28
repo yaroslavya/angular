@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -9,7 +8,7 @@ import {
   it,
   xdescribe,
   xit
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {IS_DART, RegExpWrapper, StringWrapper} from '../facade/src/lang';
 import {getSymbolsFromLibrary} from './symbol_inspector/symbol_inspector';
 import {ListWrapper} from '../facade/src/collection';

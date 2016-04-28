@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -7,7 +6,8 @@ import {
   iit,
   inject,
   it,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {MockXHR} from '@angular/compiler/testing';
 import {PromiseWrapper} from '../src/facade/async';
 import {isPresent} from '../src/facade/lang';

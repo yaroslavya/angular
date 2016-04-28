@@ -8,10 +8,11 @@ import {
   beforeEach,
   afterEach,
   inject,
-  AsyncTestCompleter
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {} from '@angular/core/testing/testing_internal';
 import {browserDetection} from '@angular/platform-browser/testing';
 import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
 import {Component} from '@angular/core';
 import {SlicePipe} from '@angular/common';

@@ -9,7 +9,7 @@ import {
   afterEach,
   inject,
   beforeEachProviders
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {provide} from '@angular/core/src/di';
 
 import {

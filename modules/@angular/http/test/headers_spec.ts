@@ -2,7 +2,6 @@ import {Headers} from '../src/headers';
 import {Json} from '../src/facade/lang';
 import {Map, StringMapWrapper} from '../src/facade/collection';
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -11,7 +10,7 @@ import {
   inject,
   it,
   xit
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 export function main() {
   describe('Headers', () => {

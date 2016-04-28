@@ -7,13 +7,11 @@ import {
   expect,
   beforeEach,
   afterEach,
-  el,
-  AsyncTestCompleter,
   fakeAsync,
   tick,
   inject,
-  SpyObject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {Type} from '@angular/core';
 import {SpyChangeDetectorRef} from './spies';
 import {

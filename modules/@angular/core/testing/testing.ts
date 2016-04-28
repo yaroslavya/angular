@@ -17,6 +17,8 @@ declare var global;
 
 var _global = <any>(typeof window === 'undefined' ? global : window);
 
+export var expect: Function = _global.expect;
+
 /**
  * Run a function (with an optional asynchronous callback) after each test case.
  *

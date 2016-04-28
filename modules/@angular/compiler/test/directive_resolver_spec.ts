@@ -1,4 +1,4 @@
-import {ddescribe, describe, it, iit, expect, beforeEach} from '@angular/core/testing/testing_internal';
+import {ddescribe, describe, it, iit, expect, beforeEach} from '@angular/core/testing';
 import {DirectiveResolver} from '@angular/compiler/src/directive_resolver';
 import {
   DirectiveMetadata,

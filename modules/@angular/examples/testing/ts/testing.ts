@@ -9,7 +9,7 @@ import {
   afterEach,
   beforeEachProviders,
   inject
-} from '@angular/testing';
+} from '@angular/core/testing';
 import {provide} from '@angular/core';
 
 var db: any;

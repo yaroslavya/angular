@@ -1,6 +1,6 @@
 import {isBlank, stringify, isPresent} from '../../src/facade/lang';
 import {BaseException, WrappedException} from '../../src/facade/exceptions';
-import {describe, ddescribe, it, iit, expect, beforeEach} from '@angular/core/testing/testing_internal';
+import {describe, ddescribe, it, iit, expect, beforeEach} from '@angular/core/testing';
 import {
   provide,
   ReflectiveKey,

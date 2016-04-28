@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   describe,
   it,
   iit,
@@ -7,8 +6,7 @@ import {
   expect,
   inject,
   beforeEach,
-  SpyObject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {GeneratedUrl} from '../../../../router/src/rules/route_paths/route_path';
 import {RegexRoutePath} from '../../../../router/src/rules/route_paths/regex_route_path';

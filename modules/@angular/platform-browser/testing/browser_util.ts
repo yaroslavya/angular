@@ -1,6 +1,5 @@
-import {Injectable} from '@angular/core';
 import {ListWrapper} from '../src/facade/collection';
-import {getDOM} from '../src/platform_browser_private';
+import {getDOM} from '../src/dom/dom_adapter';
 import {isPresent, isString, RegExpWrapper, StringWrapper, RegExp} from '../src/facade/lang';
 
 export var browserDetection: BrowserDetection = null;

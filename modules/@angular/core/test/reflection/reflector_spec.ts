@@ -5,8 +5,7 @@ import {
   ddescribe,
   expect,
   beforeEach,
-  browserDetection
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {OnInit} from '@angular/core';
 import {Reflector, ReflectionInfo} from '@angular/core/src/reflection/reflection';
 import {ReflectionCapabilities} from '@angular/core/src/reflection/reflection_capabilities';
@@ -20,6 +19,7 @@ import {
   HasGetterAndSetterDecorators
 } from './reflector_common';
 import {IS_DART} from '../../src/facade/lang';
+import {browserDetection} from '@angular/platform-browser/testing'
 
 class AType {
   value;

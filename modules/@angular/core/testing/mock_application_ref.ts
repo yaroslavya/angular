@@ -6,7 +6,7 @@ import {
   Injector,
   NgZone,
  Type
-} from './';
+} from '../index';
 
 /**
  * A no-op implementation of {@link ApplicationRef}, useful for testing.

@@ -1,21 +1,17 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   xdescribe,
   describe,
-  el,
-  dispatchEvent,
   expect,
   iit,
   inject,
   beforeEachProviders,
   it,
   xit,
-  TestComponentBuilder,
-  ComponentFixture
-} from '@angular/core/testing/testing_internal';
-
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 import {Predicate} from '../../src/facade/collection';
 import {Injector, OnDestroy, DebugElement, Type, ViewContainerRef, ViewChild} from '@angular/core';
 import {Component, ViewMetadata} from '@angular/core/src/metadata';
@@ -25,6 +21,7 @@ import {DOCUMENT} from '@angular/platform-browser/src/dom/dom_tokens';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {BaseException} from '../../src/facade/exceptions';
 import {PromiseWrapper} from '../../src/facade/promise';
+import {el} from '@angular/platform-browser/testing';
 
 export function main() {
   describe('DynamicComponentLoader', function() {

@@ -7,15 +7,13 @@ import {
   expect,
   beforeEach,
   afterEach,
-  AsyncTestCompleter,
-  inject
-} from '@angular/core/testing/testing_internal';
-import {
+  inject,
   fakeAsync,
   flushMicrotasks,
   Log,
   tick,
 } from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {ControlGroup, Control, ControlArray, Validators} from '@angular/common';
 import {IS_DART, isPresent} from '../../src/facade/lang';
 import {PromiseWrapper} from '../../src/facade/promise';

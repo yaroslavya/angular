@@ -1,17 +1,13 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
-  beforeEachProviders,
-  SpyObject,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 // import {MapWrapper} from '../../src/facade/src/collection';
 // import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';

@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   describe,
   it,
   iit,
@@ -7,8 +6,8 @@ import {
   expect,
   inject,
   beforeEach,
-  SpyObject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
 import {PromiseWrapper} from '../src/facade/async';
 import {Type, IS_DART} from '../src/facade/lang';

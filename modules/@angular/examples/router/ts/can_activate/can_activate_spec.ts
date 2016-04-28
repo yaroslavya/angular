@@ -1,5 +1,5 @@
-import {verifyNoBrowserErrors, browser} from '@angular/testing/src/e2e_util';
-import {expect} from '@angular/testing';
+import {verifyNoBrowserErrors, browser} from '@angular/platform-browser/testing';
+import {expect} from '@angular/core/testing';
 
 function waitForElement(selector: string) {
   var EC = (<any>protractor).ExpectedConditions;

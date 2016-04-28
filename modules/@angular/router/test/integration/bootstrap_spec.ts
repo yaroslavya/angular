@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   beforeEachProviders,
   ddescribe,
@@ -10,9 +9,10 @@ import {
   inject,
   it,
   xdescribe,
-  TestComponentBuilder,
   xit,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
+import {TestComponentBuilder} from '@angular/compiler/testing';
 
 import {bootstrap} from '@angular/platform-browser-dynamic';
 import {APP_BASE_HREF, LocationStrategy} from '@angular/common';
@@ -37,10 +37,11 @@ import {
   ROUTER_DIRECTIVES
 } from '@angular/router';
 
-import {MockLocationStrategy} from '@angular/testing';
+import {MockLocationStrategy} from '@angular/common/testing';
 import {ApplicationRef} from '@angular/core/src/application_ref';
-import {MockApplicationRef} from '@angular/testing';
+import {MockApplicationRef} from '@angular/core/testing';
 
+//noinspection JSAnnotator
 class DummyConsole implements Console {
   log(message) {}
 }

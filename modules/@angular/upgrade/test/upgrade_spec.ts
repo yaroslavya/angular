@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -9,9 +8,8 @@ import {
   it,
   xdescribe,
   xit,
-} from '@angular/core/testing/testing_internal';
-import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
-
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {
   Component,
   Class,

@@ -1,25 +1,17 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   xdescribe,
   describe,
-  el,
-  dispatchEvent,
   expect,
   iit,
   inject,
   beforeEachProviders,
   it,
   xit,
-  containsRegexp,
-  stringifyElement,
-  TestComponentBuilder,
-  fakeAsync,
-  tick,
-  clearPendingTimers,
-  ComponentFixture
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
 import {IS_DART} from '../../src/facade/lang';
 

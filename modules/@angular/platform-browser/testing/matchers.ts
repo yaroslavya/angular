@@ -1,4 +1,4 @@
-import {getDOM} from '../platform_browser_private';
+import {getDOM} from '../src/dom/dom_adapter';
 import {global, isString} from '../src/facade/lang';
 import {StringMapWrapper} from '../src/facade/collection';
 

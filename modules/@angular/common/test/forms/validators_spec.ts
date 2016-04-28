@@ -7,8 +7,6 @@ import {
   expect,
   beforeEach,
   afterEach,
-} from '@angular/core/testing/testing_internal';
-import {
   fakeAsync,
   flushMicrotasks,
   Log,

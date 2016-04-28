@@ -10,7 +10,7 @@ import {
   OpaqueToken,
   Testability
 } from '@angular/core';
-import {wtfInit} from './core_private';
+import {wtfInit} from '../core_private';
 import {COMMON_DIRECTIVES, COMMON_PIPES, FORM_PROVIDERS} from '@angular/common';
 
 import {IS_DART} from './facade/lang';
@@ -92,7 +92,7 @@ export const BROWSER_APP_COMMON_PROVIDERS: Array<any /*Type | Provider | any[]*/
 export {
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig
-} from './src/dom/events/hammer_gestures'
+} from '../src/dom/events/hammer_gestures'
 
 
 export function initDomAdapter() {

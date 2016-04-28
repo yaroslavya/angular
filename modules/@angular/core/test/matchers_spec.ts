@@ -5,9 +5,7 @@ import {
   ddescribe,
   expect,
   tick,
-  SpyObject,
   beforeEach,
-  proxy,
 } from '../testing';
 
 import {getDOM} from '../../platform-browser/src/dom/dom_adapter';

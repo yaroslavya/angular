@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   beforeEachProviders,
   expect,
@@ -7,10 +6,10 @@ import {
   flushMicrotasks,
   inject,
   it,
-  TestComponentBuilder,
-  ComponentFixture,
   xit,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 
 import {specs, compile, TEST_ROUTER_PROVIDERS, clickOnElement, getHref} from '../util';
 import {Location} from '@angular/common';

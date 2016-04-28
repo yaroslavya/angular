@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -9,7 +8,7 @@ import {
   it,
   xdescribe,
   xit,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {bootstrap} from '@angular/platform-browser-dynamic';
 import {APP_BASE_HREF, LocationStrategy} from '@angular/common';
@@ -18,12 +17,10 @@ import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {Console} from '@angular/core/src/console';
 import {provide} from '@angular/core';
 import {DOCUMENT} from '@angular/platform-browser/src/dom/dom_tokens';
-import {Type, IS_DART} from '../../src/facade/lang';
-
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {ROUTER_PROVIDERS, Router, RouteConfig, ROUTER_DIRECTIVES} from '@angular/router';
-
 import {ExceptionHandler} from '../../src/facade/exceptions';
-import {MockLocationStrategy} from '@angular/testing';
+import {MockLocationStrategy} from '@angular/common/testing';
 
 class _ArrayLogger {
   res: any[] = [];

@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   afterEach,
   beforeEach,
   ddescribe,
@@ -9,9 +8,8 @@ import {
   inject,
   it,
   xit,
-  SpyObject
-} from '@angular/core/testing/testing_internal';
-import {ObservableWrapper} from '../../src/facade/async';
+} from '@angular/core/testing';
+import {AsyncTestCompleter, SpyObject} from '@angular/core/testing/testing_internal';
 import {BrowserXhr} from '../../src/backends/browser_xhr';
 import {XHRConnection, XHRBackend} from '../../src/backends/xhr_backend';
 import {provide, Injector, ReflectiveInjector} from '@angular/core';

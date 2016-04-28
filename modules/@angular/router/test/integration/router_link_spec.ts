@@ -1,21 +1,17 @@
 import {
-  ComponentFixture,
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   xdescribe,
   describe,
-  dispatchEvent,
   expect,
   iit,
   inject,
   beforeEachProviders,
   it,
   xit,
-  TestComponentBuilder,
-  proxy,
-  SpyObject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 
 import {Location} from '@angular/common';
 import {NumberWrapper} from '../../src/facade/lang';
@@ -41,7 +37,7 @@ import {RootRouter} from '@angular/router/src/router';
 
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {By} from '@angular/platform-browser/src/dom/debug/by';
-import {SpyLocation} from '@angular/testing/src/mock/location_mock';
+import {SpyLocation} from '@angular/common/testing';
 
 export function main() {
   describe('routerLink directive', function() {

@@ -7,7 +7,7 @@ import {
   expect,
   beforeEach,
   afterEach
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 import {browserDetection} from '@angular/platform-browser/testing';
 
 import {DatePipe} from '@angular/common';

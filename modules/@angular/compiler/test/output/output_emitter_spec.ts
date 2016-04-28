@@ -1,17 +1,13 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
-  TestComponentBuilder,
-  browserDetection
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
 import {IS_DART} from '../../src/facade/lang';
 
@@ -24,6 +20,7 @@ import {EventEmitter} from '../../src/facade/async';
 import {ViewType} from '@angular/core/src/linker/view_type';
 import {BaseException} from '../../src/facade/exceptions';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
+import {browserDetection} from '@angular/platform-browser/testing'
 
 export function main() {
   var outputDefs = [];

@@ -1,7 +1,5 @@
 import {
-  AsyncTestCompleter,
   describe,
-  proxy,
   it,
   iit,
   ddescribe,
@@ -9,12 +7,12 @@ import {
   inject,
   beforeEach,
   beforeEachProviders,
-  SpyObject
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
 import {Injector, provide, ReflectiveInjector} from '@angular/core';
 import {Location, LocationStrategy, APP_BASE_HREF} from '@angular/common';
-import {MockLocationStrategy} from '@angular/testing';
+import {MockLocationStrategy} from '@angular/common/testing';
 
 export function main() {
   describe('Location', () => {

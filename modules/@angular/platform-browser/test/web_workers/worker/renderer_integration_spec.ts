@@ -1,15 +1,14 @@
 import {
-  AsyncTestCompleter,
   inject,
   ddescribe,
   describe,
-  dispatchEvent,
   it,
   iit,
   expect,
   beforeEach,
   beforeEachProviders,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import { TestInjector } from '@angular/core/testing';
 import { TestComponentBuilder } from '@angular/compiler/testing';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
@@ -48,6 +47,7 @@ import {
   TEST_BROWSER_PLATFORM_PROVIDERS,
   TEST_BROWSER_APPLICATION_PROVIDERS
 } from '@angular/platform-browser/testing';
+import {dispatchEvent} from '../../../../platform-browser/testing/browser_util';
 
 export function main() {
   function createWebWorkerBrokerFactory(

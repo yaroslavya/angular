@@ -21,7 +21,7 @@ import {
   Quote,
   SafePropertyRead,
   SafeMethodCall
-} from '@angular/compiler/src/expression_parser/ast';
+} from '../../src/expression_parser/ast';
 
 
 import {StringWrapper, isPresent, isString} from '../../src/facade/lang';

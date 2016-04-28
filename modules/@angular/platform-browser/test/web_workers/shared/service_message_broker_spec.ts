@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   inject,
   describe,
   it,
@@ -7,10 +6,8 @@ import {
   expect,
   beforeEach,
   beforeEachProviders,
-  SpyObject,
-  proxy,
-  browserDetection
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
+import {browserDetection} from '@angular/platform-browser/testing';
 import {createPairedMessageBuses} from './web_worker_test_util';
 import {Serializer, PRIMITIVE} from '@angular/platform-browser/src/web_workers/shared/serializer';
 import {

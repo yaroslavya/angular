@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -9,9 +8,9 @@ import {
   it,
   xdescribe,
   xit,
-} from '@angular/core/testing/testing_internal';
+} from '@angular/core/testing';
 
-import {Component} from '@angular/core';
+import {Component, Type} from '@angular/core';
 import {getComponentInfo, parseFields} from '@angular/upgrade/src/metadata';
 
 export function main() {

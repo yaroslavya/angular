@@ -1,6 +1,8 @@
-import {el, describe, it, iit, expect, inject, SpyObject} from '@angular/core/testing/testing_internal';
+import {describe, it, iit, expect, inject} from '@angular/core/testing';
 import {AnimationBuilder} from '../../src/animate/animation_builder';
 import {getDOM} from '../../src/dom/dom_adapter';
+import {el} from '../../testing/browser_util';
+import {SpyObject} from '@angular/core/testing/testing_internal';
 
 export function main() {
   describe("AnimationBuilder", () => {

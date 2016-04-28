@@ -5,3 +5,4 @@ export * from './testing/ng_zone_mock';
 export * from './testing/regexp';
 export * from './testing/test_injector';
 export * from './testing/testing';
+export * from './testing/mock_application_ref';

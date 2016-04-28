@@ -15,9 +15,9 @@ import {ViewCompiler} from '@angular/compiler/src/view_compiler/view_compiler';
 import {DirectiveNormalizer} from '@angular/compiler/src/directive_normalizer';
 import {CompilerConfig} from '@angular/compiler/src/config';
 import {createOfflineCompileUrlResolver} from '@angular/compiler/src/url_resolver';
-import {MockSchemaRegistry} from '../../testing/src/mock/schema_registry_mock';
+import {MockSchemaRegistry} from '../testing/schema_registry_mock';
 import {MODULE_SUFFIX} from '@angular/compiler/src/util';
-import {MockXHR} from '@angular/testing';
+import {MockXHR} from '../testing/xhr_mock';
 
 import {
   CompileDirectiveMetadata,

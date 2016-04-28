@@ -1,21 +1,15 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   xdescribe,
   describe,
-  el,
-  dispatchEvent,
   expect,
   iit,
   inject,
   beforeEachProviders,
   it,
   xit,
-  SpyObject,
-  proxy
-} from '@angular/core/testing/testing_internal';
-
+} from '@angular/core/testing';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {DomSharedStylesHost} from '@angular/platform-browser/src/dom/shared_styles_host';
 

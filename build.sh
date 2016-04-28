@@ -15,8 +15,7 @@ for PACKAGE in \
   platform-server \
   http \
   router \
-  upgrade \
-  testing
+  upgrade
 do
   SRCDIR=./modules/@angular/${PACKAGE}
   DESTDIR=./dist/packages-dist/${PACKAGE}
