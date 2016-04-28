@@ -403,7 +403,7 @@ main() {
             inject([TestComponentBuilder, AsyncTestCompleter],
                 (TestComponentBuilder tcb, async) {
               var t = '''<select>
-                      <option *ngFor="#city of list" [value]="city[\'id\']">
+                      <option *ngFor="let city of list" [value]="city[\'id\']">
                         {{ city[\'name\'] }}
                       </option>
                     </select>''';
@@ -460,7 +460,7 @@ main() {
                 inject([TestComponentBuilder], (TestComponentBuilder tcb) {
               var t = '''<div [ngFormModel]="form">
                       <select ngControl="city">
-                        <option *ngFor="#c of data" [value]="c"></option>
+                        <option *ngFor="let c of data" [value]="c"></option>
                       </select>
                   </div>''';
               var fixture;
@@ -483,7 +483,7 @@ main() {
                 (TestComponentBuilder tcb, async) {
               var t = '''<div>
                       <select [(ngModel)]="selectedCity">
-                        <option *ngFor="#c of list" [ngValue]="c">{{c[\'name\']}}</option>
+                        <option *ngFor="let c of list" [ngValue]="c">{{c[\'name\']}}</option>
                       </select>
                   </div>''';
               tcb
@@ -518,7 +518,7 @@ main() {
                 (TestComponentBuilder tcb, async) {
               var t = '''<div>
                       <select [(ngModel)]="selectedCity">
-                        <option *ngFor="#c of list" [ngValue]="c">{{c[\'name\']}}</option>
+                        <option *ngFor="let c of list" [ngValue]="c">{{c[\'name\']}}</option>
                       </select>
                   </div>''';
               tcb
@@ -549,7 +549,7 @@ main() {
                 (TestComponentBuilder tcb, async) {
               var t = '''<div>
                       <select [(ngModel)]="selectedCity">
-                        <option *ngFor="#c of list" [ngValue]="c">{{c}}</option>
+                        <option *ngFor="let c of list" [ngValue]="c">{{c}}</option>
                       </select>
                   </div>''';
               tcb
@@ -577,7 +577,7 @@ main() {
                 (TestComponentBuilder tcb, async) {
               var t = '''<div>
                       <select [(ngModel)]="selectedCity">
-                        <option *ngFor="#c of list; trackBy:customTrackBy" [ngValue]="c">{{c}}</option>
+                        <option *ngFor="let c of list; trackBy:customTrackBy" [ngValue]="c">{{c}}</option>
                       </select>
                   </div>''';
               tcb
@@ -608,7 +608,7 @@ main() {
                 (TestComponentBuilder tcb, async) {
               var t = '''<div>
                       <select [(ngModel)]="selectedCity">
-                        <option *ngFor="#c of list" [ngValue]="c">{{c}}</option>
+                        <option *ngFor="let c of list" [ngValue]="c">{{c}}</option>
                       </select>
                   </div>''';
               tcb
@@ -639,7 +639,7 @@ main() {
                 (TestComponentBuilder tcb, async) {
               var t = '''<div>
                       <select [(ngModel)]="selectedCity">
-                        <option *ngFor="#c of list" [ngValue]="c">{{c[\'name\']}}</option>
+                        <option *ngFor="let c of list" [ngValue]="c">{{c[\'name\']}}</option>
                       </select>
                   </div>''';
               tcb

@@ -400,7 +400,7 @@ main() {
       }));
       it("should read locals", fakeAsync(() {
         var ctx = createCompFixture(
-            "<template testLocals var-local=\"someLocal\">{{local}}</template>");
+            "<template testLocals let-local=\"someLocal\">{{local}}</template>");
         ctx.detectChanges(false);
         expect(renderLog.log).toEqual(["{{someLocalValue}}"]);
       }));
@@ -530,7 +530,8 @@ main() {
         it("should throw when trying to assign to a local", fakeAsync(() {
           expect(() {
             _bindSimpleProp("(event)=\"\$event=1\"");
-          }).toThrowError(new RegExp("Cannot reassign a variable binding"));
+          }).toThrowError(
+              new RegExp("Cannot assign to a reference or variable!"));
         }));
         it("should support short-circuiting", fakeAsync(() {
           var ctx = _bindSimpleProp("(event)=\"true ? a = a + 1 : a = a + 1\"");
@@ -553,7 +554,7 @@ main() {
       describe("reading directives", () {
         it("should read directive properties", fakeAsync(() {
           var ctx = createCompFixture(
-              "<div testDirective [a]=\"42\" var-dir=\"testDirective\" [someProp]=\"dir.a\"></div>");
+              "<div testDirective [a]=\"42\" ref-dir=\"testDirective\" [someProp]=\"dir.a\"></div>");
           ctx.detectChanges(false);
           expect(renderLog.loggedValues).toEqual([42]);
         }));
