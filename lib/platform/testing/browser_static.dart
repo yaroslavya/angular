@@ -27,14 +27,22 @@ import "package:angular2/src/mock/ng_zone_mock.dart" show MockNgZone;
 import "package:angular2/src/platform/browser/xhr_impl.dart" show XHRImpl;
 import "package:angular2/compiler.dart" show XHR;
 import "package:angular2/src/testing/test_component_builder.dart"
-    show TestComponentBuilder;
+    show
+        TestComponentBuilder,
+        ComponentFixtureAutoDetect,
+        ComponentFixtureNoNgZone;
 import "package:angular2/src/testing/utils.dart" show BrowserDetection;
 import "package:angular2/platform/common_dom.dart" show ELEMENT_PROBE_PROVIDERS;
+import "package:angular2/src/facade/lang.dart" show IS_DART;
 import "package:angular2/src/testing/utils.dart" show Log;
 
 initBrowserTests() {
   BrowserDomAdapter.makeCurrent();
   BrowserDetection.setup();
+}
+
+NgZone createNgZone() {
+  return IS_DART ? new MockNgZone() : new NgZone(enableLongStackTrace: true);
 }
 
 /**
@@ -51,7 +59,7 @@ const List<dynamic> ADDITIONAL_TEST_BROWSER_PROVIDERS = const [
   const Provider(ViewResolver, useClass: MockViewResolver),
   Log,
   TestComponentBuilder,
-  const Provider(NgZone, useClass: MockNgZone),
+  const Provider(NgZone, useFactory: createNgZone),
   const Provider(LocationStrategy, useClass: MockLocationStrategy),
   const Provider(AnimationBuilder, useClass: MockAnimationBuilder)
 ];

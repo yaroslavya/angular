@@ -3,6 +3,7 @@ library angular2.test.web_workers.shared.message_bus_spec;
 import "package:angular2/testing_internal.dart"
     show
         AsyncTestCompleter,
+        withProviders,
         inject,
         describe,
         it,
@@ -10,6 +11,7 @@ import "package:angular2/testing_internal.dart"
         beforeEach,
         beforeEachProviders,
         SpyObject;
+import "package:angular2/src/core/di.dart" show provide;
 import "package:angular2/src/facade/async.dart"
     show ObservableWrapper, TimerWrapper;
 import "package:angular2/src/web_workers/shared/message_bus.dart"
@@ -110,12 +112,11 @@ main() {
     flushMessages(dynamic /* () => void */ fn) {
       TimerWrapper.setTimeout(fn, 50);
     }
-    beforeEach(() {
-      bus = createConnectedMessageBus();
-    });
     it(
         "should buffer messages and wait for the zone to exit before sending",
-        inject([AsyncTestCompleter, NgZone], (async, MockNgZone zone) {
+        withProviders(() => [provide(NgZone, useClass: MockNgZone)])
+            .inject([AsyncTestCompleter, NgZone], (async, MockNgZone zone) {
+          bus = createConnectedMessageBus();
           setup(true, zone);
           var wasCalled = false;
           ObservableWrapper.subscribe(bus.from(CHANNEL), (message) {
@@ -135,6 +136,7 @@ main() {
     it(
         "should send messages immediatly when run outside the zone",
         inject([AsyncTestCompleter, NgZone], (async, MockNgZone zone) {
+          bus = createConnectedMessageBus();
           setup(false, zone);
           var wasCalled = false;
           ObservableWrapper.subscribe(bus.from(CHANNEL), (message) {

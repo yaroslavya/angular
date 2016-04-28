@@ -166,7 +166,7 @@ class InjectSetupWrapper {
   Function inject(List<dynamic> tokens, Function fn) {
     return () {
       this._addProviders();
-      return inject(tokens, fn)();
+      return inject_impl(tokens, fn)();
     };
   }
 
@@ -174,7 +174,7 @@ class InjectSetupWrapper {
   Function injectAsync(List<dynamic> tokens, Function fn) {
     return () {
       this._addProviders();
-      return injectAsync(tokens, fn)();
+      return injectAsync_impl(tokens, fn)();
     };
   }
 }
@@ -206,3 +206,8 @@ withProviders(dynamic /* () => any */ providers) {
 Function injectAsync(List<dynamic> tokens, Function fn) {
   return async(inject(tokens, fn));
 }
+// This is to ensure inject(Async) within InjectSetupWrapper doesn't call itself
+
+// when transpiled to Dart.
+var inject_impl = inject;
+var injectAsync_impl = injectAsync;

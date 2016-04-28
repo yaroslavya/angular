@@ -166,7 +166,7 @@ main() {
             var rootEl = createRootElement(doc, "child-cmp");
             DOM.appendChild(doc.body, rootEl);
             loader.loadAsRoot(ChildComp, null, injector).then((componentRef) {
-              var el = new ComponentFixture(componentRef);
+              var el = new ComponentFixture(componentRef, null, false);
               expect(rootEl.parentNode).toBe(doc.body);
               el.detectChanges();
               expect(rootEl).toHaveText("hello");
