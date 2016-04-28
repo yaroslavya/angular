@@ -7,20 +7,15 @@ import { ReflectorReader } from 'angular2/src/core/reflection/reflector_reader';
  */
 export interface StaticReflectorHost {
     /**
-     *  Return a ModuleMetadata for the given module.
+     *  Return a ModuleMetadata for the give module.
      *
-     * @param moduleId is a string identifier for a module as an absolute path.
+     * @param moduleId is a string identifier for a module in the form that would expected in a
+     *                 module import of an import statement.
      * @returns the metadata for the given module.
      */
     getMetadataFor(moduleId: string): {
         [key: string]: any;
     };
-    /**
-     * Resolve a module from an import statement form to an absolute path.
-     * @param moduleName the location imported from
-     * @param containingFile for relative imports, the path of the file containing the import
-     */
-    resolveModule(moduleName: string, containingFile?: string): string;
 }
 /**
  * A token representing the a reference to a static type.
@@ -46,10 +41,10 @@ export declare class StaticReflector implements ReflectorReader {
     constructor(host: StaticReflectorHost);
     importUri(typeOrFunc: any): string;
     /**
-     * getStaticType produces a Type whose metadata is known but whose implementation is not loaded.
+     * getStatictype produces a Type whose metadata is known but whose implementation is not loaded.
      * All types passed to the StaticResolver should be pseudo-types returned by this method.
      *
-     * @param moduleId the module identifier as an absolute path.
+     * @param moduleId the module identifier as would be passed to an import statement.
      * @param name the name of the type.
      */
     getStaticType(moduleId: string, name: string): StaticType;
@@ -65,11 +60,9 @@ export declare class StaticReflector implements ReflectorReader {
     private getDecoratorParameter(moduleContext, expression, index);
     private getPropertyMetadata(moduleContext, value);
     private getMemberData(moduleContext, member);
-    /**
-     * @param module an absolute path to a module file.
-     */
     getModuleMetadata(module: string): {
         [key: string]: any;
     };
     private getTypeMetadata(type);
+    private normalizeModuleName(from, to);
 }
