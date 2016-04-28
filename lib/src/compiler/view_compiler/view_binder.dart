@@ -8,7 +8,6 @@ import "../template_ast.dart"
         NgContentAst,
         EmbeddedTemplateAst,
         ElementAst,
-        ReferenceAst,
         VariableAst,
         BoundEventAst,
         BoundElementPropertyAst,
@@ -127,10 +126,6 @@ class ViewBinderVisitor implements TemplateAstVisitor {
 
   dynamic visitEvent(
       BoundEventAst ast, Map<String, BoundEventAst> eventTargetAndNames) {
-    return null;
-  }
-
-  dynamic visitReference(ReferenceAst ast, dynamic ctx) {
     return null;
   }
 

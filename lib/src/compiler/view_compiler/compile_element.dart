@@ -7,8 +7,7 @@ import "compile_view.dart" show CompileView;
 import "package:angular2/src/facade/lang.dart" show isPresent, isBlank;
 import "package:angular2/src/facade/collection.dart"
     show ListWrapper, StringMapWrapper;
-import "../template_ast.dart"
-    show TemplateAst, ProviderAst, ProviderAstType, ReferenceAst;
+import "../template_ast.dart" show TemplateAst, ProviderAst, ProviderAstType;
 import "../compile_metadata.dart"
     show
         CompileTokenMap,
@@ -51,9 +50,10 @@ class CompileElement extends CompileNode {
   List<ProviderAst> _resolvedProvidersArray;
   bool hasViewContainer;
   bool hasEmbeddedView;
+  Map<String, CompileTokenMetadata> variableTokens;
   static CompileElement createNull() {
     return new CompileElement(
-        null, null, null, null, null, null, [], [], false, false, []);
+        null, null, null, null, null, null, [], [], false, false, {});
   }
 
   o.Expression _compViewExpr = null;
@@ -68,7 +68,6 @@ class CompileElement extends CompileNode {
   List<List<o.Expression>> contentNodesByNgContentIndex = null;
   CompileView embeddedView;
   List<o.Expression> directiveInstances;
-  Map<String, CompileTokenMetadata> referenceTokens;
   CompileElement(
       CompileElement parent,
       CompileView view,
@@ -80,11 +79,9 @@ class CompileElement extends CompileNode {
       this._resolvedProvidersArray,
       this.hasViewContainer,
       this.hasEmbeddedView,
-      List<ReferenceAst> references)
+      this.variableTokens)
       : super(parent, view, nodeIndex, renderNode, sourceAst) {
     /* super call moved to initializer */;
-    this.referenceTokens = {};
-    references.forEach((ref) => this.referenceTokens[ref.name] = ref.value);
     this.elementRef =
         o.importExpr(Identifiers.ElementRef).instantiate([this.renderNode]);
     this
@@ -228,15 +225,15 @@ class CompileElement extends CompileNode {
               .map((query) => new _QueryWithRead(query, resolvedProvider.token))
               .toList());
     });
-    StringMapWrapper.forEach(this.referenceTokens, (_, varName) {
-      var token = this.referenceTokens[varName];
+    StringMapWrapper.forEach(this.variableTokens, (_, varName) {
+      var token = this.variableTokens[varName];
       var varValue;
       if (isPresent(token)) {
         varValue = this._instances.get(token);
       } else {
         varValue = this.renderNode;
       }
-      this.view.locals[varName] = varValue;
+      this.view.variables[varName] = varValue;
       var varToken = new CompileTokenMetadata(value: varName);
       ListWrapper.addAll(
           queriesWithReads,
@@ -251,8 +248,8 @@ class CompileElement extends CompileNode {
         // query for an identifier
         value = this._instances.get(queryWithRead.read);
       } else {
-        // query for a reference
-        var token = this.referenceTokens[queryWithRead.read.value];
+        // query for a variable
+        var token = this.variableTokens[queryWithRead.read.value];
         if (isPresent(token)) {
           value = this._instances.get(token);
         } else {
@@ -324,6 +321,14 @@ class CompileElement extends CompileNode {
         .map((resolvedProvider) =>
             createDiTokenExpression(resolvedProvider.token))
         .toList();
+  }
+
+  List<String> getDeclaredVariablesNames() {
+    var res = [];
+    StringMapWrapper.forEach(this.variableTokens, (_, key) {
+      res.add(key);
+    });
+    return res;
   }
 
   List<CompileQuery> _getQueriesFor(CompileTokenMetadata token) {

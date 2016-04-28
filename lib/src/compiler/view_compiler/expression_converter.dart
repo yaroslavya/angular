@@ -11,7 +11,7 @@ var IMPLICIT_RECEIVER = o.variable("#implicit");
 abstract class NameResolver {
   o.Expression callPipe(
       String name, o.Expression input, List<o.Expression> args);
-  o.Expression getLocal(String name);
+  o.Expression getVariable(String name);
   o.Expression createLiteralArray(List<o.Expression> values);
   o.Expression createLiteralMap(
       List<List<dynamic /* String | o . Expression */ >> values);
@@ -216,7 +216,7 @@ class _AstToIrVisitor implements cdAst.AstVisitor {
     var result = null;
     var receiver = ast.receiver.visit(this, _Mode.Expression);
     if (identical(receiver, IMPLICIT_RECEIVER)) {
-      var varExpr = this._nameResolver.getLocal(ast.name);
+      var varExpr = this._nameResolver.getVariable(ast.name);
       if (isPresent(varExpr)) {
         result = varExpr.callFn(args);
       } else {
@@ -238,7 +238,7 @@ class _AstToIrVisitor implements cdAst.AstVisitor {
     var result = null;
     var receiver = ast.receiver.visit(this, _Mode.Expression);
     if (identical(receiver, IMPLICIT_RECEIVER)) {
-      result = this._nameResolver.getLocal(ast.name);
+      result = this._nameResolver.getVariable(ast.name);
       if (isBlank(result)) {
         receiver = this._implicitReceiver;
       }
@@ -252,9 +252,9 @@ class _AstToIrVisitor implements cdAst.AstVisitor {
   dynamic visitPropertyWrite(cdAst.PropertyWrite ast, _Mode mode) {
     o.Expression receiver = ast.receiver.visit(this, _Mode.Expression);
     if (identical(receiver, IMPLICIT_RECEIVER)) {
-      var varExpr = this._nameResolver.getLocal(ast.name);
+      var varExpr = this._nameResolver.getVariable(ast.name);
       if (isPresent(varExpr)) {
-        throw new BaseException("Cannot assign to a reference or variable!");
+        throw new BaseException("Cannot reassign a variable binding");
       }
       receiver = this._implicitReceiver;
     }
