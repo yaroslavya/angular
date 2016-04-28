@@ -1,8 +1,9 @@
 library angular2.src.compiler.static_reflector;
 
-import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
+import "package:angular2/src/facade/collection.dart"
+    show StringMapWrapper, ListWrapper;
 import "package:angular2/src/facade/lang.dart"
-    show isArray, isPresent, isPrimitive;
+    show isArray, isPresent, isBlank, isPrimitive, isStringMap, FunctionWrapper;
 import "package:angular2/src/core/metadata.dart"
     show
         AttributeMetadata,
@@ -22,6 +23,16 @@ import "package:angular2/src/core/metadata.dart"
         QueryMetadata;
 import "package:angular2/src/core/reflection/reflector_reader.dart"
     show ReflectorReader;
+import "package:angular2/src/core/reflection/reflection.dart" show reflector;
+import "package:angular2/src/core/di/provider.dart" show Provider;
+import "package:angular2/src/core/di/metadata.dart"
+    show
+        HostMetadata,
+        OptionalMetadata,
+        InjectableMetadata,
+        SelfMetadata,
+        SkipSelfMetadata,
+        InjectMetadata;
 
 /**
  * The host of the static resolver is expected to be able to provide module metadata in the form of
@@ -36,13 +47,14 @@ abstract class StaticReflectorHost {
    * 
    * 
    */
-  Map<String, dynamic> getMetadataFor(String moduleId);
+  Map<String, dynamic> getMetadataFor(String modulePath);
   /**
    * Resolve a module from an import statement form to an absolute path.
    * 
    * 
    */
   String resolveModule(String moduleName, [String containingFile]);
+  dynamic findDeclaration(String modulePath, String symbolName);
 }
 
 /**
@@ -67,6 +79,8 @@ class StaticReflector implements ReflectorReader {
   var propertyCache = new Map<StaticType, Map<String, dynamic>>();
   var parameterCache = new Map<StaticType, List<dynamic>>();
   var metadataCache = new Map<String, Map<String, dynamic>>();
+  var conversionMap = new Map<StaticType,
+      dynamic /* (moduleContext: string, args: any[]) => any */ >();
   StaticReflector(this.host) {
     this.initializeConversionMap();
   }
@@ -96,16 +110,13 @@ class StaticReflector implements ReflectorReader {
     if (!isPresent(annotations)) {
       var classMetadata = this.getTypeMetadata(type);
       if (isPresent(classMetadata["decorators"])) {
-        annotations = ((classMetadata["decorators"] as List<dynamic>))
-            .map((decorator) =>
-                this.convertKnownDecorator(type.moduleId, decorator))
-            .toList()
-            .where((decorator) => isPresent(decorator))
-            .toList();
+        annotations =
+            this.simplify(type.moduleId, classMetadata["decorators"], false);
       } else {
         annotations = [];
       }
-      this.annotationCache[type] = annotations;
+      this.annotationCache[type] =
+          annotations.where((ann) => isPresent(ann)).toList();
     }
     return annotations;
   }
@@ -114,11 +125,17 @@ class StaticReflector implements ReflectorReader {
     var propMetadata = this.propertyCache[type];
     if (!isPresent(propMetadata)) {
       var classMetadata = this.getTypeMetadata(type);
-      propMetadata =
-          this.getPropertyMetadata(type.moduleId, classMetadata["members"]);
-      if (!isPresent(propMetadata)) {
-        propMetadata = {};
-      }
+      var members = isPresent(classMetadata) ? classMetadata["members"] : {};
+      propMetadata = mapStringMap(members, (propData, propName) {
+        var prop = ((propData as List<dynamic>)).firstWhere(
+            (a) => a["___symbolic"] == "property",
+            orElse: () => null);
+        if (isPresent(prop) && isPresent(prop["decorators"])) {
+          return this.simplify(type.moduleId, prop["decorators"], false);
+        } else {
+          return [];
+        }
+      });
       this.propertyCache[type] = propMetadata;
     }
     return propMetadata;
@@ -128,17 +145,32 @@ class StaticReflector implements ReflectorReader {
     var parameters = this.parameterCache[type];
     if (!isPresent(parameters)) {
       var classMetadata = this.getTypeMetadata(type);
-      if (isPresent(classMetadata)) {
-        var members = classMetadata["members"];
-        if (isPresent(members)) {
-          var ctorData = members["___ctor__"];
-          if (isPresent(ctorData)) {
-            var ctor = ((ctorData as List<dynamic>)).firstWhere(
-                (a) => identical(a["___symbolic"], "constructor"),
-                orElse: () => null);
-            parameters = this.simplify(type.moduleId, ctor["parameters"]);
+      var members = isPresent(classMetadata) ? classMetadata["members"] : null;
+      var ctorData = isPresent(members) ? members["___ctor__"] : null;
+      if (isPresent(ctorData)) {
+        var ctor = ((ctorData as List<dynamic>)).firstWhere(
+            (a) => a["___symbolic"] == "constructor",
+            orElse: () => null);
+        var parameterTypes =
+            (this.simplify(type.moduleId, ctor["parameters"], false)
+                as List<dynamic>);
+        var parameterDecorators =
+            (this.simplify(type.moduleId, ctor["parameterDecorators"], false)
+                as List<dynamic>);
+        parameters = [];
+        ListWrapper.forEachWithIndex(parameterTypes, (paramType, index) {
+          var nestedResult = [];
+          if (isPresent(paramType)) {
+            nestedResult.add(paramType);
           }
-        }
+          var decorators = isPresent(parameterDecorators)
+              ? parameterDecorators[index]
+              : null;
+          if (isPresent(decorators)) {
+            ListWrapper.addAll(nestedResult, decorators);
+          }
+          parameters.add(nestedResult);
+        });
       }
       if (!isPresent(parameters)) {
         parameters = [];
@@ -148,212 +180,96 @@ class StaticReflector implements ReflectorReader {
     return parameters;
   }
 
-  var conversionMap = new Map<StaticType,
-      dynamic /* (moduleContext: string, expression: any) => any */ >();
-  dynamic initializeConversionMap() {
-    var core_metadata = this.host.resolveModule("angular2/src/core/metadata");
-    var conversionMap = this.conversionMap;
-    conversionMap[this.getStaticType(core_metadata, "Directive")] =
-        (moduleContext, expression) {
-      var p0 = this.getDecoratorParameter(moduleContext, expression, 0);
-      if (!isPresent(p0)) {
-        p0 = {};
-      }
-      return new DirectiveMetadata(
-          selector: p0["selector"],
-          inputs: p0["inputs"],
-          outputs: p0["outputs"],
-          events: p0["events"],
-          host: p0["host"],
-          bindings: p0["bindings"],
-          providers: p0["providers"],
-          exportAs: p0["exportAs"],
-          queries: p0["queries"]);
-    };
-    conversionMap[this.getStaticType(core_metadata, "Component")] =
-        (moduleContext, expression) {
-      var p0 = this.getDecoratorParameter(moduleContext, expression, 0);
-      if (!isPresent(p0)) {
-        p0 = {};
-      }
-      return new ComponentMetadata(
-          selector: p0["selector"],
-          inputs: p0["inputs"],
-          outputs: p0["outputs"],
-          properties: p0["properties"],
-          events: p0["events"],
-          host: p0["host"],
-          exportAs: p0["exportAs"],
-          moduleId: p0["moduleId"],
-          bindings: p0["bindings"],
-          providers: p0["providers"],
-          viewBindings: p0["viewBindings"],
-          viewProviders: p0["viewProviders"],
-          changeDetection: p0["changeDetection"],
-          queries: p0["queries"],
-          templateUrl: p0["templateUrl"],
-          template: p0["template"],
-          styleUrls: p0["styleUrls"],
-          styles: p0["styles"],
-          directives: p0["directives"],
-          pipes: p0["pipes"],
-          encapsulation: p0["encapsulation"]);
-    };
-    conversionMap[this.getStaticType(core_metadata, "Input")] =
-        (moduleContext, expression) => new InputMetadata(
-            this.getDecoratorParameter(moduleContext, expression, 0));
-    conversionMap[this.getStaticType(core_metadata, "Output")] =
-        (moduleContext, expression) => new OutputMetadata(
-            this.getDecoratorParameter(moduleContext, expression, 0));
-    conversionMap[this.getStaticType(core_metadata, "View")] =
-        (moduleContext, expression) {
-      var p0 = this.getDecoratorParameter(moduleContext, expression, 0);
-      if (!isPresent(p0)) {
-        p0 = {};
-      }
-      return new ViewMetadata(
-          templateUrl: p0["templateUrl"],
-          template: p0["template"],
-          directives: p0["directives"],
-          pipes: p0["pipes"],
-          encapsulation: p0["encapsulation"],
-          styles: p0["styles"]);
-    };
-    conversionMap[this.getStaticType(core_metadata, "Attribute")] =
-        (moduleContext, expression) => new AttributeMetadata(
-            this.getDecoratorParameter(moduleContext, expression, 0));
-    conversionMap[this.getStaticType(core_metadata, "Query")] =
-        (moduleContext, expression) {
-      var p0 = this.getDecoratorParameter(moduleContext, expression, 0);
-      var p1 = this.getDecoratorParameter(moduleContext, expression, 1);
-      if (!isPresent(p1)) {
-        p1 = {};
-      }
-      return new QueryMetadata(p0,
-          descendants: p1.descendants, first: p1.first);
-    };
-    conversionMap[this.getStaticType(core_metadata, "ContentChildren")] =
-        (moduleContext, expression) => new ContentChildrenMetadata(
-            this.getDecoratorParameter(moduleContext, expression, 0));
-    conversionMap[this.getStaticType(core_metadata, "ContentChild")] =
-        (moduleContext, expression) => new ContentChildMetadata(
-            this.getDecoratorParameter(moduleContext, expression, 0));
-    conversionMap[this.getStaticType(core_metadata, "ViewChildren")] =
-        (moduleContext, expression) => new ViewChildrenMetadata(
-            this.getDecoratorParameter(moduleContext, expression, 0));
-    conversionMap[this.getStaticType(core_metadata, "ViewChild")] =
-        (moduleContext, expression) => new ViewChildMetadata(
-            this.getDecoratorParameter(moduleContext, expression, 0));
-    conversionMap[this.getStaticType(core_metadata, "ViewQuery")] =
-        (moduleContext, expression) {
-      var p0 = this.getDecoratorParameter(moduleContext, expression, 0);
-      var p1 = this.getDecoratorParameter(moduleContext, expression, 1);
-      if (!isPresent(p1)) {
-        p1 = {};
-      }
-      return new ViewQueryMetadata(p0,
-          descendants: p1["descendants"], first: p1["first"]);
-    };
-    conversionMap[this.getStaticType(core_metadata, "Pipe")] =
-        (moduleContext, expression) {
-      var p0 = this.getDecoratorParameter(moduleContext, expression, 0);
-      if (!isPresent(p0)) {
-        p0 = {};
-      }
-      return new PipeMetadata(name: p0["name"], pure: p0["pure"]);
-    };
-    conversionMap[this.getStaticType(core_metadata, "HostBinding")] =
-        (moduleContext, expression) => new HostBindingMetadata(
-            this.getDecoratorParameter(moduleContext, expression, 0));
-    conversionMap[this.getStaticType(core_metadata, "HostListener")] =
-        (moduleContext, expression) => new HostListenerMetadata(
-            this.getDecoratorParameter(moduleContext, expression, 0),
-            this.getDecoratorParameter(moduleContext, expression, 1));
-    return null;
-  }
-
-  dynamic convertKnownDecorator(
-      String moduleContext, Map<String, dynamic> expression) {
-    var converter =
-        this.conversionMap[this.getDecoratorType(moduleContext, expression)];
-    if (isPresent(converter)) return converter(moduleContext, expression);
-    return null;
-  }
-
-  StaticType getDecoratorType(
-      String moduleContext, Map<String, dynamic> expression) {
-    if (isMetadataSymbolicCallExpression(expression)) {
-      var target = expression["expression"];
-      if (isMetadataSymbolicReferenceExpression(target)) {
-        var moduleId = this.host.resolveModule(target["module"], moduleContext);
-        return this.getStaticType(moduleId, target["name"]);
-      }
-    }
-    return null;
-  }
-
-  dynamic getDecoratorParameter(
-      String moduleContext, Map<String, dynamic> expression, num index) {
-    if (isMetadataSymbolicCallExpression(expression) &&
-        isPresent(expression["arguments"]) &&
-        ((expression["arguments"] as List<dynamic>)).length <= index + 1) {
-      return this.simplify(
-          moduleContext, ((expression["arguments"] as List<dynamic>))[index]);
-    }
-    return null;
-  }
-
-  Map<String, dynamic> getPropertyMetadata(
-      String moduleContext, Map<String, dynamic> value) {
-    if (isPresent(value)) {
-      var result = {};
-      StringMapWrapper.forEach(value, (value, name) {
-        var data = this.getMemberData(moduleContext, value);
-        if (isPresent(data)) {
-          var propertyData = data
-              .where((d) => d["kind"] == "property")
-              .toList()
-              .map((d) => d["directives"])
-              .toList()
-              .fold(
-                  [],
-                  (p, c) => (new List.from(((p as List<dynamic>)))
-                    ..addAll((c as List<dynamic>))));
-          if (propertyData.length != 0) {
-            StringMapWrapper.set(result, name, propertyData);
-          }
+  void registerDecoratorOrConstructor(StaticType type, dynamic ctor,
+      [List<dynamic> crossModuleProps = const []]) {
+    this.conversionMap[type] = (String moduleContext, List<dynamic> args) {
+      var argValues = [];
+      ListWrapper.forEachWithIndex(args, (arg, index) {
+        var argValue;
+        if (isStringMap(arg) && isBlank(arg["___symbolic"])) {
+          argValue = mapStringMap(
+              arg,
+              (value, key) => this.simplify(moduleContext, value,
+                  !identical(crossModuleProps.indexOf(key), -1)));
+        } else {
+          argValue = this.simplify(moduleContext, arg,
+              !identical(crossModuleProps.indexOf(index), -1));
         }
+        argValues.add(argValue);
       });
-      return result;
-    }
-    return {};
+      return FunctionWrapper.apply(reflector.factory(ctor), argValues);
+    };
   }
 
-  // clang-format off
-  List<Map<String, dynamic>> getMemberData(
-      String moduleContext, List<Map<String, dynamic>> member) {
-    // clang-format on
-    var result = [];
-    if (isPresent(member)) {
-      for (var item in member) {
-        result.add({
-          "kind": item["___symbolic"],
-          "directives": isPresent(item["decorators"])
-              ? ((item["decorators"] as List<dynamic>))
-                  .map((decorator) =>
-                      this.convertKnownDecorator(moduleContext, decorator))
-                  .toList()
-                  .where((d) => isPresent(d))
-                  .toList()
-              : null
-        });
-      }
-    }
-    return result;
+  void initializeConversionMap() {
+    var coreDecorators = this.host.resolveModule("angular2/src/core/metadata");
+    var diDecorators =
+        this.host.resolveModule("angular2/src/core/di/decorators");
+    var diMetadata = this.host.resolveModule("angular2/src/core/di/metadata");
+    var provider = this.host.resolveModule("angular2/src/core/di/provider");
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(provider, "Provider"), Provider);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(diDecorators, "Host"), HostMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(diDecorators, "Injectable"), InjectableMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(diDecorators, "Self"), SelfMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(diDecorators, "SkipSelf"), SkipSelfMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(diDecorators, "Inject"), InjectMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(diDecorators, "Optional"), OptionalMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "Attribute"), AttributeMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "Query"), QueryMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "ViewQuery"), ViewQueryMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "ContentChild"),
+        ContentChildMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "ContentChildren"),
+        ContentChildrenMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "ViewChild"), ViewChildMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "ViewChildren"),
+        ViewChildrenMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "Input"), InputMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "Output"), OutputMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "Pipe"), PipeMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "HostBinding"), HostBindingMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "HostListener"),
+        HostListenerMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "Directive"),
+        DirectiveMetadata,
+        ["bindings", "providers"]);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(coreDecorators, "Component"),
+        ComponentMetadata,
+        ["bindings", "providers", "directives", "pipes"]);
+    // Note: Some metadata classes can be used directly with Provider.deps.
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(diMetadata, "HostMetadata"), HostMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(diMetadata, "SelfMetadata"), SelfMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(diMetadata, "SkipSelfMetadata"), SkipSelfMetadata);
+    this.registerDecoratorOrConstructor(
+        this.getStaticType(diMetadata, "OptionalMetadata"), OptionalMetadata);
   }
 
   /** @internal */
-  dynamic simplify(String moduleContext, dynamic value) {
+  dynamic simplify(String moduleContext, dynamic value, bool crossModules) {
     var _this = this;
     dynamic simplify(dynamic expression) {
       if (isPrimitive(expression)) {
@@ -441,28 +357,51 @@ class StaticReflector implements ReflectorReader {
                 return selectTarget[member];
               return null;
             case "reference":
-              var referenceModuleName =
-                  _this.host.resolveModule(expression["module"], moduleContext);
-              var referenceModule =
-                  _this.getModuleMetadata(referenceModuleName);
-              var referenceValue =
-                  referenceModule["metadata"][expression["name"]];
-              if (isClassMetadata(referenceValue)) {
-                // Convert to a pseudo type
-                return _this.getStaticType(
-                    referenceModuleName, expression["name"]);
+              var referenceModuleName;
+              var declarationPath = moduleContext;
+              var declaredName = expression["name"];
+              if (isPresent(expression["module"])) {
+                referenceModuleName = _this.host
+                    .resolveModule(expression["module"], moduleContext);
+                var decl = _this.host
+                    .findDeclaration(referenceModuleName, expression["name"]);
+                declarationPath = decl["declarationPath"];
+                declaredName = decl["declaredName"];
               }
-              return _this.simplify(referenceModuleName, referenceValue);
+              var result;
+              if (crossModules || isBlank(expression["module"])) {
+                var moduleMetadata = _this.getModuleMetadata(declarationPath);
+                var declarationValue = moduleMetadata["metadata"][declaredName];
+                if (isClassMetadata(declarationValue)) {
+                  result = _this.getStaticType(declarationPath, declaredName);
+                } else {
+                  result = _this.simplify(
+                      declarationPath, declarationValue, crossModules);
+                }
+              } else {
+                result = _this.getStaticType(declarationPath, declaredName);
+              }
+              return result;
+            case "new":
             case "call":
-              return null;
+              var target = expression["expression"];
+              var moduleId =
+                  _this.host.resolveModule(target["module"], moduleContext);
+              var decl = _this.host.findDeclaration(moduleId, target["name"]);
+              var staticType = _this.getStaticType(
+                  decl["declarationPath"], decl["declaredName"]);
+              var converter = _this.conversionMap[staticType];
+              var args = expression["arguments"];
+              if (isBlank(args)) {
+                args = [];
+              }
+              return isPresent(converter)
+                  ? converter(moduleContext, args)
+                  : null;
           }
           return null;
         }
-        var result = {};
-        StringMapWrapper.forEach(expression, (value, name) {
-          result[name] = simplify(value);
-        });
-        return result;
+        return mapStringMap(expression, (value, name) => simplify(value));
       }
       return null;
     }
@@ -498,20 +437,18 @@ class StaticReflector implements ReflectorReader {
   }
 }
 
-bool isMetadataSymbolicCallExpression(dynamic expression) {
-  return !isPrimitive(expression) &&
-      !isArray(expression) &&
-      expression["___symbolic"] == "call";
-}
-
-bool isMetadataSymbolicReferenceExpression(dynamic expression) {
-  return !isPrimitive(expression) &&
-      !isArray(expression) &&
-      expression["___symbolic"] == "reference";
-}
-
 bool isClassMetadata(dynamic expression) {
   return !isPrimitive(expression) &&
       !isArray(expression) &&
       expression["___symbolic"] == "class";
+}
+
+Map<String, dynamic> mapStringMap(Map<String, dynamic> input,
+    dynamic /* (value: any, key: string) => any */ transform) {
+  if (isBlank(input)) return {};
+  var result = {};
+  StringMapWrapper.keys(input).forEach((key) {
+    result[key] = transform(input[key], key);
+  });
+  return result;
 }

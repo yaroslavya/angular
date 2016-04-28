@@ -1,15 +1,31 @@
 library angular2.test.compiler.static_reflector_spec;
 
-import "package:angular2/testing_internal.dart" show describe, it, expect;
+import "package:angular2/testing_internal.dart"
+    show describe, it, iit, expect, ddescribe, beforeEach;
+import "package:angular2/src/facade/lang.dart" show IS_DART;
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
 import "package:angular2/src/compiler/static_reflector.dart"
     show StaticReflector, StaticReflectorHost;
 
 main() {
+  // Static reflector is not supported in Dart
+
+  // as we use reflection to create objects.
+  if (IS_DART) return;
   describe("StaticReflector", () {
+    StaticReflectorHost host;
+    StaticReflector reflector;
+    beforeEach(() {
+      host = new MockReflectorHost();
+      reflector = new StaticReflector(host);
+    });
+    singleModuleSimplify(String moduleContext, dynamic value) {
+      return reflector.simplify(moduleContext, value, false);
+    }
+    crossModuleSimplify(String moduleContext, dynamic value) {
+      return reflector.simplify(moduleContext, value, true);
+    }
     it("should get annotations for NgFor", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
       var NgFor = reflector.getStaticType(
           host.resolveModule("angular2/src/common/directives/ng_for"), "NgFor");
       var annotations = reflector.annotations(NgFor);
@@ -20,8 +36,6 @@ main() {
           .toEqual(["ngForTrackBy", "ngForOf", "ngForTemplate"]);
     });
     it("should get constructor for NgFor", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
       var NgFor = reflector.getStaticType(
           host.resolveModule("angular2/src/common/directives/ng_for"), "NgFor");
       var ViewContainerRef = reflector.getStaticType(
@@ -39,73 +53,66 @@ main() {
               "angular2/src/core/change_detection/change_detector_ref"),
           "ChangeDetectorRef");
       var parameters = reflector.parameters(NgFor);
-      expect(parameters).toEqual(
-          [ViewContainerRef, TemplateRef, IterableDiffers, ChangeDetectorRef]);
+      expect(parameters).toEqual([
+        [ViewContainerRef],
+        [TemplateRef],
+        [IterableDiffers],
+        [ChangeDetectorRef]
+      ]);
     });
     it("should get annotations for HeroDetailComponent", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
       var HeroDetailComponent = reflector.getStaticType(
           "/src/app/hero-detail.component.ts", "HeroDetailComponent");
       var annotations = reflector.annotations(HeroDetailComponent);
       expect(annotations.length).toEqual(1);
       var annotation = annotations[0];
       expect(annotation.selector).toEqual("my-hero-detail");
+      expect(annotation.directives).toEqual([
+        [
+          reflector.getStaticType(
+              host.resolveModule("angular2/src/common/directives/ng_for"),
+              "NgFor")
+        ]
+      ]);
     });
     it("should get and empty annotation list for an unknown class", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
       var UnknownClass =
           reflector.getStaticType("/src/app/app.component.ts", "UnknownClass");
       var annotations = reflector.annotations(UnknownClass);
       expect(annotations).toEqual([]);
     });
     it("should get propMetadata for HeroDetailComponent", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
       var HeroDetailComponent = reflector.getStaticType(
           "/src/app/hero-detail.component.ts", "HeroDetailComponent");
       var props = reflector.propMetadata(HeroDetailComponent);
       expect(props["hero"]).toBeTruthy();
     });
     it("should get an empty object from propMetadata for an unknown class", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
       var UnknownClass =
           reflector.getStaticType("/src/app/app.component.ts", "UnknownClass");
       var properties = reflector.propMetadata(UnknownClass);
       expect(properties).toEqual({});
     });
     it("should get empty parameters list for an unknown class ", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
       var UnknownClass =
           reflector.getStaticType("/src/app/app.component.ts", "UnknownClass");
       var parameters = reflector.parameters(UnknownClass);
       expect(parameters).toEqual([]);
     });
     it("should simplify primitive into itself", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify("", 1)).toBe(1);
-      expect(reflector.simplify("", true)).toBe(true);
-      expect(reflector.simplify("", "some value")).toBe("some value");
+      expect(singleModuleSimplify("", 1)).toBe(1);
+      expect(singleModuleSimplify("", true)).toBe(true);
+      expect(singleModuleSimplify("", "some value")).toBe("some value");
     });
     it("should simplify an array into a copy of the array", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify("", [1, 2, 3])).toEqual([1, 2, 3]);
+      expect(singleModuleSimplify("", [1, 2, 3])).toEqual([1, 2, 3]);
     });
     it("should simplify an object to a copy of the object", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
       var expr = {"a": 1, "b": 2, "c": 3};
-      expect(reflector.simplify("", expr)).toEqual(expr);
+      expect(singleModuleSimplify("", expr)).toEqual(expr);
     });
     it("should simplify &&", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -114,7 +121,7 @@ main() {
                 "right": true
               })))
           .toBe(true);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -123,7 +130,7 @@ main() {
                 "right": false
               })))
           .toBe(false);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -132,7 +139,7 @@ main() {
                 "right": true
               })))
           .toBe(false);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -143,9 +150,7 @@ main() {
           .toBe(false);
     });
     it("should simplify ||", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -154,7 +159,7 @@ main() {
                 "right": true
               })))
           .toBe(true);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -163,7 +168,7 @@ main() {
                 "right": false
               })))
           .toBe(true);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -172,7 +177,7 @@ main() {
                 "right": true
               })))
           .toBe(true);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -183,9 +188,7 @@ main() {
           .toBe(false);
     });
     it("should simplify &", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -194,7 +197,7 @@ main() {
                 "right": 0x0F
               })))
           .toBe(0x22 & 0x0F);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -205,9 +208,7 @@ main() {
           .toBe(0x22 & 0xF0);
     });
     it("should simplify |", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -216,7 +217,7 @@ main() {
                 "right": 0x0F
               })))
           .toBe(0x22 | 0x0F);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -227,9 +228,7 @@ main() {
           .toBe(0x22 | 0xF0);
     });
     it("should simplify ^", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -238,7 +237,7 @@ main() {
                 "right": 0x0F
               })))
           .toBe(0x22 | 0x0F);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -249,9 +248,7 @@ main() {
           .toBe(0x22 | 0xF0);
     });
     it("should simplify ==", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -260,7 +257,7 @@ main() {
                 "right": 0x22
               })))
           .toBe(0x22 == 0x22);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -271,9 +268,7 @@ main() {
           .toBe(0x22 == 0xF0);
     });
     it("should simplify !=", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -282,7 +277,7 @@ main() {
                 "right": 0x22
               })))
           .toBe(0x22 != 0x22);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -293,9 +288,7 @@ main() {
           .toBe(0x22 != 0xF0);
     });
     it("should simplify ===", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -304,7 +297,7 @@ main() {
                 "right": 0x22
               })))
           .toBe(identical(0x22, 0x22));
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -315,9 +308,7 @@ main() {
           .toBe(identical(0x22, 0xF0));
     });
     it("should simplify !==", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -326,7 +317,7 @@ main() {
                 "right": 0x22
               })))
           .toBe(!identical(0x22, 0x22));
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -337,9 +328,7 @@ main() {
           .toBe(!identical(0x22, 0xF0));
     });
     it("should simplify >", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -348,7 +337,7 @@ main() {
                 "right": 1
               })))
           .toBe(1 > 1);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -357,7 +346,7 @@ main() {
                 "right": 0
               })))
           .toBe(1 > 0);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -368,9 +357,7 @@ main() {
           .toBe(0 > 1);
     });
     it("should simplify >=", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -379,7 +366,7 @@ main() {
                 "right": 1
               })))
           .toBe(1 >= 1);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -388,7 +375,7 @@ main() {
                 "right": 0
               })))
           .toBe(1 >= 0);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -399,9 +386,7 @@ main() {
           .toBe(0 >= 1);
     });
     it("should simplify <=", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -410,7 +395,7 @@ main() {
                 "right": 1
               })))
           .toBe(1 <= 1);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -419,7 +404,7 @@ main() {
                 "right": 0
               })))
           .toBe(1 <= 0);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -430,9 +415,7 @@ main() {
           .toBe(0 <= 1);
     });
     it("should simplify <", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -441,7 +424,7 @@ main() {
                 "right": 1
               })))
           .toBe(1 < 1);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -450,7 +433,7 @@ main() {
                 "right": 0
               })))
           .toBe(1 < 0);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -461,9 +444,7 @@ main() {
           .toBe(0 < 1);
     });
     it("should simplify <<", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -474,9 +455,7 @@ main() {
           .toBe(0x55 << 2);
     });
     it("should simplify >>", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -487,9 +466,7 @@ main() {
           .toBe(0x55 >> 2);
     });
     it("should simplify +", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -500,9 +477,7 @@ main() {
           .toBe(0x55 + 2);
     });
     it("should simplify -", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -513,9 +488,7 @@ main() {
           .toBe(0x55 - 2);
     });
     it("should simplify *", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -526,9 +499,7 @@ main() {
           .toBe(0x55 * 2);
     });
     it("should simplify /", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -539,9 +510,7 @@ main() {
           .toBe(0x55 / 2);
     });
     it("should simplify %", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "binop",
@@ -552,33 +521,25 @@ main() {
           .toBe(0x55 % 2);
     });
     it("should simplify prefix -", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "", ({"___symbolic": "pre", "operator": "-", "operand": 2})))
           .toBe(-2);
     });
     it("should simplify prefix ~", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "", ({"___symbolic": "pre", "operator": "~", "operand": 2})))
           .toBe(~2);
     });
     it("should simplify prefix !", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "", ({"___symbolic": "pre", "operator": "!", "operand": true})))
           .toBe(!true);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "", ({"___symbolic": "pre", "operator": "!", "operand": false})))
           .toBe(!false);
     });
     it("should simplify an array index", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+      expect(singleModuleSimplify(
               "",
               ({
                 "___symbolic": "index",
@@ -588,19 +549,15 @@ main() {
           .toBe(3);
     });
     it("should simplify an object index", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
       var expr = {
         "___symbolic": "select",
         "expression": {"a": 1, "b": 2, "c": 3},
         "member": "b"
       };
-      expect(reflector.simplify("", expr)).toBe(2);
+      expect(singleModuleSimplify("", expr)).toBe(2);
     });
-    it("should simplify a module reference", () {
-      var host = new MockReflectorHost();
-      var reflector = new StaticReflector(host);
-      expect(reflector.simplify(
+    it("should simplify a module reference across modules", () {
+      expect(crossModuleSimplify(
               "/src/cases",
               ({
                 "___symbolic": "reference",
@@ -609,10 +566,25 @@ main() {
               })))
           .toEqual("s");
     });
+    it("should simplify a module reference without crossing modules", () {
+      expect(singleModuleSimplify(
+              "/src/cases",
+              ({
+                "___symbolic": "reference",
+                "module": "./extern",
+                "name": "s"
+              })))
+          .toEqual(reflector.getStaticType("/src/extern.d.ts", "s"));
+    });
   });
 }
 
 class MockReflectorHost implements StaticReflectorHost {
+  // In tests, assume that symbols are not re-exported
+  dynamic findDeclaration(String modulePath, String symbolName) {
+    return {"declarationPath": modulePath, "declaredName": symbolName};
+  }
+
   String resolveModule(String moduleName, [String containingFile]) {
     List<String> splitPath(String path) {
       return path.split(new RegExp(r'\/|\\'));
@@ -651,6 +623,18 @@ class MockReflectorHost implements StaticReflectorHost {
 
   dynamic getMetadataFor(String moduleId) {
     return {
+      "/tmp/angular2/src/common/forms/directives.d.ts": {
+        "___symbolic": "module",
+        "metadata": {
+          "FORM_DIRECTIVES": [
+            {
+              "___symbolic": "reference",
+              "name": "NgFor",
+              "module": "angular2/src/common/directives/ng_for"
+            }
+          ]
+        }
+      },
       "/tmp/angular2/src/common/directives/ng_for.d.ts": {
         "___symbolic": "module",
         "metadata": {
@@ -744,7 +728,14 @@ class MockReflectorHost implements StaticReflectorHost {
                   {
                     "selector": "my-hero-detail",
                     "template":
-                        "\n  <div *ngIf=\"hero\">\n    <h2>{{hero.name}} details!</h2>\n    <div><label>id: </label>{{hero.id}}</div>\n    <div>\n      <label>name: </label>\n      <input [(ngModel)]=\"hero.name\" placeholder=\"name\"/>\n    </div>\n  </div>\n"
+                        "\n  <div *ngIf=\"hero\">\n    <h2>{{hero.name}} details!</h2>\n    <div><label>id: </label>{{hero.id}}</div>\n    <div>\n      <label>name: </label>\n      <input [(ngModel)]=\"hero.name\" placeholder=\"name\"/>\n    </div>\n  </div>\n",
+                    "directives": [
+                      {
+                        "___symbolic": "reference",
+                        "name": "FORM_DIRECTIVES",
+                        "module": "angular2/src/common/forms/directives"
+                      }
+                    ]
                   }
                 ]
               }

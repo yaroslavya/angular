@@ -1,4 +1,4 @@
-library angular2.src.compiler.runtime_metadata;
+library angular2.src.compiler.metadata_resolver;
 
 import "package:angular2/src/core/di.dart" show resolveForwardRef;
 import "package:angular2/src/facade/lang.dart"
@@ -9,12 +9,11 @@ import "package:angular2/src/facade/lang.dart"
         isArray,
         stringify,
         isString,
+        isStringMap,
         RegExpWrapper,
         StringWrapper;
 import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
 import "package:angular2/src/facade/exceptions.dart" show BaseException;
-import "package:angular2/src/core/di/reflective_exceptions.dart"
-    show NoAnnotationError;
 import "compile_metadata.dart" as cpl;
 import "package:angular2/src/core/metadata/directives.dart" as md;
 import "package:angular2/src/core/metadata/di.dart" as dimd;
@@ -33,15 +32,20 @@ import "util.dart" show MODULE_SUFFIX, sanitizeIdentifier;
 import "assertions.dart" show assertArrayOfStrings;
 import "package:angular2/src/compiler/url_resolver.dart" show getUrlScheme;
 import "package:angular2/src/core/di/provider.dart" show Provider;
-import "package:angular2/src/core/di/reflective_provider.dart"
-    show constructDependencies, ReflectiveDependency;
 import "package:angular2/src/core/di/metadata.dart"
-    show OptionalMetadata, SelfMetadata, HostMetadata, SkipSelfMetadata;
+    show
+        OptionalMetadata,
+        SelfMetadata,
+        HostMetadata,
+        SkipSelfMetadata,
+        InjectMetadata;
+import "package:angular2/src/core/metadata/di.dart"
+    show AttributeMetadata, QueryMetadata;
 import "package:angular2/src/core/reflection/reflector_reader.dart"
     show ReflectorReader;
 
 @Injectable()
-class RuntimeMetadataResolver {
+class CompileMetadataResolver {
   DirectiveResolver _directiveResolver;
   PipeResolver _pipeResolver;
   ViewResolver _viewResolver;
@@ -52,7 +56,7 @@ class RuntimeMetadataResolver {
   var _anonymousTypes = new Map<Object, num>();
   var _anonymousTypeIndex = 0;
   ReflectorReader _reflector;
-  RuntimeMetadataResolver(
+  CompileMetadataResolver(
       this._directiveResolver,
       this._pipeResolver,
       this._viewResolver,
@@ -83,7 +87,7 @@ class RuntimeMetadataResolver {
     var meta = this._directiveCache[directiveType];
     if (isBlank(meta)) {
       var dirMeta = this._directiveResolver.resolve(directiveType);
-      var moduleUrl = null;
+      var moduleUrl = staticTypeModuleUrl(directiveType);
       var templateMeta = null;
       var changeDetectionStrategy = null;
       var viewProviders = [];
@@ -136,6 +140,21 @@ class RuntimeMetadataResolver {
     return meta;
   }
 
+  /**
+   * 
+   * 
+   */
+  cpl.CompileDirectiveMetadata maybeGetDirectiveMetadata(Type someType) {
+    try {
+      return this.getDirectiveMetadata(someType);
+    } catch (e, e_stack) {
+      if (!identical(e.message.indexOf("No Directive annotation"), -1)) {
+        return null;
+      }
+      rethrow;
+    }
+  }
+
   cpl.CompileTypeMetadata getTypeMetadata(Type type, String moduleUrl) {
     return new cpl.CompileTypeMetadata(
         name: this.sanitizeTokenName(type),
@@ -157,9 +176,8 @@ class RuntimeMetadataResolver {
     var meta = this._pipeCache[pipeType];
     if (isBlank(meta)) {
       var pipeMeta = this._pipeResolver.resolve(pipeType);
-      var moduleUrl = this._reflector.importUri(pipeType);
       meta = new cpl.CompilePipeMetadata(
-          type: this.getTypeMetadata(pipeType, moduleUrl),
+          type: this.getTypeMetadata(pipeType, staticTypeModuleUrl(pipeType)),
           name: pipeMeta.name,
           pure: pipeMeta.pure,
           lifecycleHooks: LIFECYCLE_HOOKS_VALUES
@@ -196,42 +214,66 @@ class RuntimeMetadataResolver {
 
   List<cpl.CompileDiDependencyMetadata> getDependenciesMetadata(
       dynamic /* Type | Function */ typeOrFunc, List<dynamic> dependencies) {
-    List<ReflectiveDependency> deps;
-    try {
-      deps = constructDependencies(typeOrFunc, dependencies);
-    } catch (e, e_stack) {
-      if (e is NoAnnotationError) {
-        deps = [];
-      } else {
-        rethrow;
-      }
+    var params = isPresent(dependencies)
+        ? dependencies
+        : this._reflector.parameters(typeOrFunc);
+    if (isBlank(params)) {
+      params = [];
     }
-    return deps.map((dep) {
-      var compileToken;
-      var p = (dep.properties.firstWhere((p) => p is dimd.AttributeMetadata,
-          orElse: () => null) as dimd.AttributeMetadata);
-      var isAttribute = false;
-      if (isPresent(p)) {
-        compileToken = this.getTokenMetadata(p.attributeName);
-        isAttribute = true;
-      } else {
-        compileToken = this.getTokenMetadata(dep.key.token);
+    return params.map((param) {
+      if (isBlank(param)) {
+        return null;
       }
-      var compileQuery = null;
-      var q = (dep.properties.firstWhere((p) => p is dimd.QueryMetadata,
-          orElse: () => null) as dimd.QueryMetadata);
-      if (isPresent(q)) {
-        compileQuery = this.getQueryMetadata(q, null);
+      var isAttribute = false;
+      var isHost = false;
+      var isSelf = false;
+      var isSkipSelf = false;
+      var isOptional = false;
+      dimd.QueryMetadata query = null;
+      dimd.ViewQueryMetadata viewQuery = null;
+      var token = null;
+      if (isArray(param)) {
+        ((param as List<dynamic>)).forEach((paramEntry) {
+          if (paramEntry is HostMetadata) {
+            isHost = true;
+          } else if (paramEntry is SelfMetadata) {
+            isSelf = true;
+          } else if (paramEntry is SkipSelfMetadata) {
+            isSkipSelf = true;
+          } else if (paramEntry is OptionalMetadata) {
+            isOptional = true;
+          } else if (paramEntry is AttributeMetadata) {
+            isAttribute = true;
+            token = paramEntry.attributeName;
+          } else if (paramEntry is QueryMetadata) {
+            if (paramEntry.isViewQuery) {
+              viewQuery = paramEntry;
+            } else {
+              query = paramEntry;
+            }
+          } else if (paramEntry is InjectMetadata) {
+            token = paramEntry.token;
+          } else if (isValidType(paramEntry) && isBlank(token)) {
+            token = paramEntry;
+          }
+        });
+      } else {
+        token = param;
+      }
+      if (isBlank(token)) {
+        return null;
       }
       return new cpl.CompileDiDependencyMetadata(
           isAttribute: isAttribute,
-          isHost: dep.upperBoundVisibility is HostMetadata,
-          isSelf: dep.upperBoundVisibility is SelfMetadata,
-          isSkipSelf: dep.lowerBoundVisibility is SkipSelfMetadata,
-          isOptional: dep.optional,
-          query: isPresent(q) && !q.isViewQuery ? compileQuery : null,
-          viewQuery: isPresent(q) && q.isViewQuery ? compileQuery : null,
-          token: compileToken);
+          isHost: isHost,
+          isSelf: isSelf,
+          isSkipSelf: isSkipSelf,
+          isOptional: isOptional,
+          query: isPresent(query) ? this.getQueryMetadata(query, null) : null,
+          viewQuery: isPresent(viewQuery)
+              ? this.getQueryMetadata(viewQuery, null)
+              : null,
+          token: this.getTokenMetadata(token));
     }).toList();
   }
 
@@ -243,7 +285,9 @@ class RuntimeMetadataResolver {
     } else {
       compileToken = new cpl.CompileTokenMetadata(
           identifier: new cpl.CompileIdentifierMetadata(
-              runtime: token, name: this.sanitizeTokenName(token)));
+              runtime: token,
+              name: this.sanitizeTokenName(token),
+              moduleUrl: staticTypeModuleUrl(token)));
     }
     return compileToken;
   }
@@ -257,7 +301,7 @@ class RuntimeMetadataResolver {
       } else if (provider is Provider) {
         return this.getProviderMetadata(provider);
       } else {
-        return this.getTypeMetadata(provider, null);
+        return this.getTypeMetadata(provider, staticTypeModuleUrl(provider));
       }
     }).toList();
   }
@@ -274,13 +318,15 @@ class RuntimeMetadataResolver {
     return new cpl.CompileProviderMetadata(
         token: this.getTokenMetadata(provider.token),
         useClass: isPresent(provider.useClass)
-            ? this.getTypeMetadata(provider.useClass, null)
+            ? this.getTypeMetadata(
+                provider.useClass, staticTypeModuleUrl(provider.useClass))
             : null,
         useValue: isPresent(provider.useValue)
             ? new cpl.CompileIdentifierMetadata(runtime: provider.useValue)
             : null,
         useFactory: isPresent(provider.useFactory)
-            ? this.getFactoryMetadata(provider.useFactory, null)
+            ? this.getFactoryMetadata(
+                provider.useFactory, staticTypeModuleUrl(provider.useFactory))
             : null,
         useExisting: isPresent(provider.useExisting)
             ? this.getTokenMetadata(provider.useExisting)
@@ -354,8 +400,18 @@ void flattenArray(
   }
 }
 
-bool isValidType(Type value) {
-  return isPresent(value) && (value is Type);
+bool isStaticType(dynamic value) {
+  return isStringMap(value) &&
+      isPresent(value["name"]) &&
+      isPresent(value["moduleId"]);
+}
+
+bool isValidType(dynamic value) {
+  return isStaticType(value) || (value is Type);
+}
+
+String staticTypeModuleUrl(dynamic value) {
+  return isStaticType(value) ? value["moduleId"] : null;
 }
 
 String calcModuleUrl(

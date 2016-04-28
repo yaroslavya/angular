@@ -37,7 +37,7 @@ import "style_compiler.dart"
 import "view_compiler/view_compiler.dart" show ViewCompiler;
 import "template_parser.dart" show TemplateParser;
 import "directive_normalizer.dart" show DirectiveNormalizer;
-import "runtime_metadata.dart" show RuntimeMetadataResolver;
+import "metadata_resolver.dart" show CompileMetadataResolver;
 import "package:angular2/src/core/linker/component_factory.dart"
     show ComponentFactory;
 import "package:angular2/src/core/linker/component_resolver.dart"
@@ -56,7 +56,7 @@ import "package:angular2/src/compiler/xhr.dart" show XHR;
  */
 @Injectable()
 class RuntimeCompiler implements ComponentResolver {
-  RuntimeMetadataResolver _runtimeMetadataResolver;
+  CompileMetadataResolver _metadataResolver;
   DirectiveNormalizer _templateNormalizer;
   TemplateParser _templateParser;
   StyleCompiler _styleCompiler;
@@ -68,7 +68,7 @@ class RuntimeCompiler implements ComponentResolver {
   var _compiledTemplateCache = new Map<dynamic, CompiledTemplate>();
   var _compiledTemplateDone = new Map<dynamic, Future<CompiledTemplate>>();
   RuntimeCompiler(
-      this._runtimeMetadataResolver,
+      this._metadataResolver,
       this._templateNormalizer,
       this._templateParser,
       this._styleCompiler,
@@ -77,7 +77,7 @@ class RuntimeCompiler implements ComponentResolver {
       this._genConfig) {}
   Future<ComponentFactory> resolveComponent(Type componentType) {
     CompileDirectiveMetadata compMeta =
-        this._runtimeMetadataResolver.getDirectiveMetadata(componentType);
+        this._metadataResolver.getDirectiveMetadata(componentType);
     var hostCacheKey = this._hostCacheKeys[componentType];
     if (isBlank(hostCacheKey)) {
       hostCacheKey = new Object();
@@ -156,11 +156,10 @@ class RuntimeCompiler implements ComponentResolver {
           ListWrapper.clone(compilingComponentsPath);
       var childCacheKey = dep.comp.type.runtime;
       List<CompileDirectiveMetadata> childViewDirectives = this
-          ._runtimeMetadataResolver
+          ._metadataResolver
           .getViewDirectivesMetadata(dep.comp.type.runtime);
-      List<CompilePipeMetadata> childViewPipes = this
-          ._runtimeMetadataResolver
-          .getViewPipesMetadata(dep.comp.type.runtime);
+      List<CompilePipeMetadata> childViewPipes =
+          this._metadataResolver.getViewPipesMetadata(dep.comp.type.runtime);
       var childIsRecursive =
           ListWrapper.contains(childCompilingComponentsPath, childCacheKey);
       childCompilingComponentsPath.add(childCacheKey);

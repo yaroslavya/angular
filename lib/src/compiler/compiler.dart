@@ -20,8 +20,8 @@ import "package:angular2/src/compiler/template_parser.dart" show TemplateParser;
 import "package:angular2/src/compiler/html_parser.dart" show HtmlParser;
 import "package:angular2/src/compiler/directive_normalizer.dart"
     show DirectiveNormalizer;
-import "package:angular2/src/compiler/runtime_metadata.dart"
-    show RuntimeMetadataResolver;
+import "package:angular2/src/compiler/metadata_resolver.dart"
+    show CompileMetadataResolver;
 import "package:angular2/src/compiler/style_compiler.dart" show StyleCompiler;
 import "package:angular2/src/compiler/view_compiler/view_compiler.dart"
     show ViewCompiler;
@@ -57,7 +57,7 @@ const List<dynamic /* Type | Provider | List < dynamic > */ >
   HtmlParser,
   TemplateParser,
   DirectiveNormalizer,
-  RuntimeMetadataResolver,
+  CompileMetadataResolver,
   DEFAULT_PACKAGE_URL_PROVIDER,
   StyleCompiler,
   ViewCompiler,
