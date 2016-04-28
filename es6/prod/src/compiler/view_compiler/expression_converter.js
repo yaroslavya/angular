@@ -163,7 +163,7 @@ class _AstToIrVisitor {
         var result = null;
         var receiver = ast.receiver.visit(this, _Mode.Expression);
         if (receiver === IMPLICIT_RECEIVER) {
-            var varExpr = this._nameResolver.getLocal(ast.name);
+            var varExpr = this._nameResolver.getVariable(ast.name);
             if (isPresent(varExpr)) {
                 result = varExpr.callFn(args);
             }
@@ -183,7 +183,7 @@ class _AstToIrVisitor {
         var result = null;
         var receiver = ast.receiver.visit(this, _Mode.Expression);
         if (receiver === IMPLICIT_RECEIVER) {
-            result = this._nameResolver.getLocal(ast.name);
+            result = this._nameResolver.getVariable(ast.name);
             if (isBlank(result)) {
                 receiver = this._implicitReceiver;
             }
@@ -196,9 +196,9 @@ class _AstToIrVisitor {
     visitPropertyWrite(ast, mode) {
         var receiver = ast.receiver.visit(this, _Mode.Expression);
         if (receiver === IMPLICIT_RECEIVER) {
-            var varExpr = this._nameResolver.getLocal(ast.name);
+            var varExpr = this._nameResolver.getVariable(ast.name);
             if (isPresent(varExpr)) {
-                throw new BaseException('Cannot assign to a reference or variable!');
+                throw new BaseException('Cannot reassign a variable binding');
             }
             receiver = this._implicitReceiver;
         }

@@ -72,20 +72,7 @@ export class BoundEventAst {
     }
 }
 /**
- * A reference declaration on an element (e.g. `let someName="expression"`).
- */
-export class ReferenceAst {
-    constructor(name, value, sourceSpan) {
-        this.name = name;
-        this.value = value;
-        this.sourceSpan = sourceSpan;
-    }
-    visit(visitor, context) {
-        return visitor.visitReference(this, context);
-    }
-}
-/**
- * A variable declaration on a <template> (e.g. `var-someName="someLocalName"`).
+ * A variable declaration on an element (e.g. `#var="expression"`).
  */
 export class VariableAst {
     constructor(name, value, sourceSpan) {
@@ -101,12 +88,12 @@ export class VariableAst {
  * An element declaration in a template.
  */
 export class ElementAst {
-    constructor(name, attrs, inputs, outputs, references, directives, providers, hasViewContainer, children, ngContentIndex, sourceSpan) {
+    constructor(name, attrs, inputs, outputs, exportAsVars, directives, providers, hasViewContainer, children, ngContentIndex, sourceSpan) {
         this.name = name;
         this.attrs = attrs;
         this.inputs = inputs;
         this.outputs = outputs;
-        this.references = references;
+        this.exportAsVars = exportAsVars;
         this.directives = directives;
         this.providers = providers;
         this.hasViewContainer = hasViewContainer;
@@ -116,6 +103,13 @@ export class ElementAst {
     }
     visit(visitor, context) {
         return visitor.visitElement(this, context);
+    }
+    /**
+     * Whether the element has any active bindings (inputs, outputs, vars, or directives).
+     */
+    isBound() {
+        return (this.inputs.length > 0 || this.outputs.length > 0 || this.exportAsVars.length > 0 ||
+            this.directives.length > 0);
     }
     /**
      * Get the component associated with this element, if any.
@@ -134,11 +128,10 @@ export class ElementAst {
  * A `<template>` element included in an Angular template.
  */
 export class EmbeddedTemplateAst {
-    constructor(attrs, outputs, references, variables, directives, providers, hasViewContainer, children, ngContentIndex, sourceSpan) {
+    constructor(attrs, outputs, vars, directives, providers, hasViewContainer, children, ngContentIndex, sourceSpan) {
         this.attrs = attrs;
         this.outputs = outputs;
-        this.references = references;
-        this.variables = variables;
+        this.vars = vars;
         this.directives = directives;
         this.providers = providers;
         this.hasViewContainer = hasViewContainer;
@@ -168,11 +161,12 @@ export class BoundDirectivePropertyAst {
  * A directive declared on an element.
  */
 export class DirectiveAst {
-    constructor(directive, inputs, hostProperties, hostEvents, sourceSpan) {
+    constructor(directive, inputs, hostProperties, hostEvents, exportAsVars, sourceSpan) {
         this.directive = directive;
         this.inputs = inputs;
         this.hostProperties = hostProperties;
         this.hostEvents = hostEvents;
+        this.exportAsVars = exportAsVars;
         this.sourceSpan = sourceSpan;
     }
     visit(visitor, context) {

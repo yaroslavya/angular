@@ -66,7 +66,6 @@ class ViewBinderVisitor {
     visitEvent(ast, eventTargetAndNames) {
         return null;
     }
-    visitReference(ast, ctx) { return null; }
     visitVariable(ast, ctx) { return null; }
     visitDirectiveProperty(ast, context) { return null; }
     visitElementProperty(ast, context) { return null; }

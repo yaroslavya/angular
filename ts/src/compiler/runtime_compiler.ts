@@ -30,6 +30,7 @@ import {
   NgContentAst,
   EmbeddedTemplateAst,
   ElementAst,
+  VariableAst,
   BoundEventAst,
   BoundElementPropertyAst,
   AttrAst,

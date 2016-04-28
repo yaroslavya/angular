@@ -56,7 +56,7 @@ export class CompileView implements NameResolver {
   public componentView: CompileView;
   public purePipes = new Map<string, CompilePipe>();
   public pipes: CompilePipe[] = [];
-  public locals = new Map<string, o.Expression>();
+  public variables = new Map<string, o.Expression>();
   public className: string;
   public classType: o.Type;
   public viewFactory: o.ReadVarExpr;
@@ -112,7 +112,7 @@ export class CompileView implements NameResolver {
     }
     this.viewQueries = viewQueries;
     templateVariableBindings.forEach((entry) => {
-      this.locals.set(entry[1], o.THIS_EXPR.prop('locals').key(o.literal(entry[0])));
+      this.variables.set(entry[1], o.THIS_EXPR.prop('locals').key(o.literal(entry[0])));
     });
 
     if (!this.declarationElement.isNull()) {
@@ -133,15 +133,15 @@ export class CompileView implements NameResolver {
     return pipe.call(this, [input].concat(args));
   }
 
-  getLocal(name: string): o.Expression {
+  getVariable(name: string): o.Expression {
     if (name == EventHandlerVars.event.name) {
       return EventHandlerVars.event;
     }
     var currView: CompileView = this;
-    var result = currView.locals.get(name);
+    var result = currView.variables.get(name);
     while (isBlank(result) && isPresent(currView.declarationElement.view)) {
       currView = currView.declarationElement.view;
-      result = currView.locals.get(name);
+      result = currView.variables.get(name);
     }
     if (isPresent(result)) {
       return getPropertyInView(result, this, currView);
