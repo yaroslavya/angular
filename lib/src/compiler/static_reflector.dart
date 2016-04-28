@@ -1,8 +1,9 @@
 library angular2.src.compiler.static_reflector;
 
-import "package:angular2/src/facade/collection.dart" show StringMapWrapper;
+import "package:angular2/src/facade/collection.dart"
+    show ListWrapper, StringMapWrapper;
 import "package:angular2/src/facade/lang.dart"
-    show isArray, isPresent, isPrimitive;
+    show isArray, isBlank, isNumber, isPresent, isPrimitive, isString, Type;
 import "package:angular2/src/core/metadata.dart"
     show
         AttributeMetadata,
@@ -31,18 +32,13 @@ import "package:angular2/src/core/reflection/reflector_reader.dart"
  */
 abstract class StaticReflectorHost {
   /**
-   *  Return a ModuleMetadata for the given module.
+   *  Return a ModuleMetadata for the give module.
    *
    * 
+   *                 module import of an import statement.
    * 
    */
   Map<String, dynamic> getMetadataFor(String moduleId);
-  /**
-   * Resolve a module from an import statement form to an absolute path.
-   * 
-   * 
-   */
-  String resolveModule(String moduleName, [String containingFile]);
 }
 
 /**
@@ -75,7 +71,7 @@ class StaticReflector implements ReflectorReader {
   }
 
   /**
-   * getStaticType produces a Type whose metadata is known but whose implementation is not loaded.
+   * getStatictype produces a Type whose metadata is known but whose implementation is not loaded.
    * All types passed to the StaticResolver should be pseudo-types returned by this method.
    *
    * 
@@ -151,7 +147,7 @@ class StaticReflector implements ReflectorReader {
   var conversionMap = new Map<StaticType,
       dynamic /* (moduleContext: string, expression: any) => any */ >();
   dynamic initializeConversionMap() {
-    var core_metadata = this.host.resolveModule("angular2/src/core/metadata");
+    var core_metadata = "angular2/src/core/metadata";
     var conversionMap = this.conversionMap;
     conversionMap[this.getStaticType(core_metadata, "Directive")] =
         (moduleContext, expression) {
@@ -285,7 +281,8 @@ class StaticReflector implements ReflectorReader {
     if (isMetadataSymbolicCallExpression(expression)) {
       var target = expression["expression"];
       if (isMetadataSymbolicReferenceExpression(target)) {
-        var moduleId = this.host.resolveModule(target["module"], moduleContext);
+        var moduleId =
+            this.normalizeModuleName(moduleContext, target["module"]);
         return this.getStaticType(moduleId, target["name"]);
       }
     }
@@ -441,8 +438,8 @@ class StaticReflector implements ReflectorReader {
                 return selectTarget[member];
               return null;
             case "reference":
-              var referenceModuleName =
-                  _this.host.resolveModule(expression["module"], moduleContext);
+              var referenceModuleName = _this.normalizeModuleName(
+                  moduleContext, expression["module"]);
               var referenceModule =
                   _this.getModuleMetadata(referenceModuleName);
               var referenceValue =
@@ -469,9 +466,6 @@ class StaticReflector implements ReflectorReader {
     return simplify(value);
   }
 
-  /**
-   * 
-   */
   Map<String, dynamic> getModuleMetadata(String module) {
     var moduleMetadata = this.metadataCache[module];
     if (!isPresent(moduleMetadata)) {
@@ -496,6 +490,13 @@ class StaticReflector implements ReflectorReader {
     }
     return result;
   }
+
+  String normalizeModuleName(String from, String to) {
+    if (to.startsWith(".")) {
+      return pathTo(from, to);
+    }
+    return to;
+  }
 }
 
 bool isMetadataSymbolicCallExpression(dynamic expression) {
@@ -514,4 +515,36 @@ bool isClassMetadata(dynamic expression) {
   return !isPrimitive(expression) &&
       !isArray(expression) &&
       expression["___symbolic"] == "class";
+}
+
+List<String> splitPath(String path) {
+  return path.split(new RegExp(r'\/|\\'));
+}
+
+String resolvePath(List<String> pathParts) {
+  var result = [];
+  ListWrapper.forEachWithIndex(pathParts, (part, index) {
+    switch (part) {
+      case "":
+      case ".":
+        if (index > 0) return;
+        break;
+      case "..":
+        if (index > 0 && result.length != 0) result.removeLast();
+        return;
+    }
+    result.add(part);
+  });
+  return result.join("/");
+}
+
+String pathTo(String from, String to) {
+  var result = to;
+  if (to.startsWith(".")) {
+    var fromParts = splitPath(from);
+    fromParts.removeLast();
+    var toParts = splitPath(to);
+    result = resolvePath((new List.from(fromParts)..addAll(toParts)));
+  }
+  return result;
 }
