@@ -140,14 +140,14 @@ export class InjectSetupWrapper {
     inject(tokens, fn) {
         return () => {
             this._addProviders();
-            return inject(tokens, fn)();
+            return inject_impl(tokens, fn)();
         };
     }
     /** @Deprecated {use async(withProviders().inject())} */
     injectAsync(tokens, fn) {
         return () => {
             this._addProviders();
-            return injectAsync(tokens, fn)();
+            return injectAsync_impl(tokens, fn)();
         };
     }
 }
@@ -177,3 +177,7 @@ export function withProviders(providers) {
 export function injectAsync(tokens, fn) {
     return async(inject(tokens, fn));
 }
+// This is to ensure inject(Async) within InjectSetupWrapper doesn't call itself
+// when transpiled to Dart.
+var inject_impl = inject;
+var injectAsync_impl = injectAsync;

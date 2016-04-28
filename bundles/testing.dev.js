@@ -998,7 +998,7 @@ System.register("angular2/src/platform/browser/location/hash_location_strategy",
   return module.exports;
 });
 
-System.register("angular2/src/testing/test_component_builder", ["angular2/core", "angular2/compiler", "angular2/src/facade/lang", "angular2/src/facade/async", "angular2/src/facade/collection", "angular2/src/testing/utils", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/dom/dom_adapter", "angular2/src/core/debug/debug_node", "angular2/src/testing/fake_async"], true, function(require, exports, module) {
+System.register("angular2/src/testing/test_component_builder", ["angular2/core", "angular2/compiler", "angular2/src/facade/exceptions", "angular2/src/facade/lang", "angular2/src/facade/async", "angular2/src/facade/collection", "angular2/src/testing/utils", "angular2/src/platform/dom/dom_tokens", "angular2/src/platform/dom/dom_adapter", "angular2/src/core/debug/debug_node", "angular2/src/testing/fake_async"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -1021,6 +1021,7 @@ System.register("angular2/src/testing/test_component_builder", ["angular2/core",
   };
   var core_1 = require("angular2/core");
   var compiler_1 = require("angular2/compiler");
+  var exceptions_1 = require("angular2/src/facade/exceptions");
   var lang_1 = require("angular2/src/facade/lang");
   var async_1 = require("angular2/src/facade/async");
   var collection_1 = require("angular2/src/facade/collection");
@@ -1029,29 +1030,107 @@ System.register("angular2/src/testing/test_component_builder", ["angular2/core",
   var dom_adapter_1 = require("angular2/src/platform/dom/dom_adapter");
   var debug_node_1 = require("angular2/src/core/debug/debug_node");
   var fake_async_1 = require("angular2/src/testing/fake_async");
+  exports.ComponentFixtureAutoDetect = new core_1.OpaqueToken("ComponentFixtureAutoDetect");
+  exports.ComponentFixtureNoNgZone = new core_1.OpaqueToken("ComponentFixtureNoNgZone");
   var ComponentFixture = (function() {
-    function ComponentFixture(componentRef) {
+    function ComponentFixture(componentRef, ngZone, autoDetect) {
+      var _this = this;
+      this._isStable = true;
+      this._completer = null;
+      this._onUnstableSubscription = null;
+      this._onStableSubscription = null;
+      this._onMicrotaskEmptySubscription = null;
+      this._onErrorSubscription = null;
       this.changeDetectorRef = componentRef.changeDetectorRef;
       this.elementRef = componentRef.location;
       this.debugElement = debug_node_1.getDebugNode(this.elementRef.nativeElement);
       this.componentInstance = componentRef.instance;
       this.nativeElement = this.elementRef.nativeElement;
       this.componentRef = componentRef;
-    }
-    ComponentFixture.prototype.detectChanges = function(checkNoChanges) {
-      if (checkNoChanges === void 0) {
-        checkNoChanges = true;
+      this.ngZone = ngZone;
+      this._autoDetect = autoDetect;
+      if (ngZone != null) {
+        this._onUnstableSubscription = async_1.ObservableWrapper.subscribe(ngZone.onUnstable, function(_) {
+          _this._isStable = false;
+        });
+        this._onMicrotaskEmptySubscription = async_1.ObservableWrapper.subscribe(ngZone.onMicrotaskEmpty, function(_) {
+          if (_this._autoDetect) {
+            _this.detectChanges(true);
+          }
+        });
+        this._onStableSubscription = async_1.ObservableWrapper.subscribe(ngZone.onStable, function(_) {
+          _this._isStable = true;
+          if (_this._completer != null) {
+            _this._completer.resolve(true);
+            _this._completer = null;
+          }
+        });
+        this._onErrorSubscription = async_1.ObservableWrapper.subscribe(ngZone.onError, function(error) {
+          throw error.error;
+        });
       }
+    }
+    ComponentFixture.prototype._tick = function(checkNoChanges) {
       this.changeDetectorRef.detectChanges();
       if (checkNoChanges) {
         this.checkNoChanges();
       }
     };
+    ComponentFixture.prototype.detectChanges = function(checkNoChanges) {
+      var _this = this;
+      if (checkNoChanges === void 0) {
+        checkNoChanges = true;
+      }
+      if (this.ngZone != null) {
+        this.ngZone.run(function() {
+          _this._tick(checkNoChanges);
+        });
+      } else {
+        this._tick(checkNoChanges);
+      }
+    };
     ComponentFixture.prototype.checkNoChanges = function() {
       this.changeDetectorRef.checkNoChanges();
     };
+    ComponentFixture.prototype.autoDetectChanges = function(autoDetect) {
+      if (autoDetect === void 0) {
+        autoDetect = true;
+      }
+      if (this.ngZone == null) {
+        throw new exceptions_1.BaseException('Cannot call autoDetectChanges when ComponentFixtureNoNgZone is set');
+      }
+      this._autoDetect = autoDetect;
+      this.detectChanges();
+    };
+    ComponentFixture.prototype.isStable = function() {
+      return this._isStable;
+    };
+    ComponentFixture.prototype.whenStable = function() {
+      if (this._isStable) {
+        return async_1.PromiseWrapper.resolve(false);
+      } else {
+        this._completer = new async_1.PromiseCompleter();
+        return this._completer.promise;
+      }
+    };
     ComponentFixture.prototype.destroy = function() {
       this.componentRef.destroy();
+      if (this._onUnstableSubscription != null) {
+        async_1.ObservableWrapper.dispose(this._onUnstableSubscription);
+        this._onUnstableSubscription = null;
+      }
+      if (this._onStableSubscription != null) {
+        async_1.ObservableWrapper.dispose(this._onStableSubscription);
+        this._onStableSubscription = null;
+      }
+      if (this._onMicrotaskEmptySubscription != null) {
+        async_1.ObservableWrapper.dispose(this._onMicrotaskEmptySubscription);
+        this._onMicrotaskEmptySubscription = null;
+      }
+      if (this._onErrorSubscription != null) {
+        async_1.ObservableWrapper.dispose(this._onErrorSubscription);
+        this._onErrorSubscription = null;
+      }
     };
     return ComponentFixture;
   }());
@@ -1112,37 +1191,44 @@ System.register("angular2/src/testing/test_component_builder", ["angular2/core",
       return this.overrideViewProviders(type, providers);
     };
     TestComponentBuilder.prototype.createAsync = function(rootComponentType) {
-      var mockDirectiveResolver = this._injector.get(compiler_1.DirectiveResolver);
-      var mockViewResolver = this._injector.get(compiler_1.ViewResolver);
-      this._viewOverrides.forEach(function(view, type) {
-        return mockViewResolver.setView(type, view);
-      });
-      this._templateOverrides.forEach(function(template, type) {
-        return mockViewResolver.setInlineTemplate(type, template);
-      });
-      this._directiveOverrides.forEach(function(overrides, component) {
-        overrides.forEach(function(to, from) {
-          mockViewResolver.overrideViewDirective(component, from, to);
+      var _this = this;
+      var noNgZone = lang_1.IS_DART || this._injector.get(exports.ComponentFixtureNoNgZone, false);
+      var ngZone = noNgZone ? null : this._injector.get(core_1.NgZone, null);
+      var autoDetect = this._injector.get(exports.ComponentFixtureAutoDetect, false);
+      var initComponent = function() {
+        var mockDirectiveResolver = _this._injector.get(compiler_1.DirectiveResolver);
+        var mockViewResolver = _this._injector.get(compiler_1.ViewResolver);
+        _this._viewOverrides.forEach(function(view, type) {
+          return mockViewResolver.setView(type, view);
         });
-      });
-      this._bindingsOverrides.forEach(function(bindings, type) {
-        return mockDirectiveResolver.setBindingsOverride(type, bindings);
-      });
-      this._viewBindingsOverrides.forEach(function(bindings, type) {
-        return mockDirectiveResolver.setViewBindingsOverride(type, bindings);
-      });
-      var rootElId = "root" + _nextRootElementId++;
-      var rootEl = utils_1.el("<div id=\"" + rootElId + "\"></div>");
-      var doc = this._injector.get(dom_tokens_1.DOCUMENT);
-      var oldRoots = dom_adapter_1.DOM.querySelectorAll(doc, '[id^=root]');
-      for (var i = 0; i < oldRoots.length; i++) {
-        dom_adapter_1.DOM.remove(oldRoots[i]);
-      }
-      dom_adapter_1.DOM.appendChild(doc.body, rootEl);
-      var promise = this._injector.get(core_1.DynamicComponentLoader).loadAsRoot(rootComponentType, "#" + rootElId, this._injector);
-      return promise.then(function(componentRef) {
-        return new ComponentFixture(componentRef);
-      });
+        _this._templateOverrides.forEach(function(template, type) {
+          return mockViewResolver.setInlineTemplate(type, template);
+        });
+        _this._directiveOverrides.forEach(function(overrides, component) {
+          overrides.forEach(function(to, from) {
+            mockViewResolver.overrideViewDirective(component, from, to);
+          });
+        });
+        _this._bindingsOverrides.forEach(function(bindings, type) {
+          return mockDirectiveResolver.setBindingsOverride(type, bindings);
+        });
+        _this._viewBindingsOverrides.forEach(function(bindings, type) {
+          return mockDirectiveResolver.setViewBindingsOverride(type, bindings);
+        });
+        var rootElId = "root" + _nextRootElementId++;
+        var rootEl = utils_1.el("<div id=\"" + rootElId + "\"></div>");
+        var doc = _this._injector.get(dom_tokens_1.DOCUMENT);
+        var oldRoots = dom_adapter_1.DOM.querySelectorAll(doc, '[id^=root]');
+        for (var i = 0; i < oldRoots.length; i++) {
+          dom_adapter_1.DOM.remove(oldRoots[i]);
+        }
+        dom_adapter_1.DOM.appendChild(doc.body, rootEl);
+        var promise = _this._injector.get(core_1.DynamicComponentLoader).loadAsRoot(rootComponentType, "#" + rootElId, _this._injector);
+        return promise.then(function(componentRef) {
+          return new ComponentFixture(componentRef, ngZone, autoDetect);
+        });
+      };
+      return ngZone == null ? initComponent() : ngZone.run(initComponent);
     };
     TestComponentBuilder.prototype.createFakeAsync = function(rootComponentType) {
       var result;
@@ -1329,11 +1415,14 @@ System.register("angular2/platform/testing/browser_static", ["angular2/core", "a
     browser_adapter_1.BrowserDomAdapter.makeCurrent();
     utils_1.BrowserDetection.setup();
   }
+  function createNgZone() {
+    return lang_1.IS_DART ? new ng_zone_mock_1.MockNgZone() : new core_1.NgZone({enableLongStackTrace: true});
+  }
   exports.TEST_BROWSER_STATIC_PLATFORM_PROVIDERS = lang_1.CONST_EXPR([core_1.PLATFORM_COMMON_PROVIDERS, new core_1.Provider(core_1.PLATFORM_INITIALIZER, {
     useValue: initBrowserTests,
     multi: true
   })]);
-  exports.ADDITIONAL_TEST_BROWSER_PROVIDERS = lang_1.CONST_EXPR([new core_1.Provider(core_1.APP_ID, {useValue: 'a'}), common_dom_1.ELEMENT_PROBE_PROVIDERS, new core_1.Provider(compiler_1.DirectiveResolver, {useClass: directive_resolver_mock_1.MockDirectiveResolver}), new core_1.Provider(compiler_1.ViewResolver, {useClass: view_resolver_mock_1.MockViewResolver}), utils_2.Log, test_component_builder_1.TestComponentBuilder, new core_1.Provider(core_1.NgZone, {useClass: ng_zone_mock_1.MockNgZone}), new core_1.Provider(common_1.LocationStrategy, {useClass: mock_location_strategy_1.MockLocationStrategy}), new core_1.Provider(animation_builder_1.AnimationBuilder, {useClass: animation_builder_mock_1.MockAnimationBuilder})]);
+  exports.ADDITIONAL_TEST_BROWSER_PROVIDERS = lang_1.CONST_EXPR([new core_1.Provider(core_1.APP_ID, {useValue: 'a'}), common_dom_1.ELEMENT_PROBE_PROVIDERS, new core_1.Provider(compiler_1.DirectiveResolver, {useClass: directive_resolver_mock_1.MockDirectiveResolver}), new core_1.Provider(compiler_1.ViewResolver, {useClass: view_resolver_mock_1.MockViewResolver}), utils_2.Log, test_component_builder_1.TestComponentBuilder, new core_1.Provider(core_1.NgZone, {useFactory: createNgZone}), new core_1.Provider(common_1.LocationStrategy, {useClass: mock_location_strategy_1.MockLocationStrategy}), new core_1.Provider(animation_builder_1.AnimationBuilder, {useClass: animation_builder_mock_1.MockAnimationBuilder})]);
   exports.TEST_BROWSER_STATIC_APPLICATION_PROVIDERS = lang_1.CONST_EXPR([browser_common_1.BROWSER_APP_COMMON_PROVIDERS, new core_1.Provider(compiler_2.XHR, {useClass: xhr_impl_1.XHRImpl}), exports.ADDITIONAL_TEST_BROWSER_PROVIDERS]);
   global.define = __define;
   return module.exports;
@@ -2349,14 +2438,14 @@ System.register("angular2/src/testing/test_injector", ["angular2/core", "angular
       var _this = this;
       return function() {
         _this._addProviders();
-        return inject(tokens, fn)();
+        return inject_impl(tokens, fn)();
       };
     };
     InjectSetupWrapper.prototype.injectAsync = function(tokens, fn) {
       var _this = this;
       return function() {
         _this._addProviders();
-        return injectAsync(tokens, fn)();
+        return injectAsync_impl(tokens, fn)();
       };
     };
     return InjectSetupWrapper;
@@ -2370,6 +2459,8 @@ System.register("angular2/src/testing/test_injector", ["angular2/core", "angular
     return async_1.async(inject(tokens, fn));
   }
   exports.injectAsync = injectAsync;
+  var inject_impl = inject;
+  var injectAsync_impl = injectAsync;
   global.define = __define;
   return module.exports;
 });
@@ -2481,6 +2572,8 @@ System.register("angular2/testing", ["angular2/src/testing/testing", "angular2/s
   var test_component_builder_1 = require("angular2/src/testing/test_component_builder");
   exports.ComponentFixture = test_component_builder_1.ComponentFixture;
   exports.TestComponentBuilder = test_component_builder_1.TestComponentBuilder;
+  exports.ComponentFixtureAutoDetect = test_component_builder_1.ComponentFixtureAutoDetect;
+  exports.ComponentFixtureNoNgZone = test_component_builder_1.ComponentFixtureNoNgZone;
   __export(require("angular2/src/testing/test_injector"));
   __export(require("angular2/src/testing/fake_async"));
   var view_resolver_mock_1 = require("angular2/src/mock/view_resolver_mock");
