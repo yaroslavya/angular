@@ -9,8 +9,7 @@ import "package:angular2/testing_internal.dart"
         expect,
         beforeEach,
         beforeEachProviders,
-        SpyObject,
-        proxy;
+        SpyObject;
 import "package:angular2/src/facade/async.dart"
     show ObservableWrapper, TimerWrapper;
 import "package:angular2/src/web_workers/shared/message_bus.dart"

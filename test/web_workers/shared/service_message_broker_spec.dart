@@ -11,7 +11,6 @@ import "package:angular2/testing_internal.dart"
         beforeEach,
         beforeEachProviders,
         SpyObject,
-        proxy,
         browserDetection;
 import "../shared/web_worker_test_util.dart" show createPairedMessageBuses;
 import "package:angular2/src/web_workers/shared/serializer.dart"
