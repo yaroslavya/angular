@@ -7,9 +7,6 @@ import "package:angular2/src/facade/exceptions.dart"
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
 import "package:angular2/src/facade/lang.dart"
     show FunctionWrapper, isPresent, Type;
-import "async.dart" show async;
-import "async_test_completer.dart" show AsyncTestCompleter;
-export "async.dart" show async;
 
 class TestInjector {
   bool _instantiated = false;
@@ -43,19 +40,15 @@ class TestInjector {
     return this._injector;
   }
 
-  get(dynamic token) {
+  dynamic execute(FunctionWithParamTokens fn) {
+    var additionalProviders = fn.additionalProviders();
+    if (additionalProviders.length > 0) {
+      this.addProviders(additionalProviders);
+    }
     if (!this._instantiated) {
       this.createInjector();
     }
-    return this._injector.get(token);
-  }
-
-  dynamic execute(List<dynamic> tokens, Function fn) {
-    if (!this._instantiated) {
-      this.createInjector();
-    }
-    var params = tokens.map((t) => this._injector.get(t)).toList();
-    return FunctionWrapper.apply(fn, params);
+    return fn.execute(this._injector);
   }
 }
 
@@ -134,48 +127,20 @@ resetBaseTestProviders() {
  * 
  * 
  */
-Function inject(List<dynamic> tokens, Function fn) {
-  var testInjector = getTestInjector();
-  if (tokens.indexOf(AsyncTestCompleter) >= 0) {
-    // Return an async test method that returns a Promise if AsyncTestCompleter is one of the
-
-    // injected tokens.
-    return () {
-      AsyncTestCompleter completer = testInjector.get(AsyncTestCompleter);
-      testInjector.execute(tokens, fn);
-      return completer.promise;
-    };
-  } else {
-    // Return a synchronous test method with the injected tokens.
-    return () {
-      return getTestInjector().execute(tokens, fn);
-    };
-  }
+FunctionWithParamTokens inject(List<dynamic> tokens, Function fn) {
+  return new FunctionWithParamTokens(tokens, fn, false);
 }
 
 class InjectSetupWrapper {
   dynamic /* () => any */ _providers;
   InjectSetupWrapper(this._providers) {}
-  _addProviders() {
-    var additionalProviders = this._providers();
-    if (additionalProviders.length > 0) {
-      getTestInjector().addProviders(additionalProviders);
-    }
-  }
-
-  Function inject(List<dynamic> tokens, Function fn) {
-    return () {
-      this._addProviders();
-      return inject(tokens, fn)();
-    };
+  FunctionWithParamTokens inject(List<dynamic> tokens, Function fn) {
+    return new FunctionWithParamTokens(tokens, fn, false, this._providers);
   }
 
   /** @Deprecated {use async(withProviders().inject())} */
-  Function injectAsync(List<dynamic> tokens, Function fn) {
-    return () {
-      this._addProviders();
-      return injectAsync(tokens, fn)();
-    };
+  FunctionWithParamTokens injectAsync(List<dynamic> tokens, Function fn) {
+    return new FunctionWithParamTokens(tokens, fn, true, this._providers);
   }
 }
 
@@ -203,6 +168,58 @@ withProviders(dynamic /* () => any */ providers) {
  * 
  * 
  */
-Function injectAsync(List<dynamic> tokens, Function fn) {
-  return async(inject(tokens, fn));
+FunctionWithParamTokens injectAsync(List<dynamic> tokens, Function fn) {
+  return new FunctionWithParamTokens(tokens, fn, true);
+}
+
+/**
+ * Wraps a test function in an asynchronous test zone. The test will automatically
+ * complete when all asynchronous calls within this zone are done. Can be used
+ * to wrap an [inject] call.
+ *
+ * Example:
+ *
+ * ```
+ * it('...', async(inject([AClass], (object) => {
+ *   object.doSomething.then(() => {
+ *     expect(...);
+ *   })
+ * });
+ * ```
+ */
+FunctionWithParamTokens async(
+    dynamic /* Function | FunctionWithParamTokens */ fn) {
+  if (fn is FunctionWithParamTokens) {
+    fn.isAsync = true;
+    return fn;
+  } else if (fn is Function) {
+    return new FunctionWithParamTokens([], fn, true);
+  } else {
+    throw new BaseException(
+        "argument to async must be a function or inject(<Function>)");
+  }
+}
+
+List<dynamic> emptyArray() {
+  return [];
+}
+
+class FunctionWithParamTokens {
+  List<dynamic> _tokens;
+  Function fn;
+  bool isAsync;
+  dynamic /* () => any */ additionalProviders;
+  FunctionWithParamTokens(this._tokens, this.fn, this.isAsync,
+      [this.additionalProviders = emptyArray]) {}
+  /**
+   * Returns the value of the executed function.
+   */
+  dynamic execute(ReflectiveInjector injector) {
+    var params = this._tokens.map((t) => injector.get(t)).toList();
+    return FunctionWrapper.apply(this.fn, params);
+  }
+
+  bool hasToken(dynamic token) {
+    return this._tokens.indexOf(token) > -1;
+  }
 }
