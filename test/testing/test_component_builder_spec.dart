@@ -101,6 +101,23 @@ class TestViewBindingsComp {
   TestViewBindingsComp(this.fancyService) {}
 }
 
+@Component(selector: "li1", template: '''<span>One</span>''')
+class ListDir1 {}
+
+@Component(selector: "li1", template: '''<span>Alternate One</span>''')
+class ListDir1Alt {}
+
+@Component(selector: "li2", template: '''<span>Two</span>''')
+class ListDir2 {}
+
+const LIST_CHILDREN = const [ListDir1, ListDir2];
+
+@Component(
+    selector: "directive-list-comp",
+    template: '''(<li1></li1>)(<li2></li2>)''',
+    directives: const [LIST_CHILDREN])
+class DirectiveListComp {}
+
 main() {
   describe("test component builder", () {
     it(
@@ -165,6 +182,20 @@ main() {
               .then((componentFixture) {
             componentFixture.detectChanges();
             expect(componentFixture.nativeElement).toHaveText("Parent(Mock)");
+            async.done();
+          });
+        }));
+    it(
+        "should override items from a list",
+        inject([TestComponentBuilder, AsyncTestCompleter],
+            (TestComponentBuilder tcb, async) {
+          tcb
+              .overrideDirective(DirectiveListComp, ListDir1, ListDir1Alt)
+              .createAsync(DirectiveListComp)
+              .then((componentFixture) {
+            componentFixture.detectChanges();
+            expect(componentFixture.nativeElement)
+                .toHaveText("(Alternate One)(Two)");
             async.done();
           });
         }));
