@@ -12,13 +12,10 @@ then
   exit 1
 fi
 
-./build.sh
+#./build.sh
 
-echo "====== RENAMING @angular to @igorminar ======"
-find ./dist/packages-dist/ -type f -print0 | xargs -0 sed -i '' 's/\@angular/\@igorminar/g'
-
-echo "====== RENAMING \$\$ANGULAR_VERSION\$\$ to ${VERSION} ======"
-find ./dist/packages-dist/ -type f -name package.json -print0 | xargs -0 sed -i '' "s/\\\$\\\$ANGULAR_VERSION\\\$\\\$/${VERSION}/g"
+echo "====== RENAMING \$\$ANGULAR_VERSION\$\$ to 0.0.0-${VERSION} ======"
+find ./dist/packages-dist/ -type f -name package.json -print0 | xargs -0 sed -i '' "s/\\\$\\\$ANGULAR_VERSION\\\$\\\$/0.0.0-${VERSION}/g"
 
 for PACKAGE in \
   core \
