@@ -1,6 +1,6 @@
 import {print, IS_DART} from '../src/facade/lang';
 import {OutputEmitter} from '@angular/compiler/src/output/abstract_emitter';
-import {Console} from '@angular/src/core/console';
+import {Console} from '../core_private';
 
 import {
   OfflineCompiler,
@@ -25,6 +25,7 @@ import {
   CompileTypeMetadata,
   CompileTemplateMetadata
 } from '@angular/compiler/src/compile_metadata';
+
 
 export class CompA { user: string; }
 

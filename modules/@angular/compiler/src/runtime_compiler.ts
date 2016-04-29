@@ -24,12 +24,6 @@ import {ViewCompiler} from './view_compiler/view_compiler';
 import {TemplateParser} from './template_parser';
 import {DirectiveNormalizer} from './directive_normalizer';
 import {CompileMetadataResolver} from './metadata_resolver';
-import {ComponentFactory} from 'angular2/src/core/linker/component_factory';
-import {
-  ComponentResolver,
-  ReflectorComponentResolver
-} from 'angular2/src/core/linker/component_resolver';
-
 import {CompilerConfig} from './config';
 import * as ir from './output/output_ast';
 import {jitStatements} from './output/output_jit';

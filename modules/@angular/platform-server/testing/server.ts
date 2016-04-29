@@ -15,7 +15,6 @@ import {AnimationBuilder} from '../../platform-browser/src/animate/animation_bui
 import {MockAnimationBuilder} from '../../platform-browser/testing/animation_builder_mock';
 import {MockDirectiveResolver, MockViewResolver} from '@angular/compiler/testing';
 import {MockLocationStrategy} from '../../common/testing/mock_location_strategy';
-import {MockNgZone} from '@angular/core/testing';
 
 import {XHR} from '@angular/compiler';
 import {BrowserDetection} from '@angular/platform-browser/testing';
@@ -59,6 +58,12 @@ function appDoc() {
   }
 }
 
+
+function createNgZone(): NgZone {
+  return new NgZone({enableLongStackTrace: true});
+}
+
+
 /**
  * Default application providers for testing.
  */
@@ -85,4 +90,5 @@ export const TEST_SERVER_APPLICATION_PROVIDERS: Array<any /*Type | Provider | an
       {provide: NgZone, useClass: createNgZone},
       {provide: LocationStrategy, useClass: MockLocationStrategy},
       {provide: AnimationBuilder, useClass: MockAnimationBuilder},
+      {provide: TestComponentRenderer, useClass: DOMTestComponentRenderer}
     ];

@@ -1,11 +1,10 @@
 import {StringMapWrapper} from '../src/facade/collection';
-import {global, isFunction, Math} from '../src/facade/lang';
+import {global, isFunction, Math, isPromise} from '../src/facade/lang';
 import {provide} from '../index';
-import {getTestInjector, FunctionWithParamTokens, inject} from './test_injector';
+import {getTestInjector, inject} from './test_injector';
+import {AsyncTestCompleter} from './async_test_completer';
 
 export {AsyncTestCompleter} from './async_test_completer';
-import {getTestInjector, inject} from './test_injector';
-import {browserDetection} from './utils';
 
 export var proxy: ClassDecorator = (t) => t;
 

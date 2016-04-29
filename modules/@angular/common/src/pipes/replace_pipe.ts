@@ -8,8 +8,6 @@ import {
   RegExpWrapper,
   StringWrapper
 } from '../../src/facade/lang';
-import {Injectable, PipeTransform, Pipe} from '@angular/core';
-import {BaseException} from '../../src/facade/exceptions';
 
 import {InvalidPipeArgumentException} from './invalid_pipe_argument_exception';
 

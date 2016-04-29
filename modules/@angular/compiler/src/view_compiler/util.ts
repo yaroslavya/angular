@@ -1,4 +1,4 @@
-import {isPresent} from '../../src/facade/lang';
+import {isPresent, isBlank} from '../../src/facade/lang';
 import {BaseException} from '../../src/facade/exceptions';
 
 import * as o from '../output/output_ast';

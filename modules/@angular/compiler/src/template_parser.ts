@@ -1,14 +1,12 @@
 import {Injectable, Inject, OpaqueToken, Optional} from '@angular/core';
-import {MAX_INTERPOLATION_VALUES} from '../core_private';
+import {MAX_INTERPOLATION_VALUES, Console} from '../core_private';
 
 import {
   ListWrapper,
   StringMapWrapper,
   SetWrapper,
-  MapWrapper
 } from '../src/facade/collection';
 import {RegExpWrapper, isPresent, StringWrapper, isBlank, isArray} from '../src/facade/lang';
-import {Injectable, Inject, OpaqueToken, Optional} from '@angular/core';
 import {BaseException} from '../src/facade/exceptions';
 import {
   AST,
@@ -27,7 +25,6 @@ import {
 import {HtmlParser} from './html_parser';
 import {splitNsName, mergeNsAndName} from './html_tags';
 import {ParseSourceSpan, ParseError, ParseLocation, ParseErrorLevel} from './parse_util';
-import {MAX_INTERPOLATION_VALUES} from '../core_private';
 
 import {
   ElementAst,

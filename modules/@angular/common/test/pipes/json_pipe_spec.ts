@@ -7,12 +7,11 @@ import {
   expect,
   beforeEach,
   afterEach,
-  inject,
-  proxy
+  inject
 } from '@angular/core/testing';
 import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
-import {Json, RegExp, NumberWrapper, StringWrapper} from 'angular2/src/facade/lang';
+import {Json, RegExp, NumberWrapper, StringWrapper} from '../../src/facade/lang';
 
 import {Component} from '@angular/core';
 import {JsonPipe} from '@angular/common';

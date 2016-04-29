@@ -5,7 +5,7 @@ import * as o from '../output/output_ast';
 import {Identifiers, identifierToken} from '../identifiers';
 import {InjectMethodVars} from './constants';
 import {CompileView} from './compile_view';
-import {TemplateAst, ProviderAst, ProviderAstType} from '../template_ast';
+import {TemplateAst, ProviderAst, ProviderAstType, ReferenceAst} from '../template_ast';
 import {
   CompileTokenMap,
   CompileDirectiveMetadata,

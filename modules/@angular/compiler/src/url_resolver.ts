@@ -1,4 +1,4 @@
-import {Injectable, Inject, PACKAGE_ROOT_URL, PACKAGE_ROOT_URL} from '@angular/core';
+import {Injectable, Inject, PACKAGE_ROOT_URL} from '@angular/core';
 import {
   StringWrapper,
   isPresent,

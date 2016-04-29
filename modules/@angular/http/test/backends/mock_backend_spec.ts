@@ -21,7 +21,7 @@ import {Map} from '../../src/facade/collection';
 import {RequestOptions, BaseRequestOptions} from '../../src/base_request_options';
 import {BaseResponseOptions, ResponseOptions} from '../../src/base_response_options';
 import {ResponseType} from '../../src/enums';
-import {ReplaySubject} from 'rxjs/subject/ReplaySubject';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 export function main() {
   describe('MockBackend', () => {

@@ -7,14 +7,12 @@ import {
   ViewMetadata,
   ElementRef,
   ChangeDetectorRef,
-  provide,
   NgZone,
   NgZoneError,
-  DebugNode,
   DebugElement,
   getDebugNode
 } from '@angular/core';
-import {DirectiveResolver, ViewResolver} from 'angular2/compiler';
+import {DirectiveResolver, ViewResolver} from '../index';
 
 import {BaseException} from '../src/facade/exceptions';
 import {Type, isPresent, isBlank, IS_DART} from '../src/facade/lang';

@@ -27,7 +27,7 @@
   },
   "scripts": {
     "preinstall": "node tools/analytics/build-analytics start install npm3-install && node tools/analytics/build-analytics start install npm-preinstall && node tools/npm/check-node-modules && node tools/analytics/build-analytics success install npm-preinstall && node tools/analytics/build-analytics start install npm-install-net",
-    "postinstall": "node tools/analytics/build-analytics success install npm-install-net && node tools/analytics/build-analytics start install npm-postinstall && node tools/npm/copy-npm-shrinkwrap && node tools/chromedriverpatch.js && webdriver-manager update && bower install && gulp pubget.dart && tsd reinstall --overwrite --clean --config modules/@angular/tsd.json && tsd reinstall --overwrite --clean --config tools/tsd.json && tsd reinstall --overwrite --config modules/angular1_router/tsd.json && node tools/analytics/build-analytics success install npm-postinstall && node tools/analytics/build-analytics success install npm3-install",
+    "postinstall": "node tools/analytics/build-analytics success install npm-install-net && node tools/analytics/build-analytics start install npm-postinstall && node tools/npm/copy-npm-shrinkwrap && node tools/chromedriverpatch.js && webdriver-manager update && bower install && gulp pubget.dart && tsd reinstall --overwrite --clean --config modules/angular2/tsd.json && tsd reinstall --overwrite --clean --config tools/tsd.json && tsd reinstall --overwrite --config modules/angular1_router/tsd.json && node tools/analytics/build-analytics success install npm-postinstall && node tools/analytics/build-analytics success install npm3-install",
     "build": "node --max-old-space-size=2048 ./node_modules/.bin/gulp build.js",
     "test": "gulp test.all.js && gulp test.all.dart"
   },
@@ -63,7 +63,6 @@
     "gulp-clang-format": "^1.0.23",
     "gulp-concat": "^2.5.2",
     "gulp-connect": "^2.3.1",
-    "gulp-exec": "^2.1.2",
     "gulp-gzip": "^1.2.0",
     "gulp-insert": "^0.5.0",
     "gulp-load-plugins": "^1.0.0",
@@ -73,9 +72,8 @@
     "gulp-shell": "^0.5.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-tslint": "^4.3.4",
-    "gulp-typescript": "^2.13.0",
+    "gulp-typescript": "^2.10.0",
     "gulp-uglify": "^1.2.0",
-    "gulp-watch": "^4.3.5",
     "hash-files": "^1.0.0",
     "jasmine": "^2.4.1",
     "jpm": "1.0.0",

@@ -32,3 +32,17 @@ export type RenderDebugInfo = t.RenderDebugInfo;
 export var RenderDebugInfo: typeof t.RenderDebugInfo = r.RenderDebugInfo;
 export var createProvider: typeof t.createProvider = r.createProvider;
 export var isProviderLiteral: typeof t.isProviderLiteral = r.isProviderLiteral;
+export var pureProxy1: typeof t.pureProxy1 = r.pureProxy1;
+export var pureProxy2: typeof t.pureProxy2 = r.pureProxy2;
+export var pureProxy3: typeof t.pureProxy3 = r.pureProxy3;
+export var pureProxy4: typeof t.pureProxy4 = r.pureProxy4;
+export var pureProxy5: typeof t.pureProxy5 = r.pureProxy5;
+export var pureProxy6: typeof t.pureProxy6 = r.pureProxy6;
+export var pureProxy7: typeof t.pureProxy7 = r.pureProxy7;
+export var pureProxy8: typeof t.pureProxy8 = r.pureProxy8;
+export var pureProxy9: typeof t.pureProxy9 = r.pureProxy9;
+export var pureProxy10: typeof t.pureProxy10 = r.pureProxy10;
+export var castByValue: typeof t.castByValue = r.castByValue;
+export type Console = t.Console;
+export var Console: typeof t.Console = r.Console;
+

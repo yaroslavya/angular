@@ -12,6 +12,7 @@ import {RootRenderer, RenderComponentType, Renderer} from '../render/api';
 import {APP_ID} from '../application_tokens';
 import {ViewEncapsulation} from '../metadata/view';
 import {Injectable, Inject} from '../di/decorators';
+import {uninitialized} from "../change_detection/change_detection_util";
 
 @Injectable()
 export class ViewUtils {

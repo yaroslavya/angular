@@ -17,12 +17,13 @@ import * as reflection_capabilities from './src/reflection/reflection_capabiliti
 import * as decorators from './src/util/decorators';
 import * as debug from './src/debug/debug_renderer';
 import * as provider_util from './src/di/provider_util';
+import * as console from './src/console';
 import {Provider} from './src/di/provider';
 
 export declare namespace __core_private_types__ {
   export var isDefaultChangeDetectionStrategy: typeof constants.isDefaultChangeDetectionStrategy;
   export type ChangeDetectorState = constants.ChangeDetectorState;
-  export var ChangeDetectorState: typeof  constants.ChangeDetectorState;
+  export var ChangeDetectorState: typeof constants.ChangeDetectorState;
   export var CHANGE_DETECTION_STRATEGY_VALUES: typeof constants.CHANGE_DETECTION_STRATEGY_VALUES;
   export var constructDependencies: typeof reflective_provider.constructDependencies;
   export type LifecycleHooks = lifecycle_hooks.LifecycleHooks;
@@ -59,37 +60,62 @@ export declare namespace __core_private_types__ {
   export var DebugDomRootRenderer: typeof debug.DebugDomRootRenderer;
   export var createProvider: typeof provider_util.createProvider;
   export var isProviderLiteral: typeof provider_util.isProviderLiteral;
+  export var pureProxy1: typeof view_utils.pureProxy1;
+  export var pureProxy2: typeof view_utils.pureProxy2;
+  export var pureProxy3: typeof view_utils.pureProxy3;
+  export var pureProxy4: typeof view_utils.pureProxy4;
+  export var pureProxy5: typeof view_utils.pureProxy5;
+  export var pureProxy6: typeof view_utils.pureProxy6;
+  export var pureProxy7: typeof view_utils.pureProxy7;
+  export var pureProxy8: typeof view_utils.pureProxy8;
+  export var pureProxy9: typeof view_utils.pureProxy9;
+  export var pureProxy10: typeof view_utils.pureProxy10;
+  export var castByValue: typeof view_utils.castByValue;
+  export type Console = console.Console;
+  export var Console: typeof console.Console;
 }
 
 export var __core_private__ = {
-    isDefaultChangeDetectionStrategy: constants.isDefaultChangeDetectionStrategy,
-    ChangeDetectorState: constants.ChangeDetectorState,
-    CHANGE_DETECTION_STRATEGY_VALUES: constants.CHANGE_DETECTION_STRATEGY_VALUES,
-    constructDependencies: reflective_provider.constructDependencies,
-    LifecycleHooks: lifecycle_hooks.LifecycleHooks,
-    LIFECYCLE_HOOKS_VALUES: lifecycle_hooks.LIFECYCLE_HOOKS_VALUES,
-    ReflectorReader: reflector_reader.ReflectorReader,
-    ReflectorComponentResolver: component_resolver.ReflectorComponentResolver,
-    AppElement: element.AppElement,
-    AppView: view.AppView,
-    ViewType: view_type.ViewType,
-    MAX_INTERPOLATION_VALUES: view_utils.MAX_INTERPOLATION_VALUES,
-    checkBinding: view_utils.checkBinding,
-    flattenNestedViewRenderNodes: view_utils.flattenNestedViewRenderNodes,
-    interpolate: view_utils.interpolate,
-    ViewUtils: view_utils.ViewUtils,
-    VIEW_ENCAPSULATION_VALUES: metadata_view.VIEW_ENCAPSULATION_VALUES,
-    DebugContext: debug_context.DebugContext,
-    StaticNodeDebugInfo: debug_context.StaticNodeDebugInfo,
-    devModeEqual: change_detection_util.devModeEqual,
-    uninitialized: change_detection_util.uninitialized,
-    ValueUnwrapper: change_detection_util.ValueUnwrapper,
-    RenderDebugInfo: api.RenderDebugInfo,
-    TemplateRef_: template_ref.TemplateRef_,
-    wtfInit: wtf_init.wtfInit,
-    ReflectionCapabilities: reflection_capabilities.ReflectionCapabilities,
-    makeDecorator: decorators.makeDecorator,
-    DebugDomRootRenderer: debug.DebugDomRootRenderer,
-    createProvider: provider_util.createProvider,
-    isProviderLiteral: provider_util.isProviderLiteral
+  isDefaultChangeDetectionStrategy: constants.isDefaultChangeDetectionStrategy,
+  ChangeDetectorState: constants.ChangeDetectorState,
+  CHANGE_DETECTION_STRATEGY_VALUES: constants.CHANGE_DETECTION_STRATEGY_VALUES,
+  constructDependencies: reflective_provider.constructDependencies,
+  LifecycleHooks: lifecycle_hooks.LifecycleHooks,
+  LIFECYCLE_HOOKS_VALUES: lifecycle_hooks.LIFECYCLE_HOOKS_VALUES,
+  ReflectorReader: reflector_reader.ReflectorReader,
+  ReflectorComponentResolver: component_resolver.ReflectorComponentResolver,
+  AppElement: element.AppElement,
+  AppView: view.AppView,
+  ViewType: view_type.ViewType,
+  MAX_INTERPOLATION_VALUES: view_utils.MAX_INTERPOLATION_VALUES,
+  checkBinding: view_utils.checkBinding,
+  flattenNestedViewRenderNodes: view_utils.flattenNestedViewRenderNodes,
+  interpolate: view_utils.interpolate,
+  ViewUtils: view_utils.ViewUtils,
+  VIEW_ENCAPSULATION_VALUES: metadata_view.VIEW_ENCAPSULATION_VALUES,
+  DebugContext: debug_context.DebugContext,
+  StaticNodeDebugInfo: debug_context.StaticNodeDebugInfo,
+  devModeEqual: change_detection_util.devModeEqual,
+  uninitialized: change_detection_util.uninitialized,
+  ValueUnwrapper: change_detection_util.ValueUnwrapper,
+  RenderDebugInfo: api.RenderDebugInfo,
+  TemplateRef_: template_ref.TemplateRef_,
+  wtfInit: wtf_init.wtfInit,
+  ReflectionCapabilities: reflection_capabilities.ReflectionCapabilities,
+  makeDecorator: decorators.makeDecorator,
+  DebugDomRootRenderer: debug.DebugDomRootRenderer,
+  createProvider: provider_util.createProvider,
+  isProviderLiteral: provider_util.isProviderLiteral,
+  pureProxy1: view_utils.pureProxy1,
+  pureProxy2: view_utils.pureProxy2,
+  pureProxy3: view_utils.pureProxy3,
+  pureProxy4: view_utils.pureProxy4,
+  pureProxy5: view_utils.pureProxy5,
+  pureProxy6: view_utils.pureProxy6,
+  pureProxy7: view_utils.pureProxy7,
+  pureProxy8: view_utils.pureProxy8,
+  pureProxy9: view_utils.pureProxy9,
+  pureProxy10: view_utils.pureProxy10,
+  castByValue: view_utils.castByValue,
+  Console: console.Console,
 };

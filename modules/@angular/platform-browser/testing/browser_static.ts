@@ -15,7 +15,6 @@ import {MockViewResolver} from '@angular/compiler/testing';
 import {MockLocationStrategy} from '@angular/common/testing';
 import {LocationStrategy} from '@angular/common';
 import {MockNgZone} from '@angular/core/testing';
-import {XHRImpl} from '../../platform-browser-dynamic/src/xhr/xhr_impl';
 import {TestComponentBuilder} from '@angular/compiler/testing';
 import {BrowserDetection} from './browser_util';
 import {Log} from '@angular/core/testing';
@@ -23,11 +22,6 @@ import {ELEMENT_PROBE_PROVIDERS} from '../src/dom/debug/ng_probe';
 import {TestComponentRenderer} from '@angular/compiler/testing';
 import {DOMTestComponentRenderer} from './dom_test_component_renderer';
 import {IS_DART} from '../src/facade/lang';
-import {Log} from '@angular/core/testing';
-import {
-  ComponentFixtureAutoDetect,
-  ComponentFixtureNoNgZone
-} from 'src/testing/test_component_builder';
 
 function initBrowserTests() {
   BrowserDomAdapter.makeCurrent();
@@ -37,6 +31,8 @@ function initBrowserTests() {
 function createNgZone(): NgZone {
   return IS_DART ? new MockNgZone() : new NgZone({enableLongStackTrace: true});
 }
+
+export {TestComponentRenderer} from '@angular/compiler/testing';
 
 /**
  * Default platform providers for testing without a compiler.
@@ -58,6 +54,7 @@ export const ADDITIONAL_TEST_BROWSER_PROVIDERS: Array<any /*Type | Provider | an
       {provide: NgZone, useClass: createNgZone},
       {provide: LocationStrategy, useClass: MockLocationStrategy},
       {provide: AnimationBuilder, useClass: MockAnimationBuilder},
+      {provide: TestComponentRenderer, useClass: DOMTestComponentRenderer}
     ];
 
 /**
@@ -66,6 +63,5 @@ export const ADDITIONAL_TEST_BROWSER_PROVIDERS: Array<any /*Type | Provider | an
 export const TEST_BROWSER_STATIC_APPLICATION_PROVIDERS: Array<any /*Type | Provider | any[]*/> =
     /*@ts2dart_const*/ [
       BROWSER_APP_COMMON_PROVIDERS,
-      {provide: XHR, useClass: XHRImpl},
       ADDITIONAL_TEST_BROWSER_PROVIDERS
     ];

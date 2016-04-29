@@ -12,6 +12,8 @@ import {
 } from '@angular/core/testing';
 import {provide} from '@angular/core';
 
+import {Console} from '@angular/core/src/console';
+
 import {
   TemplateParser,
   splitClasses,

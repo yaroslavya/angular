@@ -2,7 +2,6 @@ import {ViewType} from '../../core_private';
 
 import {isPresent, isBlank} from '../../src/facade/lang';
 import {ListWrapper} from '../../src/facade/collection';
-import {BaseException} from '../../src/facade/exceptions';
 
 import * as o from '../output/output_ast';
 import {EventHandlerVars} from './constants';
@@ -21,7 +20,7 @@ import {
   getViewFactoryName,
   injectFromViewParentInjector,
   createDiTokenExpression,
-  getPropertyInView
+  getPropertyInView, createPureProxy
 } from './util';
 import {CompilerConfig} from '../config';
 import {CompileBinding} from './compile_binding';

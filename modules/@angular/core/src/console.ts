@@ -1,4 +1,4 @@
-import {print, warn} from '../src/facade/lang';
+import {print, warn} from './facade/lang';
 import {Injectable} from './di/decorators';
 
 // Note: Need to rename warn as in Dart

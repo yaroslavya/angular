@@ -3,7 +3,6 @@
  * Jasmine framework.
  */
 import {
-  FunctionWithParamTokens,
   inject,
   async,
   injectAsync,

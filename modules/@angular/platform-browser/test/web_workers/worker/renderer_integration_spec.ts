@@ -44,8 +44,8 @@ import {
 } from '@angular/platform-browser/src/web_workers/shared/service_message_broker';
 import {CompilerConfig} from '@angular/compiler';
 import {
-  TEST_BROWSER_PLATFORM_PROVIDERS,
-  TEST_BROWSER_APPLICATION_PROVIDERS
+  TEST_BROWSER_STATIC_APPLICATION_PROVIDERS,
+  TEST_BROWSER_STATIC_PLATFORM_PROVIDERS
 } from '@angular/platform-browser/testing';
 import {dispatchEvent} from '../../../../platform-browser/testing/browser_util';
 
@@ -88,8 +88,8 @@ export function main() {
     beforeEachProviders(() => {
       uiRenderStore = new RenderStore();
       var testUiInjector = new TestInjector();
-      testUiInjector.platformProviders = TEST_BROWSER_PLATFORM_PROVIDERS;
-      testUiInjector.applicationProviders = TEST_BROWSER_APPLICATION_PROVIDERS;
+      testUiInjector.platformProviders = TEST_BROWSER_STATIC_PLATFORM_PROVIDERS;
+      testUiInjector.applicationProviders = TEST_BROWSER_STATIC_APPLICATION_PROVIDERS;
       testUiInjector.addProviders([
         Serializer,
         provide(RenderStore, {useValue: uiRenderStore}),

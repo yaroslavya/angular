@@ -1,7 +1,6 @@
-import {isPresent, Type} from '../../src/facade/lang';
+import {isPresent} from '../../src/facade/lang';
 import {Predicate, ListWrapper, MapWrapper} from '../../src/facade/collection';
 import {Injector} from '../di';
-import {ListWrapper, MapWrapper} from '../../src/facade/collection';
 import {RenderDebugInfo} from '../render/api';
 
 export class EventListener { constructor(public name: string, public callback: Function){}; }

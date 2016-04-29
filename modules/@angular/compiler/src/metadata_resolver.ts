@@ -13,11 +13,13 @@ import {
   ViewMetadata,
   NoAnnotationError,
   QueryMetadata,
-  resolveForwardRef
+  resolveForwardRef,
+  InjectMetadata,
+  ViewQueryMetadata
 } from '@angular/core';
 import {
   constructDependencies,
-  LIFECYCLE_HOOKS_VALUES
+  LIFECYCLE_HOOKS_VALUES, ReflectorReader
 } from '../core_private';
 import {
   Type,
@@ -26,6 +28,7 @@ import {
   isArray,
   stringify,
   isString,
+  isStringMap
 } from '../src/facade/lang';
 import {StringMapWrapper} from '../src/facade/collection';
 import {BaseException} from '../src/facade/exceptions';
@@ -85,8 +88,8 @@ export class CompileMetadataResolver {
 
       if (dirMeta instanceof ComponentMetadata) {
         assertArrayOfStrings('styles', dirMeta.styles);
-        var cmpMeta = <md.ComponentMetadata>dirMeta;
-        moduleUrl = calcModuleUrl(directiveType, cmpMeta);
+        var cmpMeta = <ComponentMetadata>dirMeta;
+        moduleUrl = calcModuleUrl(this._reflector, directiveType, cmpMeta);
         var viewMeta = this._viewResolver.resolve(directiveType);
         assertArrayOfStrings('styles', viewMeta.styles);
         templateMeta = new cpl.CompileTemplateMetadata({
@@ -221,8 +224,8 @@ export class CompileMetadataResolver {
       let isSelf = false;
       let isSkipSelf = false;
       let isOptional = false;
-      let query: dimd.QueryMetadata = null;
-      let viewQuery: dimd.ViewQueryMetadata = null;
+      let query: QueryMetadata = null;
+      let viewQuery: ViewQueryMetadata = null;
       var token = null;
       if (isArray(param)) {
         (<any[]>param)
@@ -253,10 +256,8 @@ export class CompileMetadataResolver {
       } else {
         token = param;
       }
-      var compileQuery = null;
-      var q = <dimd.QueryMetadata>dep.properties.find(p => p instanceof dimd.QueryMetadata);
-      if (isPresent(q)) {
-        compileQuery = this.getQueryMetadata(q, null);
+      if (isBlank(token)) {
+        return null;
       }
       return new cpl.CompileDiDependencyMetadata({
         isAttribute: isAttribute,
@@ -397,7 +398,17 @@ function isStaticType(value: any): boolean {
   return isStringMap(value) && isPresent(value['name']) && isPresent(value['moduleId']);
 }
 
-function calcModuleUrl(type: Type, cmpMetadata: md.ComponentMetadata): string {
+function isValidType(value: any): boolean {
+  return isStaticType(value) || (value instanceof Type);
+}
+
+function staticTypeModuleUrl(value: any): string {
+  return isStaticType(value) ? value['moduleId'] : null;
+}
+
+function calcModuleUrl(reflector: ReflectorReader,
+                       type: Type, cmpMetadata: ComponentMetadata): string {
+
   var moduleId = cmpMetadata.moduleId;
   if (isPresent(moduleId)) {
     var scheme = getUrlScheme(moduleId);

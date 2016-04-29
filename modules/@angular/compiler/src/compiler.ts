@@ -17,7 +17,6 @@ export {PipeResolver} from './pipe_resolver';
 import {TemplateParser} from './template_parser';
 import {HtmlParser} from './html_parser';
 import {DirectiveNormalizer} from './directive_normalizer';
-import {RuntimeMetadataResolver} from './runtime_metadata';
 import {CompileMetadataResolver} from './metadata_resolver';
 import {StyleCompiler} from './style_compiler';
 import {ViewCompiler} from './view_compiler/view_compiler';

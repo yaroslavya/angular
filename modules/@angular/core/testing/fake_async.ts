@@ -1,5 +1,5 @@
 import {BaseException} from '../index';
-import {getTestInjector, FunctionWithParamTokens} from './test_injector';
+import {getTestInjector} from './test_injector';
 
 let _FakeAsyncTestZoneSpecType = Zone['FakeAsyncTestZoneSpec'];
 

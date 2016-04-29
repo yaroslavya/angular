@@ -52,8 +52,6 @@ import {
 
 import {NgIf, NgFor, AsyncPipe} from '@angular/common';
 
-import {AsyncPipe} from '@angular/common';
-
 import {
   PipeTransform,
   ChangeDetectorRef,

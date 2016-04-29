@@ -14,7 +14,7 @@ import {
   tick
 } from '@angular/core/testing';
 
-import {Component, bind, Component} from '@angular/core';
+import {Component, bind} from '@angular/core';
 import {PromiseWrapper} from '../src/facade/promise';
 import {XHR} from '@angular/compiler';
 import {XHRImpl} from '../../platform-browser-dynamic/src/xhr/xhr_impl';

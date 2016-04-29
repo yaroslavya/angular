@@ -9,16 +9,21 @@ import {
   beforeEachProviders,
   withProviders,
   it,
-  xit,
+  xit
+} from '@angular/core/testing';
+
+import {
   TestComponentBuilder,
   ComponentFixtureAutoDetect,
   ComponentFixtureNoNgZone
-} from '@angular/core/testing';
+} from '@angular/compiler/testing';
 
 import {Injectable, provide, Directive, Component, ViewMetadata, Input} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {IS_DART} from '../src/facade/lang';
 import {PromiseWrapper} from '../src/facade/promise';
+import {AsyncTestCompleter} from "../../core/testing/async_test_completer";
+import {dispatchEvent} from "@angular/platform-browser/testing";
 
 @Component(
     {selector: 'child-comp', template: `<span>Original {{childBinding}}</span>`, directives: []})
@@ -148,7 +153,7 @@ class ListDir1Alt {
 class ListDir2 {
 }
 
-const LIST_CHILDREN = CONST_EXPR([ListDir1, ListDir2]);
+const LIST_CHILDREN = /** ts2dart_const */([ListDir1, ListDir2]);
 
 @Component(
     {selector: 'directive-list-comp', template: `(<li1></li1>)(<li2></li2>)`, directives: [LIST_CHILDREN]})
