@@ -1,20 +1,15 @@
+import {Injectable, Inject, OpaqueToken, Optional} from '@angular/core';
+import {MAX_INTERPOLATION_VALUES} from '../core_private';
+
 import {
   ListWrapper,
   StringMapWrapper,
   SetWrapper,
   MapWrapper
-} from 'angular2/src/facade/collection';
-import {
-  CONST_EXPR,
-  RegExpWrapper,
-  isPresent,
-  StringWrapper,
-  isBlank,
-  isArray
-} from 'angular2/src/facade/lang';
-import {Injectable, Inject, OpaqueToken, Optional} from 'angular2/core';
-import {Console} from 'angular2/src/core/console';
-import {BaseException} from 'angular2/src/facade/exceptions';
+} from '../src/facade/collection';
+import {RegExpWrapper, isPresent, StringWrapper, isBlank, isArray} from '../src/facade/lang';
+import {Injectable, Inject, OpaqueToken, Optional} from '@angular/core';
+import {BaseException} from '../src/facade/exceptions';
 import {
   AST,
   Interpolation,
@@ -25,18 +20,14 @@ import {
 } from './expression_parser/ast';
 import {Parser} from './expression_parser/parser';
 import {
-  CompileTokenMap,
   CompileDirectiveMetadata,
   CompilePipeMetadata,
   CompileMetadataWithType,
-  CompileProviderMetadata,
-  CompileTokenMetadata,
-  CompileTypeMetadata
 } from './compile_metadata';
 import {HtmlParser} from './html_parser';
 import {splitNsName, mergeNsAndName} from './html_tags';
 import {ParseSourceSpan, ParseError, ParseLocation, ParseErrorLevel} from './parse_util';
-import {MAX_INTERPOLATION_VALUES} from 'angular2/src/core/linker/view_utils';
+import {MAX_INTERPOLATION_VALUES} from '../core_private';
 
 import {
   ElementAst,
@@ -58,16 +49,15 @@ import {
   ProviderAstType,
   VariableAst
 } from './template_ast';
-import {CssSelector, SelectorMatcher} from 'angular2/src/compiler/selector';
+import {CssSelector, SelectorMatcher} from './selector';
 
-import {ElementSchemaRegistry} from 'angular2/src/compiler/schema/element_schema_registry';
-import {preparseElement, PreparsedElement, PreparsedElementType} from './template_preparser';
+import {ElementSchemaRegistry} from './schema/element_schema_registry';
+import {preparseElement, PreparsedElementType} from './template_preparser';
 
 import {isStyleUrlResolvable} from './style_url_resolver';
 
 import {
   HtmlAstVisitor,
-  HtmlAst,
   HtmlElementAst,
   HtmlAttrAst,
   HtmlTextAst,
@@ -114,7 +104,7 @@ var TEXT_CSS_SELECTOR = CssSelector.parse('*')[0];
  *
  * This is currently an internal-only feature and not meant for general use.
  */
-export const TEMPLATE_TRANSFORMS = CONST_EXPR(new OpaqueToken('TemplateTransforms'));
+export const TEMPLATE_TRANSFORMS: any = /*@ts2dart_const*/ new OpaqueToken('TemplateTransforms');
 
 export class TemplateParseError extends ParseError {
   constructor(message: string, span: ParseSourceSpan, level: ParseErrorLevel) {

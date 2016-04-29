@@ -8,21 +8,24 @@ import {
   Host,
   OnDestroy,
   Optional
-} from 'angular2/core';
-import {NG_VALUE_ACCESSOR, ControlValueAccessor} from './control_value_accessor';
+} from '@angular/core';
 import {
-  CONST_EXPR,
   StringWrapper,
   isPrimitive,
   isPresent,
   isBlank,
   looseIdentical
-} from 'angular2/src/facade/lang';
+} from '../../../src/facade/lang';
+import {MapWrapper} from '../../../src/facade/collection';
 
-import {MapWrapper} from 'angular2/src/facade/collection';
+import {NG_VALUE_ACCESSOR, ControlValueAccessor} from './control_value_accessor';
 
-const SELECT_VALUE_ACCESSOR = CONST_EXPR(new Provider(
-    NG_VALUE_ACCESSOR, {useExisting: forwardRef(() => SelectControlValueAccessor), multi: true}));
+
+const SELECT_VALUE_ACCESSOR = /*@ts2dart_const*/ {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => SelectControlValueAccessor),
+  multi: true
+};
 
 function _buildValueString(id: string, value: any): string {
   if (isBlank(id)) return `${value}`;

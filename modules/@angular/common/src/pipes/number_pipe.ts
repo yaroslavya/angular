@@ -1,16 +1,15 @@
+import {Injectable, PipeTransform, WrappedValue, Pipe} from '@angular/core';
+
 import {
   isNumber,
   isPresent,
   isBlank,
-  StringWrapper,
   NumberWrapper,
   RegExpWrapper,
-  CONST,
-  FunctionWrapper
-} from 'angular2/src/facade/lang';
-import {BaseException, WrappedException} from 'angular2/src/facade/exceptions';
-import {NumberFormatter, NumberFormatStyle} from 'angular2/src/facade/intl';
-import {Injectable, PipeTransform, WrappedValue, Pipe} from 'angular2/core';
+} from '../../src/facade/lang';
+import {BaseException} from '../../src/facade/exceptions';
+import {NumberFormatter, NumberFormatStyle} from '../../src/facade/intl';
+import {ListWrapper} from '../../src/facade/collection';
 
 import {InvalidPipeArgumentException} from './invalid_pipe_argument_exception';
 
@@ -20,7 +19,7 @@ var _re = RegExpWrapper.create('^(\\d+)?\\.((\\d+)(\\-(\\d+))?)?$');
 /**
  * Internal base class for numeric pipes.
  */
-@CONST()
+/* @ts2dart_const */
 @Injectable()
 export class NumberPipe {
   /** @internal */
@@ -82,7 +81,7 @@ export class NumberPipe {
  *
  * {@example core/pipes/ts/number_pipe/number_pipe_example.ts region='NumberPipe'}
  */
-@CONST()
+/* @ts2dart_const */
 @Pipe({name: 'number'})
 @Injectable()
 export class DecimalPipe extends NumberPipe implements PipeTransform {
@@ -107,7 +106,7 @@ export class DecimalPipe extends NumberPipe implements PipeTransform {
  *
  * {@example core/pipes/ts/number_pipe/number_pipe_example.ts region='PercentPipe'}
  */
-@CONST()
+/* @ts2dart_const */
 @Pipe({name: 'percent'})
 @Injectable()
 export class PercentPipe extends NumberPipe implements PipeTransform {
@@ -136,7 +135,7 @@ export class PercentPipe extends NumberPipe implements PipeTransform {
  *
  * {@example core/pipes/ts/number_pipe/number_pipe_example.ts region='CurrencyPipe'}
  */
-@CONST()
+/* @ts2dart_const */
 @Pipe({name: 'currency'})
 @Injectable()
 export class CurrencyPipe extends NumberPipe implements PipeTransform {

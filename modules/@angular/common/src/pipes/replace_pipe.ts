@@ -1,3 +1,5 @@
+import {Injectable, PipeTransform, Pipe} from '@angular/core';
+
 import {
   isBlank,
   isString,
@@ -5,8 +7,10 @@ import {
   isFunction,
   RegExpWrapper,
   StringWrapper
-} from 'angular2/src/facade/lang';
-import {Injectable, PipeTransform, Pipe} from 'angular2/core';
+} from '../../src/facade/lang';
+import {Injectable, PipeTransform, Pipe} from '@angular/core';
+import {BaseException} from '../../src/facade/exceptions';
+
 import {InvalidPipeArgumentException} from './invalid_pipe_argument_exception';
 
 /**

@@ -1,19 +1,18 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
-  el,
   expect,
   iit,
   inject,
   it,
   xit,
-  TestComponentBuilder,
-} from 'angular2/testing_internal';
+} from '@angular/core/testing';
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
-import {isPresent} from 'angular2/src/facade/lang';
-import {ObservableWrapper} from 'angular2/src/facade/async';
+import {isPresent} from '../../src/facade/lang';
+import {ObservableWrapper} from '../../src/facade/async';
 
 import {
   Component,
@@ -32,9 +31,9 @@ import {
   AfterViewInit,
   AfterContentChecked,
   AfterViewChecked
-} from 'angular2/core';
-import {NgIf, NgFor} from 'angular2/common';
-import {asNativeElements, ViewContainerRef} from 'angular2/core';
+} from '@angular/core';
+import {NgIf, NgFor} from '@angular/common';
+import {asNativeElements, ViewContainerRef} from '@angular/core';
 
 export function main() {
   describe('Query API', () => {
@@ -90,14 +89,14 @@ export function main() {
                  view.debugElement.componentInstance.shouldShow = true;
                  view.detectChanges();
 
-                 var q = view.debugElement.children[0].getLocal('q');
+                 var q: NeedsContentChild = view.debugElement.children[0].getLocal('q');
 
-                 expect(q.log).toEqual([["setter", "foo"], ["init", "foo"], ["check", "foo"]]);
+                 expect(q.logs).toEqual([["setter", "foo"], ["init", "foo"], ["check", "foo"]]);
 
                  view.debugElement.componentInstance.shouldShow = false;
                  view.detectChanges();
 
-                 expect(q.log).toEqual([
+                 expect(q.logs).toEqual([
                    ["setter", "foo"],
                    ["init", "foo"],
                    ["check", "foo"],
@@ -117,14 +116,14 @@ export function main() {
                .createAsync(MyComp)
                .then((view) => {
                  view.detectChanges();
-                 var q = view.debugElement.children[0].getLocal('q');
+                 var q: NeedsViewChild = view.debugElement.children[0].getLocal('q');
 
-                 expect(q.log).toEqual([["setter", "foo"], ["init", "foo"], ["check", "foo"]]);
+                 expect(q.logs).toEqual([["setter", "foo"], ["init", "foo"], ["check", "foo"]]);
 
                  q.shouldShow = false;
                  view.detectChanges();
 
-                 expect(q.log).toEqual([
+                 expect(q.logs).toEqual([
                    ["setter", "foo"],
                    ["init", "foo"],
                    ["check", "foo"],
@@ -146,23 +145,23 @@ export function main() {
                .createAsync(MyComp)
                .then((view) => {
                  view.detectChanges();
-                 var q = view.debugElement.children[0].getLocal('q');
+                 var q: NeedsViewChild = view.debugElement.children[0].getLocal('q');
 
-                 expect(q.log).toEqual([["setter", "foo"], ["init", "foo"], ["check", "foo"]]);
+                 expect(q.logs).toEqual([["setter", "foo"], ["init", "foo"], ["check", "foo"]]);
 
                  q.shouldShow = false;
                  q.shouldShow2 = true;
-                 q.log = [];
+                 q.logs = [];
                  view.detectChanges();
 
-                 expect(q.log).toEqual([["setter", "bar"], ["check", "bar"]]);
+                 expect(q.logs).toEqual([["setter", "bar"], ["check", "bar"]]);
 
                  q.shouldShow = false;
                  q.shouldShow2 = false;
-                 q.log = [];
+                 q.logs = [];
                  view.detectChanges();
 
-                 expect(q.log).toEqual([["setter", null], ["check", null]]);
+                 expect(q.logs).toEqual([["setter", null], ["check", null]]);
 
                  async.done();
                });
@@ -829,16 +828,16 @@ class NeedsContentChild implements AfterContentInit, AfterContentChecked {
   @ContentChild(TextDirective)
   set child(value) {
     this._child = value;
-    this.log.push(['setter', isPresent(value) ? value.text : null]);
+    this.logs.push(['setter', isPresent(value) ? value.text : null]);
   }
 
   get child() { return this._child; }
-  log = [];
+  logs = [];
 
-  ngAfterContentInit() { this.log.push(["init", isPresent(this.child) ? this.child.text : null]); }
+  ngAfterContentInit() { this.logs.push(["init", isPresent(this.child) ? this.child.text : null]); }
 
   ngAfterContentChecked() {
-    this.log.push(["check", isPresent(this.child) ? this.child.text : null]);
+    this.logs.push(["check", isPresent(this.child) ? this.child.text : null]);
   }
 }
 
@@ -858,15 +857,15 @@ class NeedsViewChild implements AfterViewInit,
   @ViewChild(TextDirective)
   set child(value) {
     this._child = value;
-    this.log.push(['setter', isPresent(value) ? value.text : null]);
+    this.logs.push(['setter', isPresent(value) ? value.text : null]);
   }
 
   get child() { return this._child; }
-  log = [];
+  logs = [];
 
-  ngAfterViewInit() { this.log.push(["init", isPresent(this.child) ? this.child.text : null]); }
+  ngAfterViewInit() { this.logs.push(["init", isPresent(this.child) ? this.child.text : null]); }
 
-  ngAfterViewChecked() { this.log.push(["check", isPresent(this.child) ? this.child.text : null]); }
+  ngAfterViewChecked() { this.logs.push(["check", isPresent(this.child) ? this.child.text : null]); }
 }
 
 @Directive({selector: '[dir]'})

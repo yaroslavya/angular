@@ -7,9 +7,9 @@ import {
   expect,
   beforeEach,
   afterEach
-} from 'angular2/testing_internal';
+} from '@angular/core/testing';
 
-import {devModeEqual} from 'angular2/src/core/change_detection/change_detection_util';
+import {devModeEqual} from '@angular/core/src/change_detection/change_detection_util';
 
 export function main() {
   describe("ChangeDetectionUtil", () => {

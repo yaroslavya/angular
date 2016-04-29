@@ -896,7 +896,7 @@ gulp.task('test.unit.cjs/ci', function(done) {
   runJasmineTests(['dist/js/cjs/{angular2,benchpress}/test/**/*_spec.js'], done);
 });
 
-gulp.task('check-public-api',
+gulp.task('check-public-api', ['build.tools'],
           function(done) { runJasmineTests(['dist/tools/public_api_guard/**/*_spec.js'], done); });
 
 gulp.task('test.unit.cjs', ['build/clean.js', 'build.tools'], function(neverDone) {
@@ -1506,6 +1506,10 @@ process.on('beforeExit', function() {
 
 
 var firstTask = true;
+
+
+
+
 gulp.on('task_start', (e) => {
   if (firstTask) {
     firstTask = false;
@@ -1516,3 +1520,33 @@ gulp.on('task_start', (e) => {
 });
 gulp.on('task_stop', (e) => {analytics.buildSuccess('gulp ' + e.task, e.duration * 1000)});
 gulp.on('task_err', (e) => {analytics.buildError('gulp ' + e.task, e.duration * 1000)});
+
+
+
+//new stuff for @angular///
+var gulpWatch = require('gulp-watch');
+var gulpExec = require('gulp-exec');
+var spawn = require('child_process').spawn;
+
+gulp.task('@angular:watch', (cb) => {
+  gulpWatch('modules/@angular/**/*.ts', (changedFile) => {
+    console.log(changedFile)
+    gulp.start('@angular:compile', cb);
+  });
+});
+
+gulp.task('@angular:compile', (cb) => {
+  var tscRun = spawn('tsc', ['-p', 'modules/@angular']);
+
+  tscRun.stdout.on('data', function (data) {
+    console.log('stdout: ' + data);
+  });
+
+  tscRun.stderr.on('data', function (data) {
+    console.log('stderr: ' + data);
+  });
+
+  tscRun.on('exit', function (code) {
+    console.log('child process exited with code ' + code);
+  });
+});

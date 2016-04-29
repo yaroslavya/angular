@@ -1,11 +1,7 @@
-import {resolveForwardRef} from 'angular2/src/core/di';
-import {Injectable} from 'angular2/src/core/di';
-import {Map, MapWrapper, ListWrapper} from 'angular2/src/facade/collection';
-import {Type, isPresent, isArray, stringify, isBlank} from 'angular2/src/facade/lang';
-import {BaseException, WrappedException} from 'angular2/src/facade/exceptions';
-
-import {ViewMetadata} from '../core/metadata';
-import {ViewResolver} from 'angular2/src/compiler/view_resolver';
+import {Injectable, ViewMetadata, Type, BaseException} from '@angular/core';
+import {ViewResolver} from '../index';
+import {Map} from '../src/facade/collection';
+import {isPresent, stringify, isBlank} from '../src/facade/lang';
 
 @Injectable()
 export class MockViewResolver extends ViewResolver {

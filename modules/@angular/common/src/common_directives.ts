@@ -1,5 +1,4 @@
-import {CONST_EXPR, Type} from 'angular2/src/facade/lang';
-
+import {Type} from '@angular/core';
 import {FORM_DIRECTIVES} from './forms';
 import {CORE_DIRECTIVES} from './directives';
 
@@ -17,7 +16,7 @@ import {CORE_DIRECTIVES} from './directives';
  *
  * ```typescript
  * import {NgClass, NgIf, NgFor, NgSwitch, NgSwitchWhen, NgSwitchDefault, NgModel, NgForm} from
- * 'angular2/common';
+ * '@angular/common';
  * import {OtherDirective} from './myDirectives';
  *
  * @Component({
@@ -33,7 +32,7 @@ import {CORE_DIRECTIVES} from './directives';
  * one could import all the common directives at once:
  *
  * ```typescript
- * import {COMMON_DIRECTIVES} from 'angular2/common';
+ * import {COMMON_DIRECTIVES} from '@angular/common';
  * import {OtherDirective} from './myDirectives';
  *
  * @Component({
@@ -46,4 +45,4 @@ import {CORE_DIRECTIVES} from './directives';
  * }
  * ```
  */
-export const COMMON_DIRECTIVES: Type[][] = CONST_EXPR([CORE_DIRECTIVES, FORM_DIRECTIVES]);
+export const COMMON_DIRECTIVES: Type[][] = /*@ts2dart_const*/ [CORE_DIRECTIVES, FORM_DIRECTIVES];

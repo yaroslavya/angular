@@ -1,10 +1,8 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   xdescribe,
   describe,
-  dispatchEvent,
   expect,
   iit,
   inject,
@@ -15,14 +13,12 @@ import {
   TestComponentBuilder,
   ComponentFixtureAutoDetect,
   ComponentFixtureNoNgZone
-} from 'angular2/testing_internal';
+} from '@angular/core/testing';
 
-import {CONST_EXPR} from 'angular2/src/facade/lang';
-import {Injectable, provide} from 'angular2/core';
-import {NgIf} from 'angular2/common';
-import {Directive, Component, ViewMetadata, Input} from 'angular2/src/core/metadata';
-import {IS_DART} from 'angular2/src/facade/lang';
-import {PromiseWrapper} from 'angular2/src/facade/promise';
+import {Injectable, provide, Directive, Component, ViewMetadata, Input} from '@angular/core';
+import {NgIf} from '@angular/common';
+import {IS_DART} from '../src/facade/lang';
+import {PromiseWrapper} from '../src/facade/promise';
 
 @Component(
     {selector: 'child-comp', template: `<span>Original {{childBinding}}</span>`, directives: []})

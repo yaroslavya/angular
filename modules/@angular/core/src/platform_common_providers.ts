@@ -1,9 +1,9 @@
-import {Type, isBlank, isPresent, assertionsEnabled, CONST_EXPR} from 'angular2/src/facade/lang';
-import {provide, Provider, Injector, OpaqueToken} from 'angular2/src/core/di';
-import {Console} from 'angular2/src/core/console';
+import {Type, isBlank, isPresent, assertionsEnabled} from '../src/facade/lang';
+import {provide, Provider, Injector, OpaqueToken} from './di';
+import {Console} from './console';
 import {Reflector, reflector} from './reflection/reflection';
 import {ReflectorReader} from './reflection/reflector_reader';
-import {TestabilityRegistry} from 'angular2/src/core/testability/testability';
+import {TestabilityRegistry} from './testability/testability';
 import {PLATFORM_CORE_PROVIDERS} from './application_ref';
 
 function _reflector(): Reflector {
@@ -13,10 +13,10 @@ function _reflector(): Reflector {
 /**
  * A default set of providers which should be included in any Angular platform.
  */
-export const PLATFORM_COMMON_PROVIDERS: Array<Type | Provider | any[]> = CONST_EXPR([
+export const PLATFORM_COMMON_PROVIDERS: Array<Type |  {[k: string]: any} | any[]> = /*@ts2dart_const*/ [
   PLATFORM_CORE_PROVIDERS,
-  new Provider(Reflector, {useFactory: _reflector, deps: []}),
-  new Provider(ReflectorReader, {useExisting: Reflector}),
+  {provide: Reflector, useFactory: _reflector, deps: []},
+  {provide: ReflectorReader, useExisting: Reflector},
   TestabilityRegistry,
   Console
-]);
+];

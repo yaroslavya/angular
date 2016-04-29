@@ -9,16 +9,12 @@ import {
   afterEach,
   tick,
   fakeAsync,
-  TestComponentBuilder,
-  ComponentFixture,
   inject,
   beforeEachProviders
-} from 'angular2/testing_internal';
+} from '@angular/core/testing';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 
 import {
-  IS_DART,
-  CONST_EXPR,
-  Type,
   isPresent,
   isBlank,
   isNumber,
@@ -26,20 +22,21 @@ import {
   FunctionWrapper,
   NumberWrapper,
   normalizeBool
-} from 'angular2/src/facade/lang';
-import {BaseException, WrappedException} from 'angular2/src/facade/exceptions';
-import {MapWrapper, StringMapWrapper} from 'angular2/src/facade/collection';
-import {DOM} from 'angular2/src/platform/dom/dom_adapter';
+} from '../../src/facade/lang';
+import {BaseException, WrappedException} from '../../src/facade/exceptions';
+import {MapWrapper, StringMapWrapper} from '../../src/facade/collection';
+import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 
 import {
   PipeTransform,
   ChangeDetectionStrategy,
   WrappedValue,
-} from 'angular2/src/core/change_detection/change_detection';
+} from '@angular/core/src/change_detection/change_detection';
 
-import {OnDestroy} from 'angular2/src/core/metadata/lifecycle_hooks';
+import {OnDestroy} from '@angular/core/src/metadata/lifecycle_hooks';
 
-import {EventEmitter, ObservableWrapper} from 'angular2/src/facade/async';
+import {IS_DART, Type} from '../../src/facade/lang';
+import {EventEmitter, ObservableWrapper} from '../../src/facade/async';
 
 
 import {
@@ -66,15 +63,15 @@ import {
   AfterContentChecked,
   AfterViewInit,
   AfterViewChecked
-} from 'angular2/core';
-import {By} from 'angular2/platform/common_dom';
-import {AsyncPipe} from 'angular2/common';
+} from '@angular/core';
+import {By} from '@angular/platform-browser/src/dom/debug/by';
+import {AsyncPipe} from '@angular/common';
 
-import {ElementSchemaRegistry} from 'angular2/src/compiler/schema/element_schema_registry';
-import {MockSchemaRegistry} from '../../compiler/schema_registry_mock';
-import {TEST_PROVIDERS} from '../../compiler/test_bindings';
-import {DebugDomRootRenderer, DebugDomRenderer} from 'angular2/src/core/debug/debug_renderer';
-import {DomRootRenderer} from 'angular2/src/platform/dom/dom_renderer';
+import {ElementSchemaRegistry} from '@angular/compiler/src/schema/element_schema_registry';
+import {MockSchemaRegistry} from '@angular/compiler/testing';
+import {TEST_PROVIDERS} from '@angular/compiler/test/test_bindings';
+import {DebugDomRenderer} from '@angular/core/src/debug/debug_renderer';
+import {DomRootRenderer} from '@angular/platform-browser/src/dom/dom_renderer';
 
 export function main() {
   var tcb: TestComponentBuilder;
@@ -116,7 +113,7 @@ export function main() {
 
   describe(`ChangeDetection`, () => {
     // On CJS fakeAsync is not supported...
-    if (!DOM.supportsDOMEvents()) return;
+    if (!getDOM().supportsDOMEvents()) return;
 
     beforeEachProviders(() => [
       RenderLog,
@@ -1072,7 +1069,7 @@ export function main() {
   });
 }
 
-const ALL_DIRECTIVES = CONST_EXPR([
+const ALL_DIRECTIVES = /*@ts2dart_const*/ [
   forwardRef(() => TestDirective),
   forwardRef(() => TestComponent),
   forwardRef(() => AnotherComponent),
@@ -1083,9 +1080,9 @@ const ALL_DIRECTIVES = CONST_EXPR([
   forwardRef(() => OrderCheckDirective2),
   forwardRef(() => OrderCheckDirective0),
   forwardRef(() => OrderCheckDirective1),
-]);
+];
 
-const ALL_PIPES = CONST_EXPR([
+const ALL_PIPES = /*@ts2dart_const*/ [
   forwardRef(() => CountingPipe),
   forwardRef(() => CountingImpurePipe),
   forwardRef(() => MultiArgPipe),
@@ -1093,7 +1090,7 @@ const ALL_PIPES = CONST_EXPR([
   forwardRef(() => IdentityPipe),
   forwardRef(() => WrappedPipe),
   AsyncPipe
-]);
+];
 
 @Injectable()
 class RenderLog {

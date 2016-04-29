@@ -1,0 +1,17 @@
+{
+  "name": "@angular/testing",
+  "version": "$$ANGULAR_VERSION$$",
+  "description": "",
+  "main": "index.js",
+  "jsnext:main": "esm/index.js",
+  "typings": "index.d.ts",
+  "author": "angular",
+  "license": "MIT",
+  "peerDependencies": {
+    "zone.js": "^0.6.6",
+    "@angular/core": "$$ANGULAR_VERSION$$",
+    "@angular/common": "$$ANGULAR_VERSION$$",
+    "@angular/compiler": "$$ANGULAR_VERSION$$",
+    "@angular/platform-browser": "$$ANGULAR_VERSION$$"
+  }
+}

@@ -1,31 +1,27 @@
-import {NgZone, NgZoneError} from 'angular2/src/core/zone/ng_zone';
+import {NgZone, NgZoneError} from './zone/ng_zone';
 import {
   Type,
   isBlank,
   isPresent,
   assertionsEnabled,
-  print,
-  IS_DART,
-  CONST_EXPR,
   lockMode,
   isPromise
-} from 'angular2/src/facade/lang';
-import {provide, Provider, Injector, Injectable} from 'angular2/src/core/di';
-import {APP_ID_RANDOM_PROVIDER, PLATFORM_INITIALIZER, APP_INITIALIZER} from './application_tokens';
-import {PromiseWrapper, PromiseCompleter, ObservableWrapper} from 'angular2/src/facade/async';
-import {ListWrapper} from 'angular2/src/facade/collection';
-import {TestabilityRegistry, Testability} from 'angular2/src/core/testability/testability';
-import {ComponentResolver} from 'angular2/src/core/linker/component_resolver';
-import {ComponentRef, ComponentFactory} from 'angular2/src/core/linker/component_factory';
+} from '../src/facade/lang';
+import {Injector, Injectable} from './di';
+import {PLATFORM_INITIALIZER, APP_INITIALIZER} from './application_tokens';
+import {PromiseWrapper, ObservableWrapper} from '../src/facade/async';
+import {ListWrapper} from '../src/facade/collection';
+import {TestabilityRegistry, Testability} from './testability/testability';
+import {ComponentResolver} from './linker/component_resolver';
+import {ComponentRef, ComponentFactory} from './linker/component_factory';
 import {
   BaseException,
-  WrappedException,
   ExceptionHandler,
   unimplemented
-} from 'angular2/src/facade/exceptions';
-import {Console} from 'angular2/src/core/console';
+} from '../src/facade/exceptions';
+import {Console} from './console';
 import {wtfLeave, wtfCreateScope, WtfScopeFn} from './profile/profile';
-import {ChangeDetectorRef} from 'angular2/src/core/change_detection/change_detector_ref';
+import {ChangeDetectorRef} from './change_detection/change_detector_ref';
 
 /**
  * Create an Angular zone.
@@ -374,7 +370,7 @@ export class ApplicationRef_ extends ApplicationRef {
       }
 
       this._loadComponent(compRef);
-      let c = this._injector.get(Console);
+      let c: Console = this._injector.get(Console);
       if (assertionsEnabled()) {
         c.log(
             "Angular 2 is running in the development mode. Call enableProdMode() to enable the production mode.");
@@ -436,13 +432,16 @@ export class ApplicationRef_ extends ApplicationRef {
  * @internal
  */
 export const PLATFORM_CORE_PROVIDERS =
-    CONST_EXPR([PlatformRef_, CONST_EXPR(new Provider(PlatformRef, {useExisting: PlatformRef_}))]);
+    /*@ts2dart_const*/ [
+      PlatformRef_,
+     {provide: PlatformRef, useExisting: PlatformRef_}
+    ];
 
 /**
  * @internal
  */
-export const APPLICATION_CORE_PROVIDERS = CONST_EXPR([
-  CONST_EXPR(new Provider(NgZone, {useFactory: createNgZone, deps: CONST_EXPR([])})),
+export const APPLICATION_CORE_PROVIDERS = /*@ts2dart_const*/ [
+  {provide: NgZone, useFactory: createNgZone, deps: []},
   ApplicationRef_,
-  CONST_EXPR(new Provider(ApplicationRef, {useExisting: ApplicationRef_}))
-]);
+  {provide: ApplicationRef, useExisting: ApplicationRef_}
+];

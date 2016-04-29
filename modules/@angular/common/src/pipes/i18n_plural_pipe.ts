@@ -1,11 +1,10 @@
+import {Injectable, PipeTransform, Pipe} from '@angular/core';
 import {
-  CONST,
   isStringMap,
   StringWrapper,
   isPresent,
   RegExpWrapper
-} from 'angular2/src/facade/lang';
-import {Injectable, PipeTransform, Pipe} from 'angular2/core';
+} from '../../src/facade/lang';
 import {InvalidPipeArgumentException} from './invalid_pipe_argument_exception';
 
 var interpolationExp: RegExp = RegExpWrapper.create('#');
@@ -41,7 +40,7 @@ var interpolationExp: RegExp = RegExpWrapper.create('#');
  *  ```
  *
  */
-@CONST()
+/* @ts2dart_const */
 @Pipe({name: 'i18nPlural', pure: true})
 @Injectable()
 export class I18nPluralPipe implements PipeTransform {

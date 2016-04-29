@@ -1,5 +1,4 @@
-import {CONST_EXPR} from 'angular2/src/facade/lang';
-import {OpaqueToken} from 'angular2/core';
+import {OpaqueToken} from '@angular/core';
 import {UrlChangeListener} from './platform_location';
 
 /**
@@ -41,9 +40,9 @@ export abstract class LocationStrategy {
  * ### Example
  *
  * ```
- * import {Component} from 'angular2/core';
- * import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, RouteConfig} from 'angular2/router';
- * import {APP_BASE_HREF} from 'angular2/platform/common';
+ * import {Component} from '@angular/core';
+ * import {ROUTER_DIRECTIVES, ROUTER_PROVIDERS, RouteConfig} from '@angular/router';
+ * import {APP_BASE_HREF} from '@angular/common';
  *
  * @Component({directives: [ROUTER_DIRECTIVES]})
  * @RouteConfig([
@@ -59,4 +58,4 @@ export abstract class LocationStrategy {
  * ]);
  * ```
  */
-export const APP_BASE_HREF: OpaqueToken = CONST_EXPR(new OpaqueToken('appBaseHref'));
+export const APP_BASE_HREF: OpaqueToken = /*@ts2dart_const*/ new OpaqueToken('appBaseHref');

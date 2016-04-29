@@ -1,0 +1,17 @@
+{
+  "name": "@angular/platform-browser",
+  "version": "$$ANGULAR_VERSION$$",
+  "description": "",
+  "main": "index.js",
+  "jsnext:main": "esm/index.js",
+  "typings": "index.d.ts",
+  "author": "angular",
+  "license": "MIT",
+  "peerDependencies": {
+    "rxjs": "5.0.0-beta.2",
+    "zone.js": "^0.6.6",
+    "@angular/core": "$$ANGULAR_VERSION$$",
+    "@angular/common": "$$ANGULAR_VERSION$$",
+    "@angular/compiler": "$$ANGULAR_VERSION$$"
+  }
+}

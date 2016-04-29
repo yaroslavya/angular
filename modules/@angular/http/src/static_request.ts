@@ -2,13 +2,7 @@ import {RequestMethod} from './enums';
 import {RequestArgs} from './interfaces';
 import {Headers} from './headers';
 import {normalizeMethodName} from './http_utils';
-import {
-  RegExpWrapper,
-  CONST_EXPR,
-  isPresent,
-  isJsObject,
-  StringWrapper
-} from 'angular2/src/facade/lang';
+import {isPresent, StringWrapper} from '../src/facade/lang';
 
 // TODO(jeffbcross): properly implement body accessors
 /**
@@ -25,8 +19,8 @@ import {
  * where it may be useful to generate a `Request` with arbitrary headers and search params.
  *
  * ```typescript
- * import {Injectable, Injector} from 'angular2/core';
- * import {HTTP_PROVIDERS, Http, Request, RequestMethod} from 'angular2/http';
+ * import {Injectable, Injector} from '@angular/core';
+ * import {HTTP_PROVIDERS, Http, Request, RequestMethod} from '@angular/http';
  *
  * @Injectable()
  * class AutoAuthenticator {

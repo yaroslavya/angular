@@ -1,16 +1,11 @@
-import {StringMapWrapper} from 'angular2/src/facade/collection';
-import {global, isPromise, Math} from 'angular2/src/facade/lang';
-
-import {provide} from 'angular2/core';
-
-import {AsyncTestCompleter} from './async_test_completer';
-import {getTestInjector, inject} from './test_injector';
-import {browserDetection} from './utils';
+import {StringMapWrapper} from '../src/facade/collection';
+import {global, isFunction, Math} from '../src/facade/lang';
+import {provide} from '../index';
+import {getTestInjector, FunctionWithParamTokens, inject} from './test_injector';
 
 export {AsyncTestCompleter} from './async_test_completer';
-export {inject} from './test_injector';
-
-export {expect, NgMatchers} from './matchers';
+import {getTestInjector, inject} from './test_injector';
+import {browserDetection} from './utils';
 
 export var proxy: ClassDecorator = (t) => t;
 
@@ -28,8 +23,8 @@ var jsmXIt = _global.xit;
 
 var runnerStack = [];
 var inIt = false;
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
-var globalTimeOut = browserDetection.isSlow ? 3000 : jasmine.DEFAULT_TIMEOUT_INTERVAL;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000;
+var globalTimeOut = jasmine.DEFAULT_TIMEOUT_INTERVAL;
 
 var testInjector = getTestInjector();
 

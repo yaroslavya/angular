@@ -1,18 +1,17 @@
 import {
-  AsyncTestCompleter,
   inject,
   ddescribe,
   describe,
-  dispatchEvent,
   it,
   iit,
   expect,
   beforeEach,
   beforeEachProviders,
-  TestInjector,
-  TestComponentBuilder
-} from "angular2/testing_internal";
-import {DOM} from 'angular2/src/platform/dom/dom_adapter';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
+import { TestInjector } from '@angular/core/testing';
+import { TestComponentBuilder } from '@angular/compiler/testing';
+import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {
   bind,
   provide,
@@ -23,31 +22,32 @@ import {
   Injectable,
   ElementRef,
   ComponentRef
-} from 'angular2/core';
-import {NgIf} from 'angular2/common';
-import {WebWorkerRootRenderer} from "angular2/src/web_workers/worker/renderer";
+} from '@angular/core';
+import {NgIf} from '@angular/common';
+import {WebWorkerRootRenderer} from '@angular/platform-browser/src/web_workers/worker/renderer';
 import {
   ClientMessageBrokerFactory,
   ClientMessageBrokerFactory_,
   UiArguments,
   FnArg
-} from "angular2/src/web_workers/shared/client_message_broker";
-import {Serializer} from "angular2/src/web_workers/shared/serializer";
-import {RootRenderer} from "angular2/src/core/render/api";
-import {DomRootRenderer, DomRootRenderer_} from 'angular2/src/platform/dom/dom_renderer';
-import {DebugDomRootRenderer} from 'angular2/src/core/debug/debug_renderer';
-import {RenderStore} from "angular2/src/web_workers/shared/render_store";
-import {MessageBasedRenderer} from 'angular2/src/web_workers/ui/renderer';
+} from '@angular/platform-browser/src/web_workers/shared/client_message_broker';
+import {Serializer} from '@angular/platform-browser/src/web_workers/shared/serializer';
+import {RootRenderer} from '@angular/core/src/render/api';
+import {DomRootRenderer, DomRootRenderer_} from '@angular/platform-browser/src/dom/dom_renderer';
+import {DebugDomRootRenderer} from '@angular/core/src/debug/debug_renderer';
+import {RenderStore} from '@angular/platform-browser/src/web_workers/shared/render_store';
+import {MessageBasedRenderer} from '@angular/platform-browser/src/web_workers/ui/renderer';
 import {createPairedMessageBuses, PairedMessageBuses} from '../shared/web_worker_test_util';
 import {
   ServiceMessageBrokerFactory,
   ServiceMessageBrokerFactory_
-} from 'angular2/src/web_workers/shared/service_message_broker';
-import {CompilerConfig} from 'angular2/compiler';
+} from '@angular/platform-browser/src/web_workers/shared/service_message_broker';
+import {CompilerConfig} from '@angular/compiler';
 import {
   TEST_BROWSER_PLATFORM_PROVIDERS,
   TEST_BROWSER_APPLICATION_PROVIDERS
-} from 'angular2/platform/testing/browser';
+} from '@angular/platform-browser/testing';
+import {dispatchEvent} from '../../../../platform-browser/testing/browser_util';
 
 export function main() {
   function createWebWorkerBrokerFactory(
@@ -153,17 +153,17 @@ export function main() {
                  expect((<HTMLInputElement>el).tabIndex).toEqual(1);
 
                  renderer.setElementClass(workerEl, 'a', true);
-                 expect(DOM.hasClass(el, 'a')).toBe(true);
+                 expect(getDOM().hasClass(el, 'a')).toBe(true);
                  renderer.setElementClass(workerEl, 'a', false);
-                 expect(DOM.hasClass(el, 'a')).toBe(false);
+                 expect(getDOM().hasClass(el, 'a')).toBe(false);
 
                  renderer.setElementStyle(workerEl, 'width', '10px');
-                 expect(DOM.getStyle(el, 'width')).toEqual('10px');
+                 expect(getDOM().getStyle(el, 'width')).toEqual('10px');
                  renderer.setElementStyle(workerEl, 'width', null);
-                 expect(DOM.getStyle(el, 'width')).toEqual('');
+                 expect(getDOM().getStyle(el, 'width')).toEqual('');
 
                  renderer.setElementAttribute(workerEl, 'someattr', 'someValue');
-                 expect(DOM.getAttribute(el, 'someattr')).toEqual('someValue');
+                 expect(getDOM().getAttribute(el, 'someattr')).toEqual('someValue');
                };
 
                // root element
@@ -185,7 +185,7 @@ export function main() {
                (<MyComp>fixture.debugElement.componentInstance).ctxBoolProp = true;
                fixture.detectChanges();
                var el = getRenderElement(fixture.debugElement.nativeElement);
-               expect(DOM.getInnerHTML(el)).toContain('"ng-reflect-ng-if": "true"');
+               expect(getDOM().getInnerHTML(el)).toContain('"ng-reflect-ng-if": "true"');
                async.done();
              });
        }));
@@ -214,7 +214,7 @@ export function main() {
              });
        }));
 
-    if (DOM.supportsDOMEvents()) {
+    if (getDOM().supportsDOMEvents()) {
       it('should call actions on the element',
          inject([TestComponentBuilder, AsyncTestCompleter], (tcb: TestComponentBuilder, async) => {
            tcb.overrideView(MyComp, new ViewMetadata({template: '<input [title]="y">'}))
@@ -224,7 +224,7 @@ export function main() {
                  getRenderer(fixture.componentRef)
                      .invokeElementMethod(el.nativeElement, 'setAttribute', ['a', 'b']);
 
-                 expect(DOM.getAttribute(getRenderElement(el.nativeElement), 'a')).toEqual('b');
+                 expect(getDOM().getAttribute(getRenderElement(el.nativeElement), 'a')).toEqual('b');
                  async.done();
                });
          }));

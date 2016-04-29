@@ -1,20 +1,17 @@
 import {
   isBlank,
   isPresent,
-  Type,
-  stringify,
-  CONST_EXPR,
   looseIdentical
-} from 'angular2/src/facade/lang';
-import {ListWrapper, StringMapWrapper} from 'angular2/src/facade/collection';
-import {BaseException} from 'angular2/src/facade/exceptions';
+} from '../../src/facade/lang';
+import {ListWrapper, StringMapWrapper} from '../../src/facade/collection';
+import {BaseException} from '../../src/facade/exceptions';
 import {AppElement} from './element';
 import {ExpressionChangedAfterItHasBeenCheckedException} from './exceptions';
-import {devModeEqual, uninitialized} from 'angular2/src/core/change_detection/change_detection';
-import {Inject, Injectable} from 'angular2/src/core/di';
-import {RootRenderer, RenderComponentType, Renderer} from 'angular2/src/core/render/api';
-import {APP_ID} from 'angular2/src/core/application_tokens';
-import {ViewEncapsulation} from 'angular2/src/core/metadata/view';
+import {devModeEqual} from '../change_detection/change_detection';
+import {RootRenderer, RenderComponentType, Renderer} from '../render/api';
+import {APP_ID} from '../application_tokens';
+import {ViewEncapsulation} from '../metadata/view';
+import {Injectable, Inject} from '../di/decorators';
 
 @Injectable()
 export class ViewUtils {
@@ -60,7 +57,7 @@ function _flattenNestedViewRenderNodes(nodes: any[], renderNodes: any[]): any[] 
   return renderNodes;
 }
 
-const EMPTY_ARR = CONST_EXPR([]);
+const EMPTY_ARR = /*@ts2dart_const*/ [];
 
 export function ensureSlotCount(projectableNodes: any[][], expectedSlotCount: number): any[][] {
   var res;

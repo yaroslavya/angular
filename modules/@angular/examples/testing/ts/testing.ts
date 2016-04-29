@@ -9,8 +9,8 @@ import {
   afterEach,
   beforeEachProviders,
   inject
-} from 'angular2/testing';
-import {provide} from 'angular2/core';
+} from '@angular/core/testing';
+import {provide} from '@angular/core';
 
 var db: any;
 class MyService {}

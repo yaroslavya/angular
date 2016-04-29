@@ -2,20 +2,16 @@ import {
   PostMessageBus,
   PostMessageBusSink,
   PostMessageBusSource
-} from 'angular2/src/web_workers/shared/post_message_bus';
-import {MessageBus} from 'angular2/src/web_workers/shared/message_bus';
-import {APP_INITIALIZER} from 'angular2/core';
-import {Injector, Injectable, Provider} from 'angular2/src/core/di';
-import {MessageBasedRenderer} from 'angular2/src/web_workers/ui/renderer';
-import {MessageBasedXHRImpl} from 'angular2/src/web_workers/ui/xhr_impl';
+} from '../web_workers/shared/post_message_bus';
+import {MessageBus} from '../web_workers/shared/message_bus';
+import {APP_INITIALIZER} from '@angular/core';
+import {Injector, Injectable, Provider} from '@angular/core/src/di';
 import {
   WORKER_RENDER_APPLICATION_COMMON,
-  WORKER_RENDER_MESSAGING_PROVIDERS,
   WORKER_SCRIPT,
   initializeGenericWorkerRenderer
-} from 'angular2/src/platform/worker_render_common';
-import {BaseException} from 'angular2/src/facade/exceptions';
-import {CONST_EXPR} from 'angular2/src/facade/lang';
+} from './worker_render_common';
+import {BaseException} from '../../src/facade/exceptions';
 
 /**
  * Wrapper class that exposes the Worker
@@ -36,17 +32,18 @@ export class WebWorkerInstance {
 /**
  * An array of providers that should be passed into `application()` when initializing a new Worker.
  */
-export const WORKER_RENDER_APPLICATION: Array<any /*Type | Provider | any[]*/> = CONST_EXPR([
-  WORKER_RENDER_APPLICATION_COMMON,
-  WebWorkerInstance,
-  new Provider(APP_INITIALIZER,
-               {
-                 useFactory: (injector) => () => initWebWorkerApplication(injector),
-                 multi: true,
-                 deps: [Injector]
-               }),
-  new Provider(MessageBus, {useFactory: (instance) => instance.bus, deps: [WebWorkerInstance]})
-]);
+export const WORKER_RENDER_APPLICATION: Array<any /*Type | Provider | any[]*/> =
+    /*@ts2dart_const*/ [
+      WORKER_RENDER_APPLICATION_COMMON,
+      WebWorkerInstance,
+      {
+         provide: APP_INITIALIZER,
+         useFactory: injector => () => initWebWorkerApplication(injector),
+         multi: true,
+         deps: [Injector]
+       },
+      {provide: MessageBus, useFactory: (instance) => instance.bus, deps: [WebWorkerInstance]}
+    ];
 
 function initWebWorkerApplication(injector: Injector): void {
   var scriptUri: string;

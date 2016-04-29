@@ -1,11 +1,33 @@
-import {CompileIdentifierMetadata, CompileTokenMetadata} from './compile_metadata';
-import {AppView} from 'angular2/src/core/linker/view';
-import {StaticNodeDebugInfo, DebugContext} from 'angular2/src/core/linker/debug_context';
 import {
-  ViewUtils,
+  SimpleChange,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  ElementRef,
+  ViewContainerRef,
+  Renderer,
+  RenderComponentType,
+  Injector,
+  QueryList,
+  ViewEncapsulation,
+  TemplateRef
+} from '@angular/core';
+import {
+  AppElement,
+  AppView,
+  ChangeDetectorState,
+  checkBinding,
+  DebugContext,
+  devModeEqual,
   flattenNestedViewRenderNodes,
   interpolate,
-  checkBinding,
+  RenderDebugInfo,
+  StaticNodeDebugInfo,
+  TemplateRef_,
+  uninitialized,
+  ValueUnwrapper,
+  ViewType,
+  ViewUtils,
+  castByValue
   castByValue,
   pureProxy1,
   pureProxy2,
@@ -17,25 +39,9 @@ import {
   pureProxy8,
   pureProxy9,
   pureProxy10
-} from 'angular2/src/core/linker/view_utils';
-import {
-  uninitialized,
-  devModeEqual,
-  SimpleChange,
-  ValueUnwrapper,
-  ChangeDetectorRef,
-  ChangeDetectorState,
-  ChangeDetectionStrategy
-} from 'angular2/src/core/change_detection/change_detection';
-import {AppElement} from 'angular2/src/core/linker/element';
-import {ElementRef} from 'angular2/src/core/linker/element_ref';
-import {ViewContainerRef} from 'angular2/src/core/linker/view_container_ref';
-import {Renderer, RenderComponentType, RenderDebugInfo} from 'angular2/src/core/render/api';
-import {ViewEncapsulation} from 'angular2/src/core/metadata/view';
-import {ViewType} from 'angular2/src/core/linker/view_type';
-import {QueryList} from 'angular2/src/core/linker';
-import {Injector} from 'angular2/src/core/di/injector';
-import {TemplateRef, TemplateRef_} from 'angular2/src/core/linker/template_ref';
+} from '../core_private';
+
+import {CompileIdentifierMetadata, CompileTokenMetadata} from './compile_metadata';
 import {MODULE_SUFFIX} from './util';
 
 var APP_VIEW_MODULE_URL = 'asset:angular2/lib/src/core/linker/view' + MODULE_SUFFIX;

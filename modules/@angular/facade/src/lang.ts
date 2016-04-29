@@ -22,6 +22,11 @@ export interface BrowserNodeGlobal {
 
 // TODO(jteplitz602): Load WorkerGlobalScope from lib.webworker.d.ts file #3492
 declare var WorkerGlobalScope;
+// CommonJS / Node have global context exposed as "global" variable.
+// We don't want to include the whole node.d.ts this this compilation unit so we'll just fake
+// the global "global" var for now.
+declare var global;
+
 var globalScope: BrowserNodeGlobal;
 if (typeof window === 'undefined') {
   if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
@@ -105,16 +110,6 @@ export function assertionsEnabled(): boolean {
 _global.assert = function assert(condition) {
   // TODO: to be fixed properly via #2830, noop for now
 };
-
-// This function is needed only to properly support Dart's const expressions
-// see https://github.com/angular/ts2dart/pull/151 for more info
-export function CONST_EXPR<T>(expr: T): T {
-  return expr;
-}
-
-export function CONST(): ClassDecorator & PropertyDecorator {
-  return (target) => target;
-}
 
 export function isPresent(obj: any): boolean {
   return obj !== undefined && obj !== null;

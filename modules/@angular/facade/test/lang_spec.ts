@@ -1,13 +1,12 @@
-import {describe, it, expect, beforeEach, ddescribe, iit, xit, el} from 'angular2/testing_internal';
+import {describe, it, expect, beforeEach, ddescribe, iit, xit} from '@angular/core/testing';
 import {
   isPresent,
   RegExpWrapper,
   RegExpMatcherWrapper,
   StringWrapper,
-  CONST_EXPR,
   hasConstructor,
   resolveEnumToken
-} from 'angular2/src/facade/lang';
+} from '../src/lang';
 
 enum UsefulEnum {
   MyToken,
@@ -52,7 +51,7 @@ export function main() {
 
   describe('const', () => {
     it('should support const expressions both in TS and Dart', () => {
-      const numbers = CONST_EXPR([1, 2, 3]);
+      const numbers = /*@ts2dart_const*/ [1, 2, 3];
       expect(numbers).toEqual([1, 2, 3]);
     });
   });

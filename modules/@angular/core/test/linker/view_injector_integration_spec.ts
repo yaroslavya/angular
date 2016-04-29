@@ -9,16 +9,14 @@ import {
   beforeEach,
   beforeEachProviders,
   inject,
-  AsyncTestCompleter,
-  el,
   containsRegexp,
-  ComponentFixture,
-  TestComponentBuilder,
   fakeAsync,
   tick
-} from 'angular2/testing_internal';
-import {isBlank, isPresent, stringify, Type, CONST_EXPR} from 'angular2/src/facade/lang';
+} from '@angular/core/testing';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
+import {isBlank} from '../../src/facade/lang';
 import {
+  Type,
   ViewContainerRef,
   TemplateRef,
   ElementRef,
@@ -33,23 +31,18 @@ import {
   Attribute,
   ViewMetadata,
   provide,
-  Injector,
-  Provider,
   Optional,
   Inject,
-  Injectable,
   Self,
-  SkipSelf,
   InjectMetadata,
   Pipe,
   Host,
-  HostMetadata,
   SkipSelfMetadata
-} from 'angular2/core';
-import {NgIf} from 'angular2/common';
-import {DOM} from 'angular2/src/platform/dom/dom_adapter';
+} from '@angular/core';
+import {NgIf} from '@angular/common';
+import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 
-const ALL_DIRECTIVES = CONST_EXPR([
+const ALL_DIRECTIVES = /*@ts2dart_const*/ [
   forwardRef(() => SimpleDirective),
   forwardRef(() => CycleDirective),
   forwardRef(() => SimpleComponent),
@@ -81,16 +74,16 @@ const ALL_DIRECTIVES = CONST_EXPR([
   forwardRef(() => PushComponentNeedsChangeDetectorRef),
   forwardRef(() => NeedsHostAppService),
   NgIf
-]);
+];
 
-const ALL_PIPES = CONST_EXPR([
+const ALL_PIPES = /*@ts2dart_const*/ [
   forwardRef(() => PipeNeedsChangeDetectorRef),
   forwardRef(() => PipeNeedsService),
   forwardRef(() => PurePipe),
   forwardRef(() => ImpurePipe),
   forwardRef(() => DuplicatePipe1),
   forwardRef(() => DuplicatePipe2),
-]);
+];
 
 @Directive({selector: '[simpleDirective]'})
 class SimpleDirective {
@@ -293,7 +286,7 @@ export function main() {
 
   describe("View Injector", () => {
     // On CJS fakeAsync is not supported...
-    if (!DOM.supportsDOMEvents()) return;
+    if (!getDOM().supportsDOMEvents()) return;
 
     beforeEachProviders(() => [provide("appService", {useValue: 'appService'})]);
 

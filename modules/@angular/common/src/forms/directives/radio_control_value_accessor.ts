@@ -2,26 +2,27 @@ import {
   Directive,
   ElementRef,
   Renderer,
-  Self,
   forwardRef,
   Provider,
-  Attribute,
   Input,
   OnInit,
   OnDestroy,
   Injector,
   Injectable
-} from 'angular2/core';
+} from '@angular/core';
+import {isPresent} from '../../../src/facade/lang';
+import {ListWrapper} from '../../../src/facade/collection';
 import {
   NG_VALUE_ACCESSOR,
   ControlValueAccessor
-} from 'angular2/src/common/forms/directives/control_value_accessor';
-import {NgControl} from 'angular2/src/common/forms/directives/ng_control';
-import {CONST_EXPR, looseIdentical, isPresent} from 'angular2/src/facade/lang';
-import {ListWrapper} from 'angular2/src/facade/collection';
+} from './control_value_accessor';
+import {NgControl} from './ng_control';
 
-const RADIO_VALUE_ACCESSOR = CONST_EXPR(new Provider(
-    NG_VALUE_ACCESSOR, {useExisting: forwardRef(() => RadioControlValueAccessor), multi: true}));
+const RADIO_VALUE_ACCESSOR = /*@ts2dart_const*/ {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => RadioControlValueAccessor),
+  multi: true
+};
 
 
 /**

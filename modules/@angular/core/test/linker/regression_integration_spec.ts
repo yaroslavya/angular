@@ -1,27 +1,19 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   xdescribe,
   describe,
-  el,
-  dispatchEvent,
   expect,
   iit,
   inject,
   beforeEachProviders,
   it,
   xit,
-  containsRegexp,
-  stringifyElement,
-  TestComponentBuilder,
-  fakeAsync,
-  tick,
-  clearPendingTimers,
-  ComponentFixture
-} from 'angular2/testing_internal';
+} from '@angular/core/testing';
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
 
-import {IS_DART} from 'angular2/src/facade/lang';
+import {IS_DART} from '../../src/facade/lang';
 
 import {
   Component,
@@ -32,8 +24,8 @@ import {
   PLATFORM_PIPES,
   OpaqueToken,
   Injector
-} from 'angular2/core';
-import {CompilerConfig} from 'angular2/compiler';
+} from '@angular/core';
+import {CompilerConfig} from '@angular/compiler';
 
 export function main() {
   if (IS_DART) {

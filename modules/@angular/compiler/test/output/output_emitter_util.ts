@@ -1,11 +1,11 @@
-import {CompileIdentifierMetadata} from 'angular2/src/compiler/compile_metadata';
-import {EventEmitter} from 'angular2/src/facade/async';
-import {ViewType} from 'angular2/src/core/linker/view_type';
-import {BaseException} from 'angular2/src/facade/exceptions';
-import {InstanceFactory, DynamicInstance} from 'angular2/src/compiler/output/output_interpreter';
-import {MODULE_SUFFIX} from 'angular2/src/compiler/util';
+import {CompileIdentifierMetadata} from '@angular/compiler/src/compile_metadata';
+import {EventEmitter} from '../../src/facade/async';
+import {ViewType} from '@angular/core/src/linker/view_type';
+import {BaseException} from '../../src/facade/exceptions';
+import {InstanceFactory, DynamicInstance} from '@angular/compiler/src/output/output_interpreter';
+import {MODULE_SUFFIX} from '@angular/compiler/src/util';
 
-import * as o from 'angular2/src/compiler/output/output_ast';
+import * as o from '@angular/compiler/src/output/output_ast';
 
 export class ExternalClass {
   changeable: any;

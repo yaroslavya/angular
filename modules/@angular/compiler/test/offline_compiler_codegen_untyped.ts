@@ -1,8 +1,8 @@
 // ATTENTION: This file will be overwritten with generated code by main()
-import {print} from 'angular2/src/facade/lang';
-import {JavaScriptEmitter} from 'angular2/src/compiler/output/js_emitter';
+import {print} from '../src/facade/lang';
+import {JavaScriptEmitter} from '@angular/compiler/src/output/js_emitter';
 import {compileComp, compAMetadata} from './offline_compiler_util';
-import {ComponentFactory} from 'angular2/src/core/linker/component_factory';
+import {ComponentFactory} from '@angular/core/src/linker/component_factory';
 
 export const CompANgFactory: ComponentFactory = null;
 

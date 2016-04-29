@@ -1,7 +1,7 @@
-import {isPresent, CONST, CONST_EXPR, Type} from 'angular2/src/facade/lang';
-import {InjectableMetadata} from 'angular2/src/core/di/metadata';
-import {ChangeDetectionStrategy} from 'angular2/src/core/change_detection';
-import {ViewEncapsulation} from 'angular2/src/core/metadata/view';
+import {isPresent, Type} from '../../src/facade/lang';
+import {InjectableMetadata} from '../di/metadata';
+import {ViewEncapsulation} from './view';
+import {ChangeDetectionStrategy} from '../change_detection/constants';
 
 /**
  * Directives allow you to attach behavior to elements in the DOM.
@@ -381,7 +381,7 @@ import {ViewEncapsulation} from 'angular2/src/core/metadata/view';
  * the instantiated
  * view occurs on the second `<li></li>` which is a sibling to the `<template>` element.
  */
-@CONST()
+/* @ts2dart_const */
 export class DirectiveMetadata extends InjectableMetadata {
   /**
    * The CSS selector that triggers the instantiation of a directive.
@@ -784,7 +784,7 @@ export class DirectiveMetadata extends InjectableMetadata {
  *
  * {@example core/ts/metadata/metadata.ts region='component'}
  */
-@CONST()
+/* @ts2dart_const */
 export class ComponentMetadata extends DirectiveMetadata {
   /**
    * Defines the used change detection strategy.
@@ -941,7 +941,7 @@ export class ComponentMetadata extends DirectiveMetadata {
  *
  * {@example core/ts/metadata/metadata.ts region='pipe'}
  */
-@CONST()
+/* @ts2dart_const */
 export class PipeMetadata extends InjectableMetadata {
   name: string;
   /** @internal */
@@ -997,7 +997,7 @@ export class PipeMetadata extends InjectableMetadata {
  * bootstrap(App);
  * ```
  */
-@CONST()
+/* @ts2dart_const */
 export class InputMetadata {
   constructor(
       /**
@@ -1047,7 +1047,7 @@ export class InputMetadata {
  * bootstrap(App);
  * ```
  */
-@CONST()
+/* @ts2dart_const */
 export class OutputMetadata {
   constructor(public bindingPropertyName?: string) {}
 }
@@ -1087,7 +1087,7 @@ export class OutputMetadata {
  * bootstrap(App);
  * ```
  */
-@CONST()
+/* @ts2dart_const */
 export class HostBindingMetadata {
   constructor(public hostPropertyName?: string) {}
 }
@@ -1126,7 +1126,7 @@ export class HostBindingMetadata {
  * bootstrap(App);
  * ```
  */
-@CONST()
+/* @ts2dart_const */
 export class HostListenerMetadata {
   constructor(public eventName: string, public args?: string[]) {}
 }

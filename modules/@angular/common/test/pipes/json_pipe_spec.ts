@@ -7,14 +7,15 @@ import {
   expect,
   beforeEach,
   afterEach,
-  AsyncTestCompleter,
   inject,
-  TestComponentBuilder
-} from 'angular2/testing_internal';
+  proxy
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 import {Json, RegExp, NumberWrapper, StringWrapper} from 'angular2/src/facade/lang';
 
-import {Component} from 'angular2/core';
-import {JsonPipe} from 'angular2/common';
+import {Component} from '@angular/core';
+import {JsonPipe} from '@angular/common';
 
 export function main() {
   describe("JsonPipe", () => {

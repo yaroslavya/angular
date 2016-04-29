@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   beforeEach,
   ddescribe,
   describe,
@@ -10,8 +9,9 @@ import {
   xdescribe,
   xit,
   Log,
-  TestComponentBuilder
-} from 'angular2/testing_internal';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
+import {TestComponentBuilder} from '@angular/compiler/testing';
 
 import {
   OnChanges,
@@ -21,8 +21,8 @@ import {
   AfterContentChecked,
   AfterViewInit,
   AfterViewChecked
-} from 'angular2/core';
-import {Directive, Component, ViewMetadata} from 'angular2/src/core/metadata';
+} from '@angular/core';
+import {Directive, Component, ViewMetadata} from '@angular/core/src/metadata';
 
 export function main() {
   describe('directive lifecycle integration spec', () => {

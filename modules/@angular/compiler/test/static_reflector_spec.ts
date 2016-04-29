@@ -1,8 +1,8 @@
-import {describe, it, iit, expect, ddescribe, beforeEach} from 'angular2/testing_internal';
-import {IS_DART} from 'angular2/src/facade/lang';
-import {ListWrapper} from 'angular2/src/facade/collection';
+import {describe, it, iit, expect, ddescribe, beforeEach} from '@angular/core/testing';
+import {IS_DART} from '../src/facade/lang';
+import {ListWrapper} from '../src/facade/collection';
 
-import {StaticReflector, StaticReflectorHost} from 'angular2/src/compiler/static_reflector';
+import {StaticReflector, StaticReflectorHost} from '@angular/compiler/src/static_reflector';
 
 export function main() {
   // Static reflector is not supported in Dart

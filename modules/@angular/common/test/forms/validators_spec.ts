@@ -8,13 +8,13 @@ import {
   beforeEach,
   afterEach,
   fakeAsync,
+  flushMicrotasks,
+  Log,
   tick,
-  el
-} from 'angular2/testing_internal';
-import {ControlGroup, Control, Validators, AbstractControl, ControlArray} from 'angular2/common';
-import {PromiseWrapper} from 'angular2/src/facade/promise';
-import {EventEmitter, ObservableWrapper, TimerWrapper} from 'angular2/src/facade/async';
-import {CONST_EXPR} from 'angular2/src/facade/lang';
+} from '@angular/core/testing';
+import {ControlGroup, Control, Validators, AbstractControl, ControlArray} from '@angular/common';
+import {PromiseWrapper} from '../../src/facade/promise';
+import {EventEmitter, ObservableWrapper, TimerWrapper} from '../../src/facade/async';
 
 export function main() {
   function validator(key: string, error: any) {

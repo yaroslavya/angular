@@ -1,11 +1,11 @@
-import {Injector} from 'angular2/src/core/di';
-import {Type, CONST, isPresent, isBlank} from 'angular2/src/facade/lang';
-import {unimplemented} from 'angular2/src/facade/exceptions';
+import {Type, isBlank} from '../../src/facade/lang';
+import {unimplemented} from '../../src/facade/exceptions';
 import {ElementRef} from './element_ref';
 import {ViewRef, ViewRef_} from './view_ref';
 import {AppElement} from './element';
 import {ViewUtils} from './view_utils';
 import {ChangeDetectorRef} from '../change_detection/change_detection';
+import {Injector} from '../di/injector';
 
 /**
  * Represents an instance of a Component created via a {@link ComponentFactory}.
@@ -69,7 +69,7 @@ export class ComponentRef_ extends ComponentRef {
   onDestroy(callback: Function): void { this.hostView.onDestroy(callback); }
 }
 
-@CONST()
+/* @ts2dart_const */
 export class ComponentFactory {
   constructor(public selector: string, private _viewFactory: Function,
               private _componentType: Type) {}

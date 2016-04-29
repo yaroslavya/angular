@@ -1,16 +1,13 @@
+import {PipeTransform, WrappedValue, Pipe, Injectable} from '@angular/core';
 import {
   isDate,
   isNumber,
   isPresent,
-  Date,
   DateWrapper,
-  CONST,
   isBlank,
-  FunctionWrapper
-} from 'angular2/src/facade/lang';
-import {DateFormatter} from 'angular2/src/facade/intl';
-import {PipeTransform, WrappedValue, Pipe, Injectable} from 'angular2/core';
-import {StringMapWrapper, ListWrapper} from 'angular2/src/facade/collection';
+} from '../../src/facade/lang';
+import {DateFormatter} from '../../src/facade/intl';
+import {StringMapWrapper} from '../../src/facade/collection';
 
 import {InvalidPipeArgumentException} from './invalid_pipe_argument_exception';
 
@@ -84,7 +81,7 @@ var defaultLocale: string = 'en-US';
  *
  * {@example core/pipes/ts/date_pipe/date_pipe_example.ts region='DatePipe'}
  */
-@CONST()
+/* @ts2dart_const */
 @Pipe({name: 'date', pure: true})
 @Injectable()
 export class DatePipe implements PipeTransform {

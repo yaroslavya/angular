@@ -6,15 +6,14 @@ import {
   ddescribe,
   iit,
   xit,
-  el,
   fakeAsync,
   tick
-} from 'angular2/testing_internal';
-import {MapWrapper, ListWrapper, iterateListLike} from 'angular2/src/facade/collection';
-import {IS_DART, StringWrapper} from 'angular2/src/facade/lang';
-import {ObservableWrapper} from 'angular2/src/facade/async';
-import {QueryList} from 'angular2/src/core/linker/query_list';
-import {DOM} from 'angular2/src/platform/dom/dom_adapter';
+} from '@angular/core/testing';
+import {MapWrapper, ListWrapper, iterateListLike} from '../../src/facade/collection';
+import {IS_DART, StringWrapper} from '../../src/facade/lang';
+import {ObservableWrapper} from '../../src/facade/async';
+import {QueryList} from '@angular/core/src/linker/query_list';
+import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 
 interface _JsQueryList {
   filter(c: any): any;
@@ -92,7 +91,7 @@ export function main() {
       expect(queryList.last).toEqual('three');
     });
 
-    if (DOM.supportsDOMEvents()) {
+    if (getDOM().supportsDOMEvents()) {
       describe('simple observable interface', () => {
         it('should fire callbacks on change', fakeAsync(() => {
              var fires = 0;

@@ -1,27 +1,29 @@
-import {LocationStrategy, PathLocationStrategy, Location} from 'angular2/platform/common';
-import {Router, RootRouter} from 'angular2/src/router/router';
-import {RouteRegistry, ROUTER_PRIMARY_COMPONENT} from 'angular2/src/router/route_registry';
-import {CONST_EXPR, Type} from 'angular2/src/facade/lang';
-import {ApplicationRef, OpaqueToken, Provider} from 'angular2/core';
-import {BaseException} from 'angular2/src/facade/exceptions';
+import {ApplicationRef, Provider} from '@angular/core';
+import {LocationStrategy, PathLocationStrategy, Location} from '@angular/common';
+import {Router, RootRouter} from './router';
+import {RouteRegistry, ROUTER_PRIMARY_COMPONENT} from './route_registry';
+import {Type} from '../src/facade/lang';
+import {BaseException} from '../src/facade/exceptions';
 
 /**
  * The Platform agnostic ROUTER PROVIDERS
  */
-export const ROUTER_PROVIDERS_COMMON: any[] = CONST_EXPR([
+export const ROUTER_PROVIDERS_COMMON: any[] = /*@ts2dart_const*/ [
   RouteRegistry,
-  CONST_EXPR(new Provider(LocationStrategy, {useClass: PathLocationStrategy})),
+  {provide: LocationStrategy, useClass: PathLocationStrategy},
   Location,
-  CONST_EXPR(new Provider(
-      Router,
-      {
-        useFactory: routerFactory,
-        deps: CONST_EXPR([RouteRegistry, Location, ROUTER_PRIMARY_COMPONENT, ApplicationRef])
-      })),
-  CONST_EXPR(new Provider(
-      ROUTER_PRIMARY_COMPONENT,
-      {useFactory: routerPrimaryComponentFactory, deps: CONST_EXPR([ApplicationRef])}))
-]);
+  {
+    provide: Router,
+    useFactory: routerFactory,
+    deps:
+   [RouteRegistry, Location, ROUTER_PRIMARY_COMPONENT, ApplicationRef]
+  },
+  {
+    provide: ROUTER_PRIMARY_COMPONENT,
+    useFactory: routerPrimaryComponentFactory,
+    deps: [ApplicationRef]
+  }
+];
 
 function routerFactory(registry: RouteRegistry, location: Location, primaryComponent: Type,
                        appRef: ApplicationRef): RootRouter {

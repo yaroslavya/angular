@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   withProviders,
   inject,
   describe,
@@ -7,14 +6,13 @@ import {
   expect,
   beforeEach,
   beforeEachProviders,
-  SpyObject
-} from 'angular2/testing_internal';
-import {provide} from 'angular2/src/core/di';
-import {ObservableWrapper, TimerWrapper} from 'angular2/src/facade/async';
-import {MessageBus} from 'angular2/src/web_workers/shared/message_bus';
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
+import {ObservableWrapper, TimerWrapper} from '../../../src/facade/async';
+import {MessageBus} from '@angular/platform-browser/src/web_workers/shared/message_bus';
 import {createConnectedMessageBus} from './message_bus_util';
-import {MockNgZone} from 'angular2/src/mock/ng_zone_mock';
-import {NgZone} from 'angular2/src/core/zone/ng_zone';
+import {MockNgZone} from '@angular/core/testing';
+import {NgZone} from '@angular/core/src/zone/ng_zone';
 
 export function main() {
   /**

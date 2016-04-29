@@ -1,5 +1,4 @@
 import {
-  AsyncTestCompleter,
   describe,
   it,
   iit,
@@ -8,18 +7,15 @@ import {
   inject,
   beforeEach,
   beforeEachProviders,
-  SpyObject
-} from 'angular2/testing_internal';
+} from '@angular/core/testing';
 
-import {Injector, provide} from 'angular2/core';
-import {CONST_EXPR} from 'angular2/src/facade/lang';
-
+import {Injector, provide} from '@angular/core';
 import {
   PlatformLocation,
   LocationStrategy,
   PathLocationStrategy,
   APP_BASE_HREF
-} from 'angular2/platform/common';
+} from '@angular/common';
 import {SpyPlatformLocation} from '../spies';
 
 export function main() {

@@ -9,9 +9,7 @@ import {
   forwardRef,
   Provider,
   Self
-} from 'angular2/core';
-import {CONST_EXPR} from 'angular2/src/facade/lang';
-
+} from '@angular/core';
 import {ControlContainer} from './control_container';
 import {controlPath, composeValidators, composeAsyncValidators} from './shared';
 import {ControlGroup} from '../model';
@@ -20,7 +18,7 @@ import {NG_VALIDATORS, NG_ASYNC_VALIDATORS} from '../validators';
 import {AsyncValidatorFn, ValidatorFn} from './validators';
 
 const controlGroupProvider =
-    CONST_EXPR(new Provider(ControlContainer, {useExisting: forwardRef(() => NgControlGroup)}));
+    /*@ts2dart_const*/ {provide: ControlContainer, useExisting: forwardRef(() => NgControlGroup)};
 
 /**
  * Creates and binds a control group to a DOM element.
@@ -35,7 +33,7 @@ const controlGroupProvider =
  *   directives: [FORM_DIRECTIVES],
  *   template: `
  *     <div>
- *       <h2>Angular2 Control &amp; ControlGroup Example</h2>
+ *       <h2>Angular Control &amp; ControlGroup Example</h2>
  *       <form #f="ngForm">
  *         <div ngControlGroup="name" #cg-name="form">
  *           <h3>Enter your name:</h3>

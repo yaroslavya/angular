@@ -9,17 +9,14 @@ import {
   afterEach,
   inject,
   beforeEachProviders
-} from 'angular2/testing_internal';
-import {provide} from 'angular2/src/core/di';
-import {Console} from 'angular2/src/core/console';
+} from '@angular/core/testing';
+import {provide} from '@angular/core';
 
-import {TEST_PROVIDERS} from './test_bindings';
-import {isPresent, CONST_EXPR} from 'angular2/src/facade/lang';
 import {
   TemplateParser,
   splitClasses,
   TEMPLATE_TRANSFORMS
-} from 'angular2/src/compiler/template_parser';
+} from '@angular/compiler/src/template_parser';
 import {
   CompileDirectiveMetadata,
   CompilePipeMetadata,
@@ -29,7 +26,7 @@ import {
   CompileTokenMetadata,
   CompileDiDependencyMetadata,
   CompileQueryMetadata
-} from 'angular2/src/compiler/compile_metadata';
+} from '@angular/compiler/src/compile_metadata';
 import {
   templateVisitAll,
   TemplateAstVisitor,
@@ -48,13 +45,14 @@ import {
   PropertyBindingType,
   DirectiveAst,
   ProviderAstType
-} from 'angular2/src/compiler/template_ast';
-import {identifierToken, Identifiers} from 'angular2/src/compiler/identifiers';
+} from '@angular/compiler/src/template_ast';
+import {identifierToken, Identifiers} from '../src/identifiers';
 
-import {ElementSchemaRegistry} from 'angular2/src/compiler/schema/element_schema_registry';
-import {MockSchemaRegistry} from './schema_registry_mock';
+import {ElementSchemaRegistry} from '@angular/compiler/src/schema/element_schema_registry';
+import {MockSchemaRegistry} from '@angular/compiler/testing';
 
 import {Unparser} from './expression_parser/unparser';
+import {TEST_PROVIDERS} from './test_bindings';
 
 var expressionUnparser = new Unparser();
 
@@ -506,7 +504,7 @@ export function main() {
         }
 
         function createProvider(
-            token: string, {multi = false, deps = CONST_EXPR([])}:
+            token: string, {multi = false, deps = /*@ts2dart_const*/ []}:
                                {multi?: boolean, deps?: string[]} = {}): CompileProviderMetadata {
           return new CompileProviderMetadata({
             token: createToken(token),
@@ -516,13 +514,14 @@ export function main() {
           });
         }
 
-        function createDir(selector: string, {providers = null, viewProviders = null,
-                                              deps = CONST_EXPR([]), queries = CONST_EXPR([])}: {
-          providers?: CompileProviderMetadata[],
-          viewProviders?: CompileProviderMetadata[],
-          deps?: string[],
-          queries?: string[]
-        } = {}): CompileDirectiveMetadata {
+        function createDir(selector: string,
+                           {providers = null, viewProviders = null, deps = /*@ts2dart_const*/ [],
+                            queries = /*@ts2dart_const*/ []}: {
+                             providers?: CompileProviderMetadata[],
+                             viewProviders?: CompileProviderMetadata[],
+                             deps?: string[],
+                             queries?: string[]
+                           } = {}): CompileDirectiveMetadata {
           var isComponent = !selector.startsWith('[');
           return CompileDirectiveMetadata.create({
             selector: selector,

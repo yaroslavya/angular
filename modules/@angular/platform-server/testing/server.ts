@@ -6,41 +6,36 @@ import {
   PLATFORM_INITIALIZER,
   APPLICATION_COMMON_PROVIDERS,
   Renderer
-} from 'angular2/core';
-import {DirectiveResolver, ViewResolver} from 'angular2/compiler';
+} from '@angular/core';
+import {DirectiveResolver, ViewResolver} from '@angular/compiler';
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {Parse5DomAdapter} from '../index';
 
-import {Parse5DomAdapter} from 'angular2/src/platform/server/parse5_adapter';
+import {AnimationBuilder} from '../../platform-browser/src/animate/animation_builder';
+import {MockAnimationBuilder} from '../../platform-browser/testing/animation_builder_mock';
+import {MockDirectiveResolver, MockViewResolver} from '@angular/compiler/testing';
+import {MockLocationStrategy} from '../../common/testing/mock_location_strategy';
+import {MockNgZone} from '@angular/core/testing';
 
-import {AnimationBuilder} from 'angular2/src/animate/animation_builder';
-import {MockAnimationBuilder} from 'angular2/src/mock/animation_builder_mock';
-import {MockDirectiveResolver} from 'angular2/src/mock/directive_resolver_mock';
-import {MockViewResolver} from 'angular2/src/mock/view_resolver_mock';
-import {MockLocationStrategy} from 'angular2/src/mock/mock_location_strategy';
-import {MockNgZone} from 'angular2/src/mock/ng_zone_mock';
+import {XHR} from '@angular/compiler';
+import {BrowserDetection} from '@angular/platform-browser/testing';
 
-import {createNgZone} from 'angular2/src/core/application_ref';
-import {TestComponentBuilder} from 'angular2/src/testing/test_component_builder';
-import {XHR} from 'angular2/src/compiler/xhr';
-import {BrowserDetection} from 'angular2/src/testing/utils';
-
-import {COMPILER_PROVIDERS} from 'angular2/src/compiler/compiler';
-import {DOCUMENT} from 'angular2/src/platform/dom/dom_tokens';
-import {DOM} from 'angular2/src/platform/dom/dom_adapter';
-import {RootRenderer} from 'angular2/src/core/render/api';
-import {DomRootRenderer, DomRootRenderer_} from 'angular2/src/platform/dom/dom_renderer';
-import {DomSharedStylesHost, SharedStylesHost} from 'angular2/src/platform/dom/shared_styles_host';
-
+import {COMPILER_PROVIDERS} from '@angular/compiler';
+import {DOCUMENT} from '@angular/platform-browser';
+import {getDOM} from '../platform_browser_private';
+import {RootRenderer} from '@angular/core';
+import {DomRootRenderer, DomRootRenderer_} from '../../platform-browser/src/dom/dom_renderer';
+import {DomSharedStylesHost, SharedStylesHost} from '../../platform-browser/src/dom/shared_styles_host';
 import {
   EventManager,
   EVENT_MANAGER_PLUGINS,
   ELEMENT_PROBE_PROVIDERS
-} from 'angular2/platform/common_dom';
-import {DomEventsPlugin} from 'angular2/src/platform/dom/events/dom_events';
-import {LocationStrategy} from 'angular2/platform/common';
-
-import {CONST_EXPR} from 'angular2/src/facade/lang';
-
-import {Log} from 'angular2/src/testing/utils';
+} from '@angular/platform-browser';
+import {DomEventsPlugin} from '@angular/platform-browser';
+import {LocationStrategy} from '@angular/common';
+import {Log} from '@angular/core/testing';
+import {DOMTestComponentRenderer} from '@angular/platform-browser/testing';
+import {TestComponentRenderer} from '@angular/compiler/testing';
 
 function initServerTests() {
   Parse5DomAdapter.makeCurrent();
@@ -50,14 +45,15 @@ function initServerTests() {
 /**
  * Default platform providers for testing.
  */
-export const TEST_SERVER_PLATFORM_PROVIDERS: Array<any /*Type | Provider | any[]*/> = CONST_EXPR([
-  PLATFORM_COMMON_PROVIDERS,
-  new Provider(PLATFORM_INITIALIZER, {useValue: initServerTests, multi: true})
-]);
+export const TEST_SERVER_PLATFORM_PROVIDERS: Array<any /*Type | Provider | any[]*/> =
+    /*@ts2dart_const*/ [
+      PLATFORM_COMMON_PROVIDERS,
+      {provide: PLATFORM_INITIALIZER, useValue: initServerTests, multi: true}
+    ];
 
 function appDoc() {
   try {
-    return DOM.defaultDoc();
+    return getDOM().defaultDoc();
   } catch (e) {
     return null;
   }
@@ -67,26 +63,26 @@ function appDoc() {
  * Default application providers for testing.
  */
 export const TEST_SERVER_APPLICATION_PROVIDERS: Array<any /*Type | Provider | any[]*/> =
-    CONST_EXPR([
-      // TODO(julie): when angular2/platform/server is available, use that instead of making our own
+    /*@ts2dart_const*/ [
+      // TODO(julie: when angular2/platform/server is available, use that instead of making our own
       // list here.
       APPLICATION_COMMON_PROVIDERS,
       COMPILER_PROVIDERS,
-      new Provider(DOCUMENT, {useFactory: appDoc}),
-      new Provider(DomRootRenderer, {useClass: DomRootRenderer_}),
-      new Provider(RootRenderer, {useExisting: DomRootRenderer}),
+      {provide: DOCUMENT, useFactory: appDoc},
+      {provide: DomRootRenderer, useClass: DomRootRenderer_},
+      {provide: RootRenderer, useExisting: DomRootRenderer},
       EventManager,
-      new Provider(EVENT_MANAGER_PLUGINS, {useClass: DomEventsPlugin, multi: true}),
-      new Provider(XHR, {useClass: XHR}),
-      new Provider(APP_ID, {useValue: 'a'}),
-      new Provider(SharedStylesHost, {useExisting: DomSharedStylesHost}),
+      {provide: EVENT_MANAGER_PLUGINS, useClass: DomEventsPlugin, multi: true},
+      {provide: XHR, useClass: XHR},
+      {provide: APP_ID, useValue: 'a'},
+      {provide: SharedStylesHost, useExisting: DomSharedStylesHost},
       DomSharedStylesHost,
       ELEMENT_PROBE_PROVIDERS,
-      new Provider(DirectiveResolver, {useClass: MockDirectiveResolver}),
-      new Provider(ViewResolver, {useClass: MockViewResolver}),
+      {provide: DirectiveResolver, useClass: MockDirectiveResolver},
+      {provide: ViewResolver, useClass: MockViewResolver},
       Log,
       TestComponentBuilder,
-      new Provider(NgZone, {useFactory: createNgZone}),
-      new Provider(LocationStrategy, {useClass: MockLocationStrategy}),
-      new Provider(AnimationBuilder, {useClass: MockAnimationBuilder}),
-    ]);
+      {provide: NgZone, useClass: createNgZone},
+      {provide: LocationStrategy, useClass: MockLocationStrategy},
+      {provide: AnimationBuilder, useClass: MockAnimationBuilder},
+    ];

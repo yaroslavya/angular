@@ -1,21 +1,9 @@
+import {Component, Directive, Output, EventEmitter} from '@angular/core';
 import {
-  Component,
-  Directive,
-  Output,
-  EventEmitter,
-  Provider,
-  forwardRef,
-  Input
-} from 'angular2/core';
-import {
-  ComponentFixture,
   afterEach,
-  AsyncTestCompleter,
-  TestComponentBuilder,
   beforeEach,
   ddescribe,
   describe,
-  dispatchEvent,
   fakeAsync,
   tick,
   flushMicrotasks,
@@ -23,11 +11,12 @@ import {
   it,
   inject,
   iit,
-  xit,
-  browserDetection
-} from 'angular2/testing_internal';
-
-import {DOM} from 'angular2/src/platform/dom/dom_adapter';
+  xit
+} from '@angular/core/testing';
+import {AsyncTestCompleter} from '@angular/core/testing/testing_internal';
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {ComponentFixture} from '@angular/compiler/testing';
+import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {
   Control,
   ControlGroup,
@@ -42,12 +31,14 @@ import {
   Validators,
   Validator,
   RadioButtonState
-} from 'angular2/common';
-import {By} from 'angular2/platform/browser';
-import {ListWrapper} from 'angular2/src/facade/collection';
-import {ObservableWrapper, TimerWrapper} from 'angular2/src/facade/async';
-import {CONST_EXPR} from 'angular2/src/facade/lang';
-import {PromiseWrapper} from "angular2/src/facade/promise";
+} from '@angular/common';
+import {Provider, forwardRef, Input} from '@angular/core';
+import {By} from '@angular/platform-browser/src/dom/debug/by';
+import {ListWrapper} from '../../src/facade/collection';
+import {ObservableWrapper, TimerWrapper} from '../../src/facade/async';
+import {PromiseWrapper} from '../../src/facade/promise';
+import {browserDetection} from '@angular/platform-browser/testing';
+import {dispatchEvent} from '@angular/platform-browser/testing';
 
 export function main() {
   describe("integration tests", () => {
@@ -1258,8 +1249,8 @@ export function main() {
            // In Firefox, effective text selection in the real DOM requires an actual focus
            // of the field. This is not an issue in a new HTML document.
            if (browserDetection.isFirefox) {
-             var fakeDoc = DOM.createHtmlDocument();
-             DOM.appendChild(fakeDoc.body, fixture.debugElement.nativeElement);
+             var fakeDoc = getDOM().createHtmlDocument();
+             getDOM().appendChild(fakeDoc.body, fixture.debugElement.nativeElement);
            }
 
            var input = fixture.debugElement.query(By.css("input")).nativeElement;
@@ -1372,7 +1363,7 @@ function loginIsEmptyGroupValidator(c: ControlGroup) {
 
 @Directive({
   selector: '[login-is-empty-validator]',
-  providers: [new Provider(NG_VALIDATORS, {useValue: loginIsEmptyGroupValidator, multi: true})]
+  providers: [{provide: NG_VALIDATORS, useValue: loginIsEmptyGroupValidator, multi: true}]
 })
 class LoginIsEmptyValidator {
 }
@@ -1413,7 +1404,7 @@ class MyComp {
 }
 
 function sortedClassList(el) {
-  var l = DOM.classList(el);
+  var l = getDOM().classList(el);
   ListWrapper.sort(l);
   return l;
 }
