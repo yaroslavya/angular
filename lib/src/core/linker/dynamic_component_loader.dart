@@ -10,7 +10,9 @@ import "component_factory.dart" show ComponentRef;
 import "view_container_ref.dart" show ViewContainerRef;
 
 /**
- * Service for instantiating a Component and attaching it to a View at a specified location.
+ * Use ComponentResolver and ViewContainerRef directly.
+ *
+ * 
  */
 abstract class DynamicComponentLoader {
   /**

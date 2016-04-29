@@ -50,6 +50,11 @@ class DebugNode {
     return isPresent(this._debugInfo) ? this._debugInfo.source : null;
   }
 
+  /**
+   * Use injector.get(token) instead.
+   *
+   * 
+   */
   dynamic inject(dynamic token) {
     return this.injector.get(token);
   }
