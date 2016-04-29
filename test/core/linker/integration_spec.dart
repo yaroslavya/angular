@@ -366,7 +366,7 @@ declareTests(bool isJit) {
                   .then((fixture) {
                 fixture.debugElement.componentInstance.ctxProp = "a";
                 fixture.detectChanges();
-                var dir = fixture.debugElement.children[0].getLocal("dir");
+                var dir = fixture.debugElement.children[0].references["dir"];
                 expect(dir.dirProp).toEqual("aa");
                 async.done();
               });
@@ -514,7 +514,7 @@ declareTests(bool isJit) {
                     MyComp,
                     new ViewMetadata(
                         template:
-                            "<template some-viewport let-greeting=\"some-tmpl\"><copy-me>{{greeting}}</copy-me></template>",
+                            "<template some-viewport let-greeting=\"someTmpl\"><copy-me>{{greeting}}</copy-me></template>",
                         directives: [SomeViewport]))
                 .createAsync(MyComp)
                 .then((fixture) {
@@ -553,7 +553,7 @@ declareTests(bool isJit) {
                     MyComp,
                     new ViewMetadata(
                         template:
-                            "<copy-me template=\"some-viewport: let greeting=some-tmpl\">{{greeting}}</copy-me>",
+                            "<copy-me template=\"some-viewport: let greeting=someTmpl\">{{greeting}}</copy-me>",
                         directives: [SomeViewport]))
                 .createAsync(MyComp)
                 .then((fixture) {
@@ -605,8 +605,8 @@ declareTests(bool isJit) {
                           directives: [ChildComp]))
                   .createAsync(MyComp)
                   .then((fixture) {
-                expect(fixture.debugElement.children[0].children[0]
-                        .getLocal("alice"))
+                expect(fixture.debugElement.children[0].children[0].references[
+                        "alice"])
                     .toBeAnInstanceOf(ChildComp);
                 async.done();
               });
@@ -624,8 +624,8 @@ declareTests(bool isJit) {
                           directives: [ExportDir]))
                   .createAsync(MyComp)
                   .then((fixture) {
-                expect(fixture.debugElement.children[0].children[0]
-                        .getLocal("localdir"))
+                expect(fixture.debugElement.children[0].children[0].references[
+                        "localdir"])
                     .toBeAnInstanceOf(ExportDir);
                 async.done();
               });
@@ -662,12 +662,12 @@ declareTests(bool isJit) {
                           directives: [ChildComp]))
                   .createAsync(MyComp)
                   .then((fixture) {
-                var childCmp = fixture.debugElement.children[0].children[0];
-                expect(childCmp.getLocal("alice")).toBeAnInstanceOf(ChildComp);
-                expect(childCmp.getLocal("bob")).toBeAnInstanceOf(ChildComp);
-                expect(childCmp.getLocal("alice"))
-                    .not
-                    .toBe(childCmp.getLocal("bob"));
+                var pEl = fixture.debugElement.children[0];
+                var alice = pEl.children[0].references["alice"];
+                var bob = pEl.children[1].references["bob"];
+                expect(alice).toBeAnInstanceOf(ChildComp);
+                expect(bob).toBeAnInstanceOf(ChildComp);
+                expect(alice).not.toBe(bob);
                 async.done();
               });
             }));
@@ -683,7 +683,7 @@ declareTests(bool isJit) {
                           directives: [ChildComp]))
                   .createAsync(MyComp)
                   .then((fixture) {
-                expect(fixture.debugElement.children[0].getLocal("alice"))
+                expect(fixture.debugElement.children[0].references["alice"])
                     .toBeAnInstanceOf(ChildComp);
                 async.done();
               });
@@ -700,8 +700,8 @@ declareTests(bool isJit) {
                               "<div><div ref-alice><i>Hello</i></div></div>"))
                   .createAsync(MyComp)
                   .then((fixture) {
-                var value = fixture.debugElement.children[0].children[0]
-                    .getLocal("alice");
+                var value = fixture
+                    .debugElement.children[0].children[0].references["alice"];
                 expect(value).not.toBe(null);
                 expect(value.tagName.toLowerCase()).toEqual("div");
                 async.done();
@@ -719,7 +719,7 @@ declareTests(bool isJit) {
                   .createAsync(MyComp)
                   .then((fixture) {
                 var value =
-                    fixture.debugElement.childNodes[0].getLocal("alice");
+                    fixture.debugElement.childNodes[0].references["alice"];
                 expect(value).toBeAnInstanceOf(TemplateRef_);
                 async.done();
               });
@@ -737,8 +737,8 @@ declareTests(bool isJit) {
                           directives: [ChildComp]))
                   .createAsync(MyComp)
                   .then((fixture) {
-                expect(fixture.debugElement.children[0].children[0]
-                        .getLocal("superAlice"))
+                expect(fixture.debugElement.children[0].children[0].references[
+                        "superAlice"])
                     .toBeAnInstanceOf(ChildComp);
                 async.done();
               });
@@ -784,7 +784,7 @@ declareTests(bool isJit) {
                           ]))
                   .createAsync(MyComp)
                   .then((fixture) {
-                var cmp = fixture.debugElement.children[0].getLocal("cmp");
+                var cmp = fixture.debugElement.children[0].references["cmp"];
                 fixture.detectChanges();
                 expect(cmp.numberOfChecks).toEqual(1);
                 fixture.detectChanges();
@@ -812,7 +812,7 @@ declareTests(bool isJit) {
                           ]))
                   .createAsync(MyComp)
                   .then((fixture) {
-                var cmp = fixture.debugElement.children[0].getLocal("cmp");
+                var cmp = fixture.debugElement.children[0].references["cmp"];
                 fixture.debugElement.componentInstance.ctxProp = "one";
                 fixture.detectChanges();
                 expect(cmp.numberOfChecks).toEqual(1);
@@ -871,7 +871,7 @@ declareTests(bool isJit) {
                           ]))
                   .createAsync(MyComp)
                   .then((fixture) {
-                var cmp = fixture.debugElement.children[0].getLocal("cmp");
+                var cmp = fixture.debugElement.children[0].references["cmp"];
                 fixture.debugElement.componentInstance.ctxProp = "one";
                 fixture.detectChanges();
                 expect(cmp.numberOfChecks).toEqual(1);
@@ -898,7 +898,7 @@ declareTests(bool isJit) {
                           ]))
                   .createAsync(MyComp)
                   .then((fixture) {
-                var cmp = fixture.debugElement.children[0].getLocal("cmp");
+                var cmp = fixture.debugElement.children[0].references["cmp"];
                 fixture.debugElement.componentInstance.ctxProp = "one";
                 fixture.detectChanges();
                 expect(cmp.prop).toEqual("one");
@@ -929,7 +929,7 @@ declareTests(bool isJit) {
                 });
                 tick();
                 PushCmpWithAsyncPipe cmp =
-                    fixture.debugElement.children[0].getLocal("cmp");
+                    fixture.debugElement.children[0].references["cmp"];
                 fixture.detectChanges();
                 expect(cmp.numberOfChecks).toEqual(1);
                 fixture.detectChanges();
@@ -959,8 +959,8 @@ declareTests(bool isJit) {
                         directives: [SomeDirective, CompWithHost]))
                 .createAsync(MyComp)
                 .then((fixture) {
-              var childComponent =
-                  fixture.debugElement.children[0].getLocal("child");
+              var childComponent = fixture.debugElement.children[0].children[0]
+                  .children[0].references["child"];
               expect(childComponent.myHost).toBeAnInstanceOf(SomeDirective);
               async.done();
             });
@@ -984,7 +984,7 @@ declareTests(bool isJit) {
                 .then((fixture) {
               fixture.detectChanges();
               var tc = fixture.debugElement.children[0].children[0].children[0];
-              var childComponent = tc.getLocal("child");
+              var childComponent = tc.references["child"];
               expect(childComponent.myHost).toBeAnInstanceOf(SomeDirective);
               async.done();
             });
@@ -1318,7 +1318,8 @@ declareTests(bool isJit) {
                         ]))
                 .createAsync(MyComp)
                 .then((fixture) {
-              var comp = fixture.debugElement.children[0].getLocal("consuming");
+              var comp = fixture
+                  .debugElement.children[0].children[0].references["consuming"];
               expect(comp.injectable).toBeAnInstanceOf(InjectableService);
               async.done();
             });
@@ -1338,7 +1339,8 @@ declareTests(bool isJit) {
                         directives: [DirectiveConsumingInjectable]))
                 .createAsync(DirectiveProvidingInjectableInView)
                 .then((fixture) {
-              var comp = fixture.debugElement.children[0].getLocal("consuming");
+              var comp =
+                  fixture.debugElement.children[0].references["consuming"];
               expect(comp.injectable).toBeAnInstanceOf(InjectableService);
               async.done();
             });
@@ -1370,7 +1372,8 @@ declareTests(bool isJit) {
                         directives: [DirectiveConsumingInjectableUnbounded]))
                 .createAsync(MyComp)
                 .then((fixture) {
-              var comp = fixture.debugElement.children[0].getLocal("dir");
+              var comp = fixture
+                  .debugElement.children[0].children[0].references["dir"];
               expect(comp.directive.injectable)
                   .toBeAnInstanceOf(InjectableService);
               async.done();
@@ -1434,7 +1437,7 @@ declareTests(bool isJit) {
                 .createAsync(MyComp)
                 .then((fixture) {
               var providing =
-                  fixture.debugElement.children[0].getLocal("providing");
+                  fixture.debugElement.children[0].references["providing"];
               expect(providing.created).toBe(false);
               fixture.debugElement.componentInstance.ctxBoolProp = true;
               fixture.detectChanges();
@@ -1547,7 +1550,7 @@ declareTests(bool isJit) {
                 expect(((c.injector as Injector)).get).toBeTruthy();
                 expect(c.source).toContain(":0:7");
                 expect(c.context).toBe(fixture.debugElement.componentInstance);
-                expect(c.locals["local"]).toBeDefined();
+                expect(c.references["local"]).toBeDefined();
               }
               async.done();
             });
@@ -1603,7 +1606,7 @@ declareTests(bool isJit) {
                     .toEqual("DIV");
                 expect(((c.injector as Injector)).get).toBeTruthy();
                 expect(c.context).toBe(fixture.debugElement.componentInstance);
-                expect(c.locals["local"]).toBeDefined();
+                expect(c.references["local"]).toBeDefined();
               }
             })));
       }
@@ -2288,12 +2291,18 @@ class ChildComp2 {
   }
 }
 
+class SomeViewportContext {
+  String someTmpl;
+  SomeViewportContext(this.someTmpl) {}
+}
+
 @Directive(selector: "[some-viewport]")
 @Injectable()
 class SomeViewport {
-  SomeViewport(ViewContainerRef container, TemplateRef templateRef) {
-    container.createEmbeddedView(templateRef).setLocal("some-tmpl", "hello");
-    container.createEmbeddedView(templateRef).setLocal("some-tmpl", "again");
+  SomeViewport(ViewContainerRef container,
+      TemplateRef<SomeViewportContext> templateRef) {
+    container.createEmbeddedView(templateRef, new SomeViewportContext("hello"));
+    container.createEmbeddedView(templateRef, new SomeViewportContext("again"));
   }
 }
 
@@ -2453,11 +2462,16 @@ class NeedsPublicApi {
   }
 }
 
+class ToolbarContext {
+  String toolbarProp;
+  ToolbarContext(this.toolbarProp) {}
+}
+
 @Directive(selector: "[toolbarpart]")
 @Injectable()
 class ToolbarPart {
-  TemplateRef templateRef;
-  ToolbarPart(TemplateRef templateRef) {
+  TemplateRef<ToolbarContext> templateRef;
+  ToolbarPart(TemplateRef<ToolbarContext> templateRef) {
     this.templateRef = templateRef;
   }
 }
@@ -2470,8 +2484,8 @@ class ToolbarViewContainer {
     this.vc = vc;
   }
   set toolbarVc(ToolbarPart part) {
-    var view = this.vc.createEmbeddedView(part.templateRef, 0);
-    view.setLocal("toolbarProp", "From toolbar");
+    this.vc.createEmbeddedView(
+        part.templateRef, new ToolbarContext("From toolbar"), 0);
   }
 }
 
@@ -2626,8 +2640,8 @@ class ChildConsumingEventBus {
 @Injectable()
 class SomeImperativeViewport {
   ViewContainerRef vc;
-  TemplateRef templateRef;
-  EmbeddedViewRef view;
+  TemplateRef<Object> templateRef;
+  EmbeddedViewRef<Object> view;
   var anchor;
   SomeImperativeViewport(
       this.vc, this.templateRef, @Inject(ANCHOR_ELEMENT) anchor) {

@@ -271,8 +271,11 @@ class ViewBuilderVisitor implements TemplateAstVisitor {
             .map((nodes) => createFlatArray(nodes))
             .toList());
       }
-      this.view.createMethod.addStmt(compViewExpr
-          .callMethod("create", [codeGenContentNodes, o.NULL_EXPR]).toStmt());
+      this.view.createMethod.addStmt(compViewExpr.callMethod("create", [
+            compileElement.getComponent(),
+            codeGenContentNodes,
+            o.NULL_EXPR
+          ]).toStmt());
     }
     return null;
   }
@@ -470,9 +473,6 @@ o.Expression createStaticNodeDebugInfo(CompileNode node) {
 
 o.ClassStmt createViewClass(CompileView view, o.ReadVarExpr renderCompTypeVar,
     o.Expression nodeDebugInfosVar) {
-  var emptyTemplateVariableBindings = view.templateVariableBindings
-      .map((entry) => [entry[0], o.NULL_EXPR])
-      .toList();
   var viewConstructorArgs = [
     new o.FnParam(ViewConstructorVars.viewUtils.name,
         o.importType(Identifiers.ViewUtils)),
@@ -486,7 +486,6 @@ o.ClassStmt createViewClass(CompileView view, o.ReadVarExpr renderCompTypeVar,
       o.variable(view.className),
       renderCompTypeVar,
       ViewTypeEnum.fromValue(view.viewType),
-      o.literalMap(emptyTemplateVariableBindings),
       ViewConstructorVars.viewUtils,
       ViewConstructorVars.parentInjector,
       ViewConstructorVars.declarationEl,
@@ -667,8 +666,10 @@ List<o.Statement> addReturnValuefNotEmpty(
 }
 
 o.Type getContextType(CompileView view) {
-  var typeMeta = view.component.type;
-  return typeMeta.isHost ? o.DYNAMIC_TYPE : o.importType(typeMeta);
+  if (identical(view.viewType, ViewType.COMPONENT)) {
+    return o.importType(view.component.type);
+  }
+  return o.DYNAMIC_TYPE;
 }
 
 ChangeDetectionStrategy getChangeDetectionMode(CompileView view) {

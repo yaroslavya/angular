@@ -2,16 +2,17 @@ library angular2.test.compiler.static_reflector_spec;
 
 import "package:angular2/testing_internal.dart"
     show describe, it, iit, expect, ddescribe, beforeEach;
-import "package:angular2/src/facade/lang.dart" show IS_DART;
+import "package:angular2/src/facade/lang.dart" show IS_DART, isBlank;
 import "package:angular2/src/facade/collection.dart" show ListWrapper;
 import "package:angular2/src/compiler/static_reflector.dart"
-    show StaticReflector, StaticReflectorHost;
+    show StaticReflector, StaticReflectorHost, StaticSymbol, ModuleContext;
 
 main() {
   // Static reflector is not supported in Dart
 
   // as we use reflection to create objects.
   if (IS_DART) return;
+  var noContext = new ModuleContext("", "");
   describe("StaticReflector", () {
     StaticReflectorHost host;
     StaticReflector reflector;
@@ -19,15 +20,15 @@ main() {
       host = new MockReflectorHost();
       reflector = new StaticReflector(host);
     });
-    singleModuleSimplify(String moduleContext, dynamic value) {
+    singleModuleSimplify(ModuleContext moduleContext, dynamic value) {
       return reflector.simplify(moduleContext, value, false);
     }
-    crossModuleSimplify(String moduleContext, dynamic value) {
+    crossModuleSimplify(ModuleContext moduleContext, dynamic value) {
       return reflector.simplify(moduleContext, value, true);
     }
     it("should get annotations for NgFor", () {
-      var NgFor = reflector.getStaticType(
-          host.resolveModule("angular2/src/common/directives/ng_for"), "NgFor");
+      var NgFor = host.findDeclaration(
+          "angular2/src/common/directives/ng_for", "NgFor");
       var annotations = reflector.annotations(NgFor);
       expect(annotations.length).toEqual(1);
       var annotation = annotations[0];
@@ -36,21 +37,17 @@ main() {
           .toEqual(["ngForTrackBy", "ngForOf", "ngForTemplate"]);
     });
     it("should get constructor for NgFor", () {
-      var NgFor = reflector.getStaticType(
-          host.resolveModule("angular2/src/common/directives/ng_for"), "NgFor");
-      var ViewContainerRef = reflector.getStaticType(
-          host.resolveModule("angular2/src/core/linker/view_container_ref"),
-          "ViewContainerRef");
-      var TemplateRef = reflector.getStaticType(
-          host.resolveModule("angular2/src/core/linker/template_ref"),
-          "TemplateRef");
-      var IterableDiffers = reflector.getStaticType(
-          host.resolveModule(
-              "angular2/src/core/change_detection/differs/iterable_differs"),
+      var NgFor = host.findDeclaration(
+          "angular2/src/common/directives/ng_for", "NgFor");
+      var ViewContainerRef = host.findDeclaration(
+          "angular2/src/core/linker/view_container_ref", "ViewContainerRef");
+      var TemplateRef = host.findDeclaration(
+          "angular2/src/core/linker/template_ref", "TemplateRef");
+      var IterableDiffers = host.findDeclaration(
+          "angular2/src/core/change_detection/differs/iterable_differs",
           "IterableDiffers");
-      var ChangeDetectorRef = reflector.getStaticType(
-          host.resolveModule(
-              "angular2/src/core/change_detection/change_detector_ref"),
+      var ChangeDetectorRef = host.findDeclaration(
+          "angular2/src/core/change_detection/change_detector_ref",
           "ChangeDetectorRef");
       var parameters = reflector.parameters(NgFor);
       expect(parameters).toEqual([
@@ -61,59 +58,55 @@ main() {
       ]);
     });
     it("should get annotations for HeroDetailComponent", () {
-      var HeroDetailComponent = reflector.getStaticType(
-          "/src/app/hero-detail.component.ts", "HeroDetailComponent");
+      var HeroDetailComponent = host.findDeclaration(
+          "src/app/hero-detail.component", "HeroDetailComponent");
       var annotations = reflector.annotations(HeroDetailComponent);
       expect(annotations.length).toEqual(1);
       var annotation = annotations[0];
       expect(annotation.selector).toEqual("my-hero-detail");
       expect(annotation.directives).toEqual([
-        [
-          reflector.getStaticType(
-              host.resolveModule("angular2/src/common/directives/ng_for"),
-              "NgFor")
-        ]
+        [host.findDeclaration("angular2/src/common/directives/ng_for", "NgFor")]
       ]);
     });
     it("should get and empty annotation list for an unknown class", () {
       var UnknownClass =
-          reflector.getStaticType("/src/app/app.component.ts", "UnknownClass");
+          host.findDeclaration("src/app/app.component", "UnknownClass");
       var annotations = reflector.annotations(UnknownClass);
       expect(annotations).toEqual([]);
     });
     it("should get propMetadata for HeroDetailComponent", () {
-      var HeroDetailComponent = reflector.getStaticType(
-          "/src/app/hero-detail.component.ts", "HeroDetailComponent");
+      var HeroDetailComponent = host.findDeclaration(
+          "src/app/hero-detail.component", "HeroDetailComponent");
       var props = reflector.propMetadata(HeroDetailComponent);
       expect(props["hero"]).toBeTruthy();
     });
     it("should get an empty object from propMetadata for an unknown class", () {
       var UnknownClass =
-          reflector.getStaticType("/src/app/app.component.ts", "UnknownClass");
+          host.findDeclaration("src/app/app.component", "UnknownClass");
       var properties = reflector.propMetadata(UnknownClass);
       expect(properties).toEqual({});
     });
     it("should get empty parameters list for an unknown class ", () {
       var UnknownClass =
-          reflector.getStaticType("/src/app/app.component.ts", "UnknownClass");
+          host.findDeclaration("src/app/app.component", "UnknownClass");
       var parameters = reflector.parameters(UnknownClass);
       expect(parameters).toEqual([]);
     });
     it("should simplify primitive into itself", () {
-      expect(singleModuleSimplify("", 1)).toBe(1);
-      expect(singleModuleSimplify("", true)).toBe(true);
-      expect(singleModuleSimplify("", "some value")).toBe("some value");
+      expect(singleModuleSimplify(noContext, 1)).toBe(1);
+      expect(singleModuleSimplify(noContext, true)).toBe(true);
+      expect(singleModuleSimplify(noContext, "some value")).toBe("some value");
     });
     it("should simplify an array into a copy of the array", () {
-      expect(singleModuleSimplify("", [1, 2, 3])).toEqual([1, 2, 3]);
+      expect(singleModuleSimplify(noContext, [1, 2, 3])).toEqual([1, 2, 3]);
     });
     it("should simplify an object to a copy of the object", () {
       var expr = {"a": 1, "b": 2, "c": 3};
-      expect(singleModuleSimplify("", expr)).toEqual(expr);
+      expect(singleModuleSimplify(noContext, expr)).toEqual(expr);
     });
     it("should simplify &&", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "&&",
@@ -122,7 +115,7 @@ main() {
               })))
           .toBe(true);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "&&",
@@ -131,7 +124,7 @@ main() {
               })))
           .toBe(false);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "&&",
@@ -140,7 +133,7 @@ main() {
               })))
           .toBe(false);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "&&",
@@ -151,7 +144,7 @@ main() {
     });
     it("should simplify ||", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "||",
@@ -160,7 +153,7 @@ main() {
               })))
           .toBe(true);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "||",
@@ -169,7 +162,7 @@ main() {
               })))
           .toBe(true);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "||",
@@ -178,7 +171,7 @@ main() {
               })))
           .toBe(true);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "||",
@@ -189,7 +182,7 @@ main() {
     });
     it("should simplify &", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "&",
@@ -198,7 +191,7 @@ main() {
               })))
           .toBe(0x22 & 0x0F);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "&",
@@ -209,7 +202,7 @@ main() {
     });
     it("should simplify |", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "|",
@@ -218,7 +211,7 @@ main() {
               })))
           .toBe(0x22 | 0x0F);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "|",
@@ -229,7 +222,7 @@ main() {
     });
     it("should simplify ^", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "|",
@@ -238,7 +231,7 @@ main() {
               })))
           .toBe(0x22 | 0x0F);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "|",
@@ -249,7 +242,7 @@ main() {
     });
     it("should simplify ==", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "==",
@@ -258,7 +251,7 @@ main() {
               })))
           .toBe(0x22 == 0x22);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "==",
@@ -269,7 +262,7 @@ main() {
     });
     it("should simplify !=", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "!=",
@@ -278,7 +271,7 @@ main() {
               })))
           .toBe(0x22 != 0x22);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "!=",
@@ -289,7 +282,7 @@ main() {
     });
     it("should simplify ===", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "===",
@@ -298,7 +291,7 @@ main() {
               })))
           .toBe(identical(0x22, 0x22));
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "===",
@@ -309,7 +302,7 @@ main() {
     });
     it("should simplify !==", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "!==",
@@ -318,7 +311,7 @@ main() {
               })))
           .toBe(!identical(0x22, 0x22));
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "!==",
@@ -329,7 +322,7 @@ main() {
     });
     it("should simplify >", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": ">",
@@ -338,7 +331,7 @@ main() {
               })))
           .toBe(1 > 1);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": ">",
@@ -347,7 +340,7 @@ main() {
               })))
           .toBe(1 > 0);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": ">",
@@ -358,7 +351,7 @@ main() {
     });
     it("should simplify >=", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": ">=",
@@ -367,7 +360,7 @@ main() {
               })))
           .toBe(1 >= 1);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": ">=",
@@ -376,7 +369,7 @@ main() {
               })))
           .toBe(1 >= 0);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": ">=",
@@ -387,7 +380,7 @@ main() {
     });
     it("should simplify <=", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "<=",
@@ -396,7 +389,7 @@ main() {
               })))
           .toBe(1 <= 1);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "<=",
@@ -405,7 +398,7 @@ main() {
               })))
           .toBe(1 <= 0);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "<=",
@@ -416,7 +409,7 @@ main() {
     });
     it("should simplify <", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "<",
@@ -425,7 +418,7 @@ main() {
               })))
           .toBe(1 < 1);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "<",
@@ -434,7 +427,7 @@ main() {
               })))
           .toBe(1 < 0);
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "<",
@@ -445,7 +438,7 @@ main() {
     });
     it("should simplify <<", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "<<",
@@ -456,7 +449,7 @@ main() {
     });
     it("should simplify >>", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": ">>",
@@ -467,7 +460,7 @@ main() {
     });
     it("should simplify +", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "+",
@@ -478,7 +471,7 @@ main() {
     });
     it("should simplify -", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "-",
@@ -489,7 +482,7 @@ main() {
     });
     it("should simplify *", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "*",
@@ -500,7 +493,7 @@ main() {
     });
     it("should simplify /", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "/",
@@ -511,7 +504,7 @@ main() {
     });
     it("should simplify %", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "binop",
                 "operator": "%",
@@ -521,26 +514,26 @@ main() {
           .toBe(0x55 % 2);
     });
     it("should simplify prefix -", () {
-      expect(singleModuleSimplify(
-              "", ({"___symbolic": "pre", "operator": "-", "operand": 2})))
+      expect(singleModuleSimplify(noContext,
+              ({"___symbolic": "pre", "operator": "-", "operand": 2})))
           .toBe(-2);
     });
     it("should simplify prefix ~", () {
-      expect(singleModuleSimplify(
-              "", ({"___symbolic": "pre", "operator": "~", "operand": 2})))
+      expect(singleModuleSimplify(noContext,
+              ({"___symbolic": "pre", "operator": "~", "operand": 2})))
           .toBe(~2);
     });
     it("should simplify prefix !", () {
-      expect(singleModuleSimplify(
-              "", ({"___symbolic": "pre", "operator": "!", "operand": true})))
+      expect(singleModuleSimplify(noContext,
+              ({"___symbolic": "pre", "operator": "!", "operand": true})))
           .toBe(!true);
-      expect(singleModuleSimplify(
-              "", ({"___symbolic": "pre", "operator": "!", "operand": false})))
+      expect(singleModuleSimplify(noContext,
+              ({"___symbolic": "pre", "operator": "!", "operand": false})))
           .toBe(!false);
     });
     it("should simplify an array index", () {
       expect(singleModuleSimplify(
-              "",
+              noContext,
               ({
                 "___symbolic": "index",
                 "expression": [1, 2, 3],
@@ -554,11 +547,11 @@ main() {
         "expression": {"a": 1, "b": 2, "c": 3},
         "member": "b"
       };
-      expect(singleModuleSimplify("", expr)).toBe(2);
+      expect(singleModuleSimplify(noContext, expr)).toBe(2);
     });
     it("should simplify a module reference across modules", () {
       expect(crossModuleSimplify(
-              "/src/cases",
+              new ModuleContext("", "/src/cases"),
               ({
                 "___symbolic": "reference",
                 "module": "./extern",
@@ -568,24 +561,33 @@ main() {
     });
     it("should simplify a module reference without crossing modules", () {
       expect(singleModuleSimplify(
-              "/src/cases",
+              new ModuleContext("", "/src/cases"),
               ({
                 "___symbolic": "reference",
                 "module": "./extern",
                 "name": "s"
               })))
-          .toEqual(reflector.getStaticType("/src/extern.d.ts", "s"));
+          .toEqual(host.getStaticSymbol("", "/src/extern.d.ts", "s"));
     });
   });
 }
 
 class MockReflectorHost implements StaticReflectorHost {
-  // In tests, assume that symbols are not re-exported
-  dynamic findDeclaration(String modulePath, String symbolName) {
-    return {"declarationPath": modulePath, "declaredName": symbolName};
+  var staticTypeCache = new Map<String, StaticSymbol>();
+  StaticSymbol getStaticSymbol(
+      String moduleId, String declarationFile, String name) {
+    var cacheKey = '''${ declarationFile}:${ name}''';
+    var result = this.staticTypeCache[cacheKey];
+    if (isBlank(result)) {
+      result = new StaticSymbol(moduleId, declarationFile, name);
+      this.staticTypeCache[cacheKey] = result;
+    }
+    return result;
   }
 
-  String resolveModule(String moduleName, [String containingFile]) {
+  // In tests, assume that symbols are not re-exported
+  StaticSymbol findDeclaration(String modulePath, String symbolName,
+      [String containingFile]) {
     List<String> splitPath(String path) {
       return path.split(new RegExp(r'\/|\\'));
     }
@@ -615,10 +617,12 @@ class MockReflectorHost implements StaticReflectorHost {
       }
       return result;
     }
-    if (identical(moduleName.indexOf("."), 0)) {
-      return pathTo(containingFile, moduleName) + ".d.ts";
+    if (identical(modulePath.indexOf("."), 0)) {
+      return this.getStaticSymbol('''mod/${ symbolName}''',
+          pathTo(containingFile, modulePath) + ".d.ts", symbolName);
     }
-    return "/tmp/" + moduleName + ".d.ts";
+    return this.getStaticSymbol(
+        '''mod/${ symbolName}''', "/tmp/" + modulePath + ".d.ts", symbolName);
   }
 
   dynamic getMetadataFor(String moduleId) {
@@ -711,7 +715,7 @@ class MockReflectorHost implements StaticReflectorHost {
           "ChangeDetectorRef": {"___symbolic": "class"}
         }
       },
-      "/src/app/hero-detail.component.ts": {
+      "/tmp/src/app/hero-detail.component.d.ts": {
         "___symbolic": "module",
         "metadata": {
           "HeroDetailComponent": {

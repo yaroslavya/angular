@@ -762,10 +762,10 @@ class MultipleContentTagsComponent {}
 @Directive(selector: "[manual]")
 class ManualViewportDirective {
   ViewContainerRef vc;
-  TemplateRef templateRef;
+  TemplateRef<Object> templateRef;
   ManualViewportDirective(this.vc, this.templateRef) {}
   show() {
-    this.vc.createEmbeddedView(this.templateRef, 0);
+    this.vc.createEmbeddedView(this.templateRef);
   }
 
   hide() {
@@ -777,8 +777,8 @@ class ManualViewportDirective {
 class ProjectDirective {
   ViewContainerRef vc;
   ProjectDirective(this.vc) {}
-  show(TemplateRef templateRef) {
-    this.vc.createEmbeddedView(templateRef, 0);
+  show(TemplateRef<Object> templateRef) {
+    this.vc.createEmbeddedView(templateRef);
   }
 
   hide() {

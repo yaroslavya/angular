@@ -34,8 +34,12 @@ class DebugNode {
     return isPresent(this._debugInfo) ? this._debugInfo.component : null;
   }
 
-  Map<String, dynamic> get locals {
-    return isPresent(this._debugInfo) ? this._debugInfo.locals : null;
+  dynamic get context {
+    return isPresent(this._debugInfo) ? this._debugInfo.context : null;
+  }
+
+  Map<String, dynamic> get references {
+    return isPresent(this._debugInfo) ? this._debugInfo.references : null;
   }
 
   List<dynamic> get providerTokens {
@@ -48,10 +52,6 @@ class DebugNode {
 
   dynamic inject(dynamic token) {
     return this.injector.get(token);
-  }
-
-  dynamic getLocal(String name) {
-    return this.locals[name];
   }
 }
 

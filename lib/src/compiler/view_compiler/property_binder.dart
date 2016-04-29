@@ -88,7 +88,7 @@ bindRenderText(
       currValExpr,
       valueField,
       boundText.value,
-      o.THIS_EXPR.prop("context"),
+      view.componentContext,
       [
         o.THIS_EXPR.prop("renderer").callMethod(
             "setText", [compileNode.renderNode, currValExpr]).toStmt()
@@ -146,7 +146,7 @@ bindAndWriteToRenderer(List<BoundElementPropertyAst> boundProps,
 void bindRenderInputs(
     List<BoundElementPropertyAst> boundProps, CompileElement compileElement) {
   bindAndWriteToRenderer(
-      boundProps, o.THIS_EXPR.prop("context"), compileElement);
+      boundProps, compileElement.view.componentContext, compileElement);
 }
 
 void bindDirectiveHostProps(DirectiveAst directiveAst,
@@ -208,7 +208,7 @@ bindDirectiveInputs(DirectiveAst directiveAst, o.Expression directiveInstance,
       statements.add(logBindingUpdateStmt(
           compileElement.renderNode, input.directiveName, currValExpr));
     }
-    bind(view, currValExpr, fieldExpr, input.value, o.THIS_EXPR.prop("context"),
+    bind(view, currValExpr, fieldExpr, input.value, view.componentContext,
         statements, detectChangesInInputsMethod);
   });
   if (isOnPushComp) {

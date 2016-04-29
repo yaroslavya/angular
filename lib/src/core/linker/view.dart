@@ -49,7 +49,6 @@ import "exceptions.dart"
 import "debug_context.dart" show StaticNodeDebugInfo, DebugContext;
 import "element_injector.dart" show ElementInjector;
 
-const EMPTY_CONTEXT = const Object();
 WtfScopeFn _scope_check = wtfCreateScope('''AppView#check(ascii id)''');
 
 /**
@@ -60,13 +59,12 @@ abstract class AppView<T> {
   dynamic clazz;
   RenderComponentType componentType;
   ViewType type;
-  Map<String, dynamic> locals;
   ViewUtils viewUtils;
   Injector parentInjector;
   AppElement declarationAppElement;
   ChangeDetectionStrategy cdMode;
   List<StaticNodeDebugInfo> staticNodeDebugInfos;
-  ViewRef_ ref;
+  ViewRef_<T> ref;
   List<dynamic> rootNodesOrAppElements;
   List<dynamic> allNodes;
   List<Function> disposables;
@@ -79,21 +77,16 @@ abstract class AppView<T> {
 
   // change detection will fail.
   ChangeDetectorState cdState = ChangeDetectorState.NeverChecked;
-  /**
-   * The context against which data-binding expressions in this view are evaluated against.
-   * This is always a component instance.
-   */
-  T context = null;
   List<dynamic /* dynamic | List < dynamic > */ > projectableNodes;
   bool destroyed = false;
   Renderer renderer;
   DebugContext _currentDebugContext = null;
   bool _hasExternalHostElement;
+  T context;
   AppView(
       this.clazz,
       this.componentType,
       this.type,
-      this.locals,
       this.viewUtils,
       this.parentInjector,
       this.declarationAppElement,
@@ -107,23 +100,21 @@ abstract class AppView<T> {
     }
   }
   AppElement create(
+      T context,
       List<dynamic /* dynamic | List < dynamic > */ > givenProjectableNodes,
       dynamic /* String | dynamic */ rootSelectorOrNode) {
-    var context;
+    this.context = context;
     var projectableNodes;
     switch (this.type) {
       case ViewType.COMPONENT:
-        context = this.declarationAppElement.component;
         projectableNodes = ensureSlotCount(
             givenProjectableNodes, this.componentType.slotCount);
         break;
       case ViewType.EMBEDDED:
-        context = this.declarationAppElement.parentView.context;
         projectableNodes =
             this.declarationAppElement.parentView.projectableNodes;
         break;
       case ViewType.HOST:
-        context = EMPTY_CONTEXT;
         // Note: Don't ensure the slot count for the projectableNodes as we store
 
         // them only for the contained component view (which will later check the slot count...)
@@ -131,7 +122,6 @@ abstract class AppView<T> {
         break;
     }
     this._hasExternalHostElement = isPresent(rootSelectorOrNode);
-    this.context = context;
     this.projectableNodes = projectableNodes;
     if (this.debugMode) {
       this._resetDebug();
@@ -301,14 +291,6 @@ abstract class AppView<T> {
         ? this.rootNodesOrAppElements[this.rootNodesOrAppElements.length - 1]
         : null;
     return _findLastRenderNode(lastNode);
-  }
-
-  bool hasLocal(String contextName) {
-    return StringMapWrapper.contains(this.locals, contextName);
-  }
-
-  void setLocal(String contextName, dynamic value) {
-    this.locals[contextName] = value;
   }
 
   /**

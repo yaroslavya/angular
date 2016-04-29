@@ -331,7 +331,7 @@ main() {
             (TestComponentBuilder tcb, async) {
           tcb.createAsync(LocalsComp).then((fixture) {
             fixture.detectChanges();
-            expect(fixture.debugElement.children[0].getLocal("alice"))
+            expect(fixture.debugElement.children[0].references["alice"])
                 .toBeAnInstanceOf(MyDir);
             async.done();
           });

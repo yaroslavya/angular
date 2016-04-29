@@ -30,7 +30,6 @@ class _View_CompA0 extends import3.AppView<import4.CompA> {
             _View_CompA0,
             renderType_CompA,
             import8.ViewType.COMPONENT,
-            {},
             viewUtils,
             parentInjector,
             declarationEl,
@@ -88,7 +87,6 @@ class _View_CompA_Host0 extends import3.AppView<dynamic> {
             _View_CompA_Host0,
             renderType_CompA_Host,
             import8.ViewType.HOST,
-            {},
             viewUtils,
             parentInjector,
             declarationEl,
@@ -102,7 +100,7 @@ class _View_CompA_Host0 extends import3.AppView<dynamic> {
         viewFactory_CompA0(this.viewUtils, this.injector(0), this._appEl_0);
     this._CompA_0_4 = new import4.CompA();
     this._appEl_0.initComponent(this._CompA_0_4, [], compView_0);
-    compView_0.create(this.projectableNodes, null);
+    compView_0.create(this._CompA_0_4, this.projectableNodes, null);
     this.init([]..addAll([this._el_0]), [this._el_0], [], []);
     return this._appEl_0;
   }

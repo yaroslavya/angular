@@ -59,7 +59,6 @@ abstract class ViewContainerRef {
   num get length {
     return (unimplemented() as num);
   }
-
   /**
    * Instantiates an Embedded View based on the [TemplateRef `templateRef`] and inserts it
    * into this container at the specified `index`.
@@ -68,7 +67,10 @@ abstract class ViewContainerRef {
    *
    * Returns the [ViewRef] for the newly created View.
    */
-  EmbeddedViewRef createEmbeddedView(TemplateRef templateRef, [num index]);
+
+  // TODO(tbosch): Use a generic once ts2dart supports it.
+  EmbeddedViewRef<dynamic> createEmbeddedView(TemplateRef<dynamic> templateRef,
+      [dynamic context, num index]);
   /**
    * Instantiates a single [Component] and inserts its Host View into this container at the
    * specified `index`.
@@ -114,7 +116,7 @@ abstract class ViewContainerRef {
 class ViewContainerRef_ implements ViewContainerRef {
   AppElement _element;
   ViewContainerRef_(this._element) {}
-  EmbeddedViewRef get(num index) {
+  ViewRef get(num index) {
     return this._element.nestedViews[index].ref;
   }
 
@@ -137,9 +139,11 @@ class ViewContainerRef_ implements ViewContainerRef {
   // TODO(rado): profile and decide whether bounds checks should be added
 
   // to the methods below.
-  EmbeddedViewRef createEmbeddedView(TemplateRef templateRef,
-      [num index = -1]) {
-    EmbeddedViewRef viewRef = templateRef.createEmbeddedView();
+
+  // TODO(tbosch): use a generic C once ts2dart supports it.
+  EmbeddedViewRef<dynamic> createEmbeddedView(TemplateRef<dynamic> templateRef,
+      [dynamic context = null, num index = -1]) {
+    EmbeddedViewRef<dynamic> viewRef = templateRef.createEmbeddedView(context);
     this.insert(viewRef, index);
     return viewRef;
   }
@@ -166,14 +170,14 @@ class ViewContainerRef_ implements ViewContainerRef {
   ViewRef insert(ViewRef viewRef, [num index = -1]) {
     var s = this._insertScope();
     if (index == -1) index = this.length;
-    var viewRef_ = (viewRef as ViewRef_);
+    var viewRef_ = (viewRef as ViewRef_<dynamic>);
     this._element.attachView(viewRef_.internalView, index);
     return wtfLeave(s, viewRef_);
   }
 
   num indexOf(ViewRef viewRef) {
-    return ListWrapper.indexOf(
-        this._element.nestedViews, ((viewRef as ViewRef_)).internalView);
+    return ListWrapper.indexOf(this._element.nestedViews,
+        ((viewRef as ViewRef_<dynamic>)).internalView);
   }
 
   /** @internal */

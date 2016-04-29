@@ -609,7 +609,7 @@ class Foo {
 @Component(selector: "test-cmp", directives: const [NgFor, NgIf], template: "")
 class TestComponent {
   @ContentChild(TemplateRef)
-  TemplateRef contentTpl;
+  TemplateRef<Object> contentTpl;
   dynamic items;
   TestComponent() {
     this.items = [1, 2];

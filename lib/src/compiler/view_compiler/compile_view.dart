@@ -68,6 +68,7 @@ class CompileView implements NameResolver {
   var literalArrayCount = 0;
   var literalMapCount = 0;
   var pipeCount = 0;
+  o.Expression componentContext;
   CompileView(this.component, this.genConfig, this.pipeMetas, this.styles,
       this.viewIndex, this.declarationElement, this.templateVariableBindings) {
     this.createMethod = new CompileMethod(this);
@@ -91,6 +92,8 @@ class CompileView implements NameResolver {
     } else {
       this.componentView = this.declarationElement.view.componentView;
     }
+    this.componentContext = getPropertyInView(
+        o.THIS_EXPR.prop("context"), this, this.componentView);
     var viewQueries = new CompileTokenMap<List<CompileQuery>>();
     if (identical(this.viewType, ViewType.COMPONENT)) {
       var directiveInstance = o.THIS_EXPR.prop("context");
@@ -118,8 +121,7 @@ class CompileView implements NameResolver {
     }
     this.viewQueries = viewQueries;
     templateVariableBindings.forEach((entry) {
-      this.locals[entry[1]] =
-          o.THIS_EXPR.prop("locals").key(o.literal(entry[0]));
+      this.locals[entry[1]] = o.THIS_EXPR.prop("context").prop(entry[0]);
     });
     if (!this.declarationElement.isNull()) {
       this.declarationElement.setEmbeddedView(this);

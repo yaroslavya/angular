@@ -1244,11 +1244,17 @@ class OrderCheckDirective2 {
   OrderCheckDirective2(this.log, OrderCheckDirective1 _check1) {}
 }
 
+class TestLocalsContext {
+  String someLocal;
+  TestLocalsContext(this.someLocal) {}
+}
+
 @Directive(selector: "[testLocals]")
 class TestLocals {
-  TestLocals(TemplateRef templateRef, ViewContainerRef vcRef) {
-    var viewRef = vcRef.createEmbeddedView(templateRef);
-    viewRef.setLocal("someLocal", "someLocalValue");
+  TestLocals(
+      TemplateRef<TestLocalsContext> templateRef, ViewContainerRef vcRef) {
+    vcRef.createEmbeddedView(
+        templateRef, new TestLocalsContext("someLocalValue"));
   }
 }
 

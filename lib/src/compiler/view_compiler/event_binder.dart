@@ -58,7 +58,7 @@ class CompileEventListener {
     this._method.resetDebugInfo(this.compileElement.nodeIndex, hostEvent);
     var context = isPresent(directiveInstance)
         ? directiveInstance
-        : o.THIS_EXPR.prop("context");
+        : this.compileElement.view.componentContext;
     var actionStmts = convertCdStatementToIr(
         this.compileElement.view, context, hostEvent.handler);
     var lastIndex = actionStmts.length - 1;
@@ -108,7 +108,7 @@ class CompileEventListener {
       ], [
         new o.ReturnStatement(
             o.THIS_EXPR.callMethod(this._methodName, [EventHandlerVars.event]))
-      ])
+      ], o.BOOL_TYPE)
     ]);
     if (isPresent(this.eventTarget)) {
       listenExpr = ViewProperties.renderer.callMethod("listenGlobal", [

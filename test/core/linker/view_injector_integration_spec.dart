@@ -236,7 +236,7 @@ class NeedsViewContainerRef {
 @Directive(selector: "[needsTemplateRef]")
 class NeedsTemplateRef {
   var templateRef;
-  NeedsTemplateRef(TemplateRef ref) {
+  NeedsTemplateRef(TemplateRef<Object> ref) {
     this.templateRef = ref;
   }
 }
@@ -244,7 +244,7 @@ class NeedsTemplateRef {
 @Directive(selector: "[optionallyNeedsTemplateRef]")
 class OptionallyNeedsTemplateRef {
   var templateRef;
-  OptionallyNeedsTemplateRef(@Optional() TemplateRef ref) {
+  OptionallyNeedsTemplateRef(@Optional() TemplateRef<Object> ref) {
     this.templateRef = ref;
   }
 }

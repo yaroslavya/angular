@@ -445,13 +445,15 @@ class CompileTemplateMetadata {
   List<String> styles;
   List<String> styleUrls;
   List<String> ngContentSelectors;
+  String baseUrl;
   CompileTemplateMetadata(
       {encapsulation,
       template,
       templateUrl,
       styles,
       styleUrls,
-      ngContentSelectors}) {
+      ngContentSelectors,
+      baseUrl}) {
     this.encapsulation =
         isPresent(encapsulation) ? encapsulation : ViewEncapsulation.Emulated;
     this.template = template;
@@ -460,6 +462,7 @@ class CompileTemplateMetadata {
     this.styleUrls = isPresent(styleUrls) ? styleUrls : [];
     this.ngContentSelectors =
         isPresent(ngContentSelectors) ? ngContentSelectors : [];
+    this.baseUrl = baseUrl;
   }
   static CompileTemplateMetadata fromJson(Map<String, dynamic> data) {
     return new CompileTemplateMetadata(
@@ -470,7 +473,8 @@ class CompileTemplateMetadata {
         templateUrl: data["templateUrl"],
         styles: data["styles"],
         styleUrls: data["styleUrls"],
-        ngContentSelectors: data["ngContentSelectors"]);
+        ngContentSelectors: data["ngContentSelectors"],
+        baseUrl: data["baseUrl"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -482,7 +486,8 @@ class CompileTemplateMetadata {
       "templateUrl": this.templateUrl,
       "styles": this.styles,
       "styleUrls": this.styleUrls,
-      "ngContentSelectors": this.ngContentSelectors
+      "ngContentSelectors": this.ngContentSelectors,
+      "baseUrl": this.baseUrl
     };
   }
 }

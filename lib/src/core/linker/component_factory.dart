@@ -108,6 +108,8 @@ class ComponentRef_ extends ComponentRef {
   }
 }
 
+const EMPTY_CONTEXT = const Object();
+
 class ComponentFactory {
   final String selector;
   final Function _viewFactory;
@@ -129,7 +131,8 @@ class ComponentFactory {
     }
     // Note: Host views don't need a declarationAppElement!
     var hostView = this._viewFactory(vu, injector, null);
-    var hostElement = hostView.create(projectableNodes, rootSelectorOrNode);
+    var hostElement =
+        hostView.create(EMPTY_CONTEXT, projectableNodes, rootSelectorOrNode);
     return new ComponentRef_(hostElement, this._componentType);
   }
 }

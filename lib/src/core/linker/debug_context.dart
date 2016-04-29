@@ -72,33 +72,23 @@ class DebugContext implements RenderDebugInfo {
     return '''${ this . _view . componentType . templateUrl}:${ this . _tplRow}:${ this . _tplCol}''';
   }
 
-  Map<String, String> get locals {
+  Map<String, dynamic> get references {
     Map<String, String> varValues = {};
-    // TODO(tbosch): right now, the semantics of debugNode.locals are
-
-    // that it contains the variables of all elements, not just
-
-    // the given one. We preserve this for now to not have a breaking
-
-    // change, but should change this later!
-    ListWrapper.forEachWithIndex(this._view.staticNodeDebugInfos,
-        (StaticNodeDebugInfo staticNodeInfo, num nodeIndex) {
+    var staticNodeInfo = this._staticNodeInfo;
+    if (isPresent(staticNodeInfo)) {
       var refs = staticNodeInfo.refTokens;
       StringMapWrapper.forEach(refs, (refToken, refName) {
         var varValue;
         if (isBlank(refToken)) {
           varValue = isPresent(this._view.allNodes)
-              ? this._view.allNodes[nodeIndex]
+              ? this._view.allNodes[this._nodeIndex]
               : null;
         } else {
-          varValue = this._view.injectorGet(refToken, nodeIndex, null);
+          varValue = this._view.injectorGet(refToken, this._nodeIndex, null);
         }
         varValues[refName] = varValue;
       });
-    });
-    StringMapWrapper.forEach(this._view.locals, (localValue, localName) {
-      varValues[localName] = localValue;
-    });
+    }
     return varValues;
   }
 }

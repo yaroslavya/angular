@@ -68,11 +68,10 @@ class DirectiveNormalizer {
       CompileTypeMetadata directiveType, CompileTemplateMetadata template) {
     if (isPresent(template.template)) {
       return PromiseWrapper.resolve(this.normalizeLoadedTemplate(
-          directiveType, template, template.template, directiveType.moduleUrl));
+          directiveType, template, template.template, template.baseUrl));
     } else if (isPresent(template.templateUrl)) {
-      var sourceAbsUrl = this
-          ._urlResolver
-          .resolve(directiveType.moduleUrl, template.templateUrl);
+      var sourceAbsUrl =
+          this._urlResolver.resolve(template.baseUrl, template.templateUrl);
       return this._xhr.get(sourceAbsUrl).then((templateContent) => this
           .normalizeLoadedTemplate(
               directiveType, template, templateContent, sourceAbsUrl));
@@ -106,7 +105,7 @@ ${ errorString}''');
       ..addAll(templateMeta.styleUrls
           .where(isStyleUrlResolvable)
           .toList()
-          .map((url) => this._urlResolver.resolve(directiveType.moduleUrl, url))
+          .map((url) => this._urlResolver.resolve(templateMeta.baseUrl, url))
           .toList()));
     var allResolvedStyles = allStyles.map((style) {
       var styleWithImports =

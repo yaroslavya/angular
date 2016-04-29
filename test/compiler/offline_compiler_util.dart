@@ -41,7 +41,8 @@ var compAMetadata = CompileDirectiveMetadata.create(
     template: new CompileTemplateMetadata(
         templateUrl: "./offline_compiler_compa.html",
         styles: [".redStyle { color: red; }"],
-        styleUrls: ["./offline_compiler_compa.css"]));
+        styleUrls: ["./offline_compiler_compa.css"],
+        baseUrl: THIS_MODULE_URL));
 OfflineCompiler _createOfflineCompiler(MockXHR xhr, OutputEmitter emitter) {
   var urlResolver = createOfflineCompileUrlResolver();
   xhr.when('''${ THIS_MODULE_PATH}/offline_compiler_compa.html''',

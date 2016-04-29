@@ -27,7 +27,11 @@ abstract class RenderDebugInfo {
     return unimplemented();
   }
 
-  Map<String, String> get locals {
+  Map<String, dynamic> get references {
+    return unimplemented();
+  }
+
+  dynamic get context {
     return unimplemented();
   }
 

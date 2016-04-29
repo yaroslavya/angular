@@ -45,9 +45,9 @@ abstract class ViewRef extends ChangeDetectorRef {
  * </ul>
  * ```
  *
- * ... we have two [ProtoViewRef]s:
+ * ... we have two [TemplateRef]s:
  *
- * Outer [ProtoViewRef]:
+ * Outer [TemplateRef]:
  * ```
  * Count: {{items.length}}
  * <ul>
@@ -55,14 +55,14 @@ abstract class ViewRef extends ChangeDetectorRef {
  * </ul>
  * ```
  *
- * Inner [ProtoViewRef]:
+ * Inner [TemplateRef]:
  * ```
  *   <li>{{item}}</li>
  * ```
  *
- * Notice that the original template is broken down into two separate [ProtoViewRef]s.
+ * Notice that the original template is broken down into two separate [TemplateRef]s.
  *
- * The outer/inner [ProtoViewRef]s are then assembled into views like so:
+ * The outer/inner [TemplateRef]s are then assembled into views like so:
  *
  * ```
  * <!-- ViewRef: outer-0 -->
@@ -75,15 +75,11 @@ abstract class ViewRef extends ChangeDetectorRef {
  * <!-- /ViewRef: outer-0 -->
  * ```
  */
-abstract class EmbeddedViewRef extends ViewRef {
-  /**
-   * Sets `value` of local variable called `variableName` in this View.
-   */
-  void setLocal(String variableName, dynamic value);
-  /**
-   * Checks whether this view has a local variable called `variableName`.
-   */
-  bool hasLocal(String variableName);
+abstract class EmbeddedViewRef<C> extends ViewRef {
+  C get context {
+    return unimplemented();
+  }
+
   List<dynamic> get rootNodes {
     return (unimplemented() as List<dynamic>);
   }
@@ -94,12 +90,12 @@ abstract class EmbeddedViewRef extends ViewRef {
   destroy();
 }
 
-class ViewRef_ implements EmbeddedViewRef {
-  AppView<dynamic> _view;
+class ViewRef_<C> implements EmbeddedViewRef<C> {
+  AppView<C> _view;
   ViewRef_(this._view) {
     this._view = _view;
   }
-  AppView<dynamic> get internalView {
+  AppView<C> get internalView {
     return this._view;
   }
 
@@ -114,12 +110,8 @@ class ViewRef_ implements EmbeddedViewRef {
     return this._view.flatRootNodes;
   }
 
-  void setLocal(String variableName, dynamic value) {
-    this._view.setLocal(variableName, value);
-  }
-
-  bool hasLocal(String variableName) {
-    return this._view.hasLocal(variableName);
+  get context {
+    return this._view.context;
   }
 
   bool get destroyed {
