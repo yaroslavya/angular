@@ -6,27 +6,34 @@ import "package:angular2/core.dart"
         Directive,
         DynamicComponentLoader,
         ViewContainerRef,
-        Input,
+        Attribute,
         ComponentRef,
         ComponentFactory,
-        ReflectiveInjector;
+        ReflectiveInjector,
+        OnInit;
 import "../router.dart" show RouterOutletMap;
-import "package:angular2/src/facade/lang.dart" show isPresent;
+import "../constants.dart" show DEFAULT_OUTLET_NAME;
+import "package:angular2/src/facade/lang.dart" show isPresent, isBlank;
 
 @Directive(selector: "router-outlet")
 class RouterOutlet {
   ViewContainerRef _location;
   ComponentRef _loaded;
   RouterOutletMap outletMap;
-  @Input()
-  String name = "";
-  RouterOutlet(RouterOutletMap parentOutletMap, this._location) {
-    parentOutletMap.registerOutlet("", this);
+  RouterOutlet(RouterOutletMap parentOutletMap, this._location,
+      @Attribute("name") String name) {
+    parentOutletMap.registerOutlet(
+        isBlank(name) ? DEFAULT_OUTLET_NAME : name, this);
   }
+  void unload() {
+    this._loaded.destroy();
+    this._loaded = null;
+  }
+
   ComponentRef load(ComponentFactory factory,
       List<ResolvedReflectiveProvider> providers, RouterOutletMap outletMap) {
     if (isPresent(this._loaded)) {
-      this._loaded.destroy();
+      this.unload();
     }
     this.outletMap = outletMap;
     var inj = ReflectiveInjector.fromResolvedProviders(
