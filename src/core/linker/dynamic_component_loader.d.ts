@@ -4,7 +4,9 @@ import { Type } from 'angular2/src/facade/lang';
 import { ComponentRef } from './component_factory';
 import { ViewContainerRef } from './view_container_ref';
 /**
- * Service for instantiating a Component and attaching it to a View at a specified location.
+ * Use ComponentResolver and ViewContainerRef directly.
+ *
+ * @deprecated
  */
 export declare abstract class DynamicComponentLoader {
     /**

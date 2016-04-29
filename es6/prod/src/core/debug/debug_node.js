@@ -31,6 +31,11 @@ export class DebugNode {
         return isPresent(this._debugInfo) ? this._debugInfo.providerTokens : null;
     }
     get source() { return isPresent(this._debugInfo) ? this._debugInfo.source : null; }
+    /**
+     * Use injector.get(token) instead.
+     *
+     * @deprecated
+     */
     inject(token) { return this.injector.get(token); }
 }
 export class DebugElement extends DebugNode {

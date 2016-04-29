@@ -11646,7 +11646,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var component_resolver_1 = __webpack_require__(65);
 	var lang_1 = __webpack_require__(5);
 	/**
-	 * Service for instantiating a Component and attaching it to a View at a specified location.
+	 * Use ComponentResolver and ViewContainerRef directly.
+	 *
+	 * @deprecated
 	 */
 	var DynamicComponentLoader = (function () {
 	    function DynamicComponentLoader() {
@@ -11985,6 +11987,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        enumerable: true,
 	        configurable: true
 	    });
+	    /**
+	     * Use injector.get(token) instead.
+	     *
+	     * @deprecated
+	     */
 	    DebugNode.prototype.inject = function (token) { return this.injector.get(token); };
 	    return DebugNode;
 	}());

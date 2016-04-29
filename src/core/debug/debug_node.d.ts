@@ -20,6 +20,11 @@ export declare class DebugNode {
     };
     providerTokens: any[];
     source: string;
+    /**
+     * Use injector.get(token) instead.
+     *
+     * @deprecated
+     */
     inject(token: any): any;
 }
 export declare class DebugElement extends DebugNode {

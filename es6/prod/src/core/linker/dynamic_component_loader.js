@@ -11,7 +11,9 @@ import { Injectable, ReflectiveInjector } from 'angular2/src/core/di';
 import { ComponentResolver } from './component_resolver';
 import { isPresent } from 'angular2/src/facade/lang';
 /**
- * Service for instantiating a Component and attaching it to a View at a specified location.
+ * Use ComponentResolver and ViewContainerRef directly.
+ *
+ * @deprecated
  */
 export class DynamicComponentLoader {
 }
