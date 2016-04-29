@@ -7,18 +7,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Directive, ViewContainerRef, Input, ReflectiveInjector } from 'angular2/core';
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+import { Directive, ViewContainerRef, Attribute, ReflectiveInjector } from 'angular2/core';
 import { RouterOutletMap } from '../router';
-import { isPresent } from 'angular2/src/facade/lang';
+import { DEFAULT_OUTLET_NAME } from '../constants';
+import { isPresent, isBlank } from 'angular2/src/facade/lang';
 export let RouterOutlet = class RouterOutlet {
-    constructor(parentOutletMap, _location) {
+    constructor(parentOutletMap, _location, name) {
         this._location = _location;
-        this.name = "";
-        parentOutletMap.registerOutlet("", this);
+        parentOutletMap.registerOutlet(isBlank(name) ? DEFAULT_OUTLET_NAME : name, this);
+    }
+    unload() {
+        this._loaded.destroy();
+        this._loaded = null;
     }
     load(factory, providers, outletMap) {
         if (isPresent(this._loaded)) {
-            this._loaded.destroy();
+            this.unload();
         }
         this.outletMap = outletMap;
         let inj = ReflectiveInjector.fromResolvedProviders(providers, this._location.parentInjector);
@@ -26,11 +33,8 @@ export let RouterOutlet = class RouterOutlet {
         return this._loaded;
     }
 };
-__decorate([
-    Input(), 
-    __metadata('design:type', String)
-], RouterOutlet.prototype, "name", void 0);
 RouterOutlet = __decorate([
-    Directive({ selector: 'router-outlet' }), 
-    __metadata('design:paramtypes', [RouterOutletMap, ViewContainerRef])
+    Directive({ selector: 'router-outlet' }),
+    __param(2, Attribute('name')), 
+    __metadata('design:paramtypes', [RouterOutletMap, ViewContainerRef, String])
 ], RouterOutlet);

@@ -4,7 +4,7 @@ export declare class RouterOutlet {
     private _location;
     private _loaded;
     outletMap: RouterOutletMap;
-    name: string;
-    constructor(parentOutletMap: RouterOutletMap, _location: ViewContainerRef);
+    constructor(parentOutletMap: RouterOutletMap, _location: ViewContainerRef, name: string);
+    unload(): void;
     load(factory: ComponentFactory, providers: ResolvedReflectiveProvider[], outletMap: RouterOutletMap): ComponentRef;
 }

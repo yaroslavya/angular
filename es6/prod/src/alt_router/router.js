@@ -1,8 +1,12 @@
 import { provide, ReflectiveInjector } from 'angular2/core';
 import { isBlank, isPresent } from 'angular2/src/facade/lang';
+import { EventEmitter } from 'angular2/src/facade/async';
+import { StringMapWrapper } from 'angular2/src/facade/collection';
+import { BaseException } from 'angular2/src/facade/exceptions';
 import { recognize } from './recognize';
-import { equalSegments, routeSegmentComponentFactory, RouteSegment } from './segments';
+import { equalSegments, routeSegmentComponentFactory, RouteSegment, rootNode } from './segments';
 import { hasLifecycleHook } from './lifecycle_reflector';
+import { DEFAULT_OUTLET_NAME } from './constants';
 export class RouterOutletMap {
     constructor() {
         /** @internal */
@@ -11,39 +15,89 @@ export class RouterOutletMap {
     registerOutlet(name, outlet) { this._outlets[name] = outlet; }
 }
 export class Router {
-    constructor(_componentType, _componentResolver, _urlParser, _routerOutletMap) {
+    constructor(_componentType, _componentResolver, _urlSerializer, _routerOutletMap, _location) {
         this._componentType = _componentType;
         this._componentResolver = _componentResolver;
-        this._urlParser = _urlParser;
+        this._urlSerializer = _urlSerializer;
         this._routerOutletMap = _routerOutletMap;
+        this._location = _location;
+        this._changes = new EventEmitter();
+        this.navigateByUrl(this._location.path());
     }
-    navigateByUrl(url) {
-        let urlSegmentTree = this._urlParser.parse(url.substring(1));
-        return recognize(this._componentResolver, this._componentType, urlSegmentTree)
+    get urlTree() { return this._urlTree; }
+    navigate(url) {
+        this._urlTree = url;
+        return recognize(this._componentResolver, this._componentType, url)
             .then(currTree => {
-            let prevRoot = isPresent(this.prevTree) ? this.prevTree.root : null;
-            _loadSegments(currTree, currTree.root, this.prevTree, prevRoot, this, this._routerOutletMap);
-            this.prevTree = currTree;
+            new _LoadSegments(currTree, this._prevTree).load(this._routerOutletMap);
+            this._prevTree = currTree;
+            this._location.go(this._urlSerializer.serialize(this._urlTree));
+            this._changes.emit(null);
         });
     }
-}
-function _loadSegments(currTree, curr, prevTree, prev, router, parentOutletMap) {
-    let outlet = parentOutletMap._outlets[curr.outlet];
-    let outletMap;
-    if (equalSegments(curr, prev)) {
-        outletMap = outlet.outletMap;
+    serializeUrl(url) { return this._urlSerializer.serialize(url); }
+    navigateByUrl(url) {
+        return this.navigate(this._urlSerializer.parse(url));
     }
-    else {
-        outletMap = new RouterOutletMap();
+    get changes() { return this._changes; }
+}
+class _LoadSegments {
+    constructor(currTree, prevTree) {
+        this.currTree = currTree;
+        this.prevTree = prevTree;
+    }
+    load(parentOutletMap) {
+        let prevRoot = isPresent(this.prevTree) ? rootNode(this.prevTree) : null;
+        let currRoot = rootNode(this.currTree);
+        this.loadChildSegments(currRoot, prevRoot, parentOutletMap);
+    }
+    loadSegments(currNode, prevNode, parentOutletMap) {
+        let curr = currNode.value;
+        let prev = isPresent(prevNode) ? prevNode.value : null;
+        let outlet = this.getOutlet(parentOutletMap, currNode.value);
+        if (equalSegments(curr, prev)) {
+            this.loadChildSegments(currNode, prevNode, outlet.outletMap);
+        }
+        else {
+            let outletMap = new RouterOutletMap();
+            this.loadNewSegment(outletMap, curr, prev, outlet);
+            this.loadChildSegments(currNode, prevNode, outletMap);
+        }
+    }
+    loadNewSegment(outletMap, curr, prev, outlet) {
         let resolved = ReflectiveInjector.resolve([provide(RouterOutletMap, { useValue: outletMap }), provide(RouteSegment, { useValue: curr })]);
         let ref = outlet.load(routeSegmentComponentFactory(curr), resolved, outletMap);
         if (hasLifecycleHook("routerOnActivate", ref.instance)) {
-            ref.instance.routerOnActivate(curr, prev, currTree, prevTree);
+            ref.instance.routerOnActivate(curr, prev, this.currTree, this.prevTree);
         }
     }
-    if (isPresent(currTree.firstChild(curr))) {
-        let cc = currTree.firstChild(curr);
-        let pc = isBlank(prevTree) ? null : prevTree.firstChild(prev);
-        _loadSegments(currTree, cc, prevTree, pc, router, outletMap);
+    loadChildSegments(currNode, prevNode, outletMap) {
+        let prevChildren = isPresent(prevNode) ?
+            prevNode.children.reduce((m, c) => {
+                m[c.value.outlet] = c;
+                return m;
+            }, {}) :
+            {};
+        currNode.children.forEach(c => {
+            this.loadSegments(c, prevChildren[c.value.outlet], outletMap);
+            StringMapWrapper.delete(prevChildren, c.value.outlet);
+        });
+        StringMapWrapper.forEach(prevChildren, (v, k) => this.unloadOutlet(outletMap._outlets[k]));
+    }
+    getOutlet(outletMap, segment) {
+        let outlet = outletMap._outlets[segment.outlet];
+        if (isBlank(outlet)) {
+            if (segment.outlet == DEFAULT_OUTLET_NAME) {
+                throw new BaseException(`Cannot find default outlet`);
+            }
+            else {
+                throw new BaseException(`Cannot find the outlet ${segment.outlet}`);
+            }
+        }
+        return outlet;
+    }
+    unloadOutlet(outlet) {
+        StringMapWrapper.forEach(outlet.outletMap._outlets, (v, k) => { this.unloadOutlet(v); });
+        outlet.unload();
     }
 }
