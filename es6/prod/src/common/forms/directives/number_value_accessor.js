@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Directive, ElementRef, Renderer, forwardRef, Provider } from 'angular2/core';
 import { NG_VALUE_ACCESSOR } from './control_value_accessor';
 import { CONST_EXPR, NumberWrapper } from 'angular2/src/facade/lang';
-const NUMBER_VALUE_ACCESSOR = CONST_EXPR(new Provider(NG_VALUE_ACCESSOR, { useExisting: forwardRef(() => NumberValueAccessor), multi: true }));
+export const NUMBER_VALUE_ACCESSOR = CONST_EXPR(new Provider(NG_VALUE_ACCESSOR, { useExisting: forwardRef(() => NumberValueAccessor), multi: true }));
 /**
  * The accessor for writing a number value and listening to changes that is used by the
  * {@link NgModel}, {@link NgFormControl}, and {@link NgControlName} directives.

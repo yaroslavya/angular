@@ -40,7 +40,7 @@ export function bindRenderText(boundText, compileNode, view) {
     var currValExpr = createCurrValueExpr(bindingIndex);
     var valueField = createBindFieldExpr(bindingIndex);
     view.detectChangesRenderPropertiesMethod.resetDebugInfo(compileNode.nodeIndex, boundText);
-    bind(view, currValExpr, valueField, boundText.value, o.THIS_EXPR.prop('context'), [
+    bind(view, currValExpr, valueField, boundText.value, view.componentContext, [
         o.THIS_EXPR.prop('renderer')
             .callMethod('setText', [compileNode.renderNode, currValExpr])
             .toStmt()
@@ -89,7 +89,7 @@ function bindAndWriteToRenderer(boundProps, context, compileElement) {
     });
 }
 export function bindRenderInputs(boundProps, compileElement) {
-    bindAndWriteToRenderer(boundProps, o.THIS_EXPR.prop('context'), compileElement);
+    bindAndWriteToRenderer(boundProps, compileElement.view.componentContext, compileElement);
 }
 export function bindDirectiveHostProps(directiveAst, directiveInstance, compileElement) {
     bindAndWriteToRenderer(directiveAst.hostProperties, directiveInstance, compileElement);
@@ -133,7 +133,7 @@ export function bindDirectiveInputs(directiveAst, directiveInstance, compileElem
         if (view.genConfig.logBindingUpdate) {
             statements.push(logBindingUpdateStmt(compileElement.renderNode, input.directiveName, currValExpr));
         }
-        bind(view, currValExpr, fieldExpr, input.value, o.THIS_EXPR.prop('context'), statements, detectChangesInInputsMethod);
+        bind(view, currValExpr, fieldExpr, input.value, view.componentContext, statements, detectChangesInInputsMethod);
     });
     if (isOnPushComp) {
         detectChangesInInputsMethod.addStmt(new o.IfStmt(DetectChangesVars.changed, [

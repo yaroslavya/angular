@@ -306,13 +306,14 @@ export class CompileQueryMetadata {
  * Metadata regarding compilation of a template.
  */
 export class CompileTemplateMetadata {
-    constructor({ encapsulation, template, templateUrl, styles, styleUrls, ngContentSelectors } = {}) {
+    constructor({ encapsulation, template, templateUrl, styles, styleUrls, ngContentSelectors, baseUrl } = {}) {
         this.encapsulation = isPresent(encapsulation) ? encapsulation : ViewEncapsulation.Emulated;
         this.template = template;
         this.templateUrl = templateUrl;
         this.styles = isPresent(styles) ? styles : [];
         this.styleUrls = isPresent(styleUrls) ? styleUrls : [];
         this.ngContentSelectors = isPresent(ngContentSelectors) ? ngContentSelectors : [];
+        this.baseUrl = baseUrl;
     }
     static fromJson(data) {
         return new CompileTemplateMetadata({
@@ -323,7 +324,8 @@ export class CompileTemplateMetadata {
             templateUrl: data['templateUrl'],
             styles: data['styles'],
             styleUrls: data['styleUrls'],
-            ngContentSelectors: data['ngContentSelectors']
+            ngContentSelectors: data['ngContentSelectors'],
+            baseUrl: data['baseUrl']
         });
     }
     toJson() {
@@ -333,7 +335,8 @@ export class CompileTemplateMetadata {
             'templateUrl': this.templateUrl,
             'styles': this.styles,
             'styleUrls': this.styleUrls,
-            'ngContentSelectors': this.ngContentSelectors
+            'ngContentSelectors': this.ngContentSelectors,
+            'baseUrl': this.baseUrl
         };
     }
 }

@@ -55,8 +55,9 @@ export class ViewContainerRef_ {
     get parentInjector() { return this._element.parentInjector; }
     // TODO(rado): profile and decide whether bounds checks should be added
     // to the methods below.
-    createEmbeddedView(templateRef, index = -1) {
-        var viewRef = templateRef.createEmbeddedView();
+    // TODO(tbosch): use a generic C once ts2dart supports it.
+    createEmbeddedView(templateRef, context = null, index = -1) {
+        var viewRef = templateRef.createEmbeddedView(context);
         this.insert(viewRef, index);
         return viewRef;
     }

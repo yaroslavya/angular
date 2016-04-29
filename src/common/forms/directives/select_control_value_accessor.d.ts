@@ -1,5 +1,6 @@
-import { Renderer, ElementRef, OnDestroy } from 'angular2/core';
+import { Renderer, Provider, ElementRef, OnDestroy } from 'angular2/core';
 import { ControlValueAccessor } from './control_value_accessor';
+export declare const SELECT_VALUE_ACCESSOR: Provider;
 /**
  * The accessor for writing a value and listening to changes on a select element.
  *

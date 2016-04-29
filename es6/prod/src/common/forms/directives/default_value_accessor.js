@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Directive, ElementRef, Renderer, forwardRef, Provider } from 'angular2/core';
 import { NG_VALUE_ACCESSOR } from './control_value_accessor';
 import { isBlank, CONST_EXPR } from 'angular2/src/facade/lang';
-const DEFAULT_VALUE_ACCESSOR = CONST_EXPR(new Provider(NG_VALUE_ACCESSOR, { useExisting: forwardRef(() => DefaultValueAccessor), multi: true }));
+export const DEFAULT_VALUE_ACCESSOR = CONST_EXPR(new Provider(NG_VALUE_ACCESSOR, { useExisting: forwardRef(() => DefaultValueAccessor), multi: true }));
 /**
  * The default accessor for writing a value and listening to changes that is used by the
  * {@link NgModel}, {@link NgFormControl}, and {@link NgControlName} directives.

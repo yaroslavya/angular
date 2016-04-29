@@ -12,7 +12,8 @@ export class RenderDebugInfo {
     get injector() { return unimplemented(); }
     get component() { return unimplemented(); }
     get providerTokens() { return unimplemented(); }
-    get locals() { return unimplemented(); }
+    get references() { return unimplemented(); }
+    get context() { return unimplemented(); }
     get source() { return unimplemented(); }
 }
 export class Renderer {

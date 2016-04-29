@@ -12,9 +12,10 @@ export declare abstract class RenderDebugInfo {
     injector: Injector;
     component: any;
     providerTokens: any[];
-    locals: {
-        [key: string]: string;
+    references: {
+        [key: string]: any;
     };
+    context: any;
     source: string;
 }
 export declare abstract class Renderer {

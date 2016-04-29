@@ -23,15 +23,15 @@ export class DebugNode {
     get componentInstance() {
         return isPresent(this._debugInfo) ? this._debugInfo.component : null;
     }
-    get locals() {
-        return isPresent(this._debugInfo) ? this._debugInfo.locals : null;
+    get context() { return isPresent(this._debugInfo) ? this._debugInfo.context : null; }
+    get references() {
+        return isPresent(this._debugInfo) ? this._debugInfo.references : null;
     }
     get providerTokens() {
         return isPresent(this._debugInfo) ? this._debugInfo.providerTokens : null;
     }
     get source() { return isPresent(this._debugInfo) ? this._debugInfo.source : null; }
     inject(token) { return this.injector.get(token); }
-    getLocal(name) { return this.locals[name]; }
 }
 export class DebugElement extends DebugNode {
     constructor(nativeNode, parent, _debugInfo) {

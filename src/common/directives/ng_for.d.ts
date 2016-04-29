@@ -1,4 +1,14 @@
 import { DoCheck, ChangeDetectorRef, IterableDiffers, ViewContainerRef, TemplateRef, TrackByFn } from 'angular2/core';
+export declare class NgForRow {
+    $implicit: any;
+    index: number;
+    count: number;
+    constructor($implicit: any, index: number, count: number);
+    first: boolean;
+    last: boolean;
+    even: boolean;
+    odd: boolean;
+}
 /**
  * The `NgFor` directive instantiates a template once per item from an iterable. The context for
  * each instantiated template inherits from the outer context with the given loop variable set
@@ -56,9 +66,9 @@ export declare class NgFor implements DoCheck {
     private _iterableDiffers;
     private _cdr;
     private _differ;
-    constructor(_viewContainer: ViewContainerRef, _templateRef: TemplateRef, _iterableDiffers: IterableDiffers, _cdr: ChangeDetectorRef);
+    constructor(_viewContainer: ViewContainerRef, _templateRef: TemplateRef<NgForRow>, _iterableDiffers: IterableDiffers, _cdr: ChangeDetectorRef);
     ngForOf: any;
-    ngForTemplate: TemplateRef;
+    ngForTemplate: TemplateRef<NgForRow>;
     ngForTrackBy: TrackByFn;
     ngDoCheck(): void;
     private _applyChanges(changes);

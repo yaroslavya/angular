@@ -3940,7 +3940,14 @@ System.register("angular2/src/core/render/api", ["angular2/src/facade/exceptions
       enumerable: true,
       configurable: true
     });
-    Object.defineProperty(RenderDebugInfo.prototype, "locals", {
+    Object.defineProperty(RenderDebugInfo.prototype, "references", {
+      get: function() {
+        return exceptions_1.unimplemented();
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(RenderDebugInfo.prototype, "context", {
       get: function() {
         return exceptions_1.unimplemented();
       },
@@ -4197,7 +4204,7 @@ System.register("angular2/src/core/linker/dynamic_component_loader", ["angular2/
   return module.exports;
 });
 
-System.register("angular2/src/core/linker/template_ref", [], true, function(require, exports, module) {
+System.register("angular2/src/core/linker/template_ref", ["angular2/src/facade/lang"], true, function(require, exports, module) {
   var global = System.global,
       __define = global.define;
   global.define = undefined;
@@ -4211,6 +4218,8 @@ System.register("angular2/src/core/linker/template_ref", [], true, function(requ
     }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   };
+  var lang_1 = require("angular2/src/facade/lang");
+  var EMPTY_CONTEXT = lang_1.CONST_EXPR(new Object());
   var TemplateRef = (function() {
     function TemplateRef() {}
     Object.defineProperty(TemplateRef.prototype, "elementRef", {
@@ -4230,9 +4239,12 @@ System.register("angular2/src/core/linker/template_ref", [], true, function(requ
       this._appElement = _appElement;
       this._viewFactory = _viewFactory;
     }
-    TemplateRef_.prototype.createEmbeddedView = function() {
+    TemplateRef_.prototype.createEmbeddedView = function(context) {
       var view = this._viewFactory(this._appElement.parentView.viewUtils, this._appElement.parentInjector, this._appElement);
-      view.create(null, null);
+      if (lang_1.isBlank(context)) {
+        context = EMPTY_CONTEXT;
+      }
+      view.create(context, null, null);
       return view.ref;
     };
     Object.defineProperty(TemplateRef_.prototype, "elementRef", {
@@ -4294,6 +4306,13 @@ System.register("angular2/src/core/linker/view_ref", ["angular2/src/facade/excep
     function EmbeddedViewRef() {
       _super.apply(this, arguments);
     }
+    Object.defineProperty(EmbeddedViewRef.prototype, "context", {
+      get: function() {
+        return exceptions_1.unimplemented();
+      },
+      enumerable: true,
+      configurable: true
+    });
     Object.defineProperty(EmbeddedViewRef.prototype, "rootNodes", {
       get: function() {
         return exceptions_1.unimplemented();
@@ -4331,12 +4350,13 @@ System.register("angular2/src/core/linker/view_ref", ["angular2/src/facade/excep
       enumerable: true,
       configurable: true
     });
-    ViewRef_.prototype.setLocal = function(variableName, value) {
-      this._view.setLocal(variableName, value);
-    };
-    ViewRef_.prototype.hasLocal = function(variableName) {
-      return this._view.hasLocal(variableName);
-    };
+    Object.defineProperty(ViewRef_.prototype, "context", {
+      get: function() {
+        return this._view.context;
+      },
+      enumerable: true,
+      configurable: true
+    });
     Object.defineProperty(ViewRef_.prototype, "destroyed", {
       get: function() {
         return this._view.destroyed;
@@ -4423,9 +4443,16 @@ System.register("angular2/src/core/debug/debug_node", ["angular2/src/facade/lang
       enumerable: true,
       configurable: true
     });
-    Object.defineProperty(DebugNode.prototype, "locals", {
+    Object.defineProperty(DebugNode.prototype, "context", {
       get: function() {
-        return lang_1.isPresent(this._debugInfo) ? this._debugInfo.locals : null;
+        return lang_1.isPresent(this._debugInfo) ? this._debugInfo.context : null;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(DebugNode.prototype, "references", {
+      get: function() {
+        return lang_1.isPresent(this._debugInfo) ? this._debugInfo.references : null;
       },
       enumerable: true,
       configurable: true
@@ -4446,9 +4473,6 @@ System.register("angular2/src/core/debug/debug_node", ["angular2/src/facade/lang
     });
     DebugNode.prototype.inject = function(token) {
       return this.injector.get(token);
-    };
-    DebugNode.prototype.getLocal = function(name) {
-      return this.locals[name];
     };
     return DebugNode;
   }());
@@ -5452,6 +5476,43 @@ System.register("angular2/src/common/directives/ng_for", ["angular2/core", "angu
   var core_1 = require("angular2/core");
   var lang_1 = require("angular2/src/facade/lang");
   var exceptions_1 = require("angular2/src/facade/exceptions");
+  var NgForRow = (function() {
+    function NgForRow($implicit, index, count) {
+      this.$implicit = $implicit;
+      this.index = index;
+      this.count = count;
+    }
+    Object.defineProperty(NgForRow.prototype, "first", {
+      get: function() {
+        return this.index === 0;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(NgForRow.prototype, "last", {
+      get: function() {
+        return this.index === this.count - 1;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(NgForRow.prototype, "even", {
+      get: function() {
+        return this.index % 2 === 0;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(NgForRow.prototype, "odd", {
+      get: function() {
+        return !this.even;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    return NgForRow;
+  }());
+  exports.NgForRow = NgForRow;
   var NgFor = (function() {
     function NgFor(_viewContainer, _templateRef, _iterableDiffers, _cdr) {
       this._viewContainer = _viewContainer;
@@ -5516,19 +5577,16 @@ System.register("angular2/src/common/directives/ng_for", ["angular2/core", "angu
       for (var i = 0,
           ilen = this._viewContainer.length; i < ilen; i++) {
         var viewRef = this._viewContainer.get(i);
-        viewRef.setLocal('first', i === 0);
-        viewRef.setLocal('last', i === ilen - 1);
+        viewRef.context.index = i;
+        viewRef.context.count = ilen;
       }
       changes.forEachIdentityChange(function(record) {
         var viewRef = _this._viewContainer.get(record.currentIndex);
-        viewRef.setLocal('\$implicit', record.item);
+        viewRef.context.$implicit = record.item;
       });
     };
     NgFor.prototype._perViewChange = function(view, record) {
-      view.setLocal('\$implicit', record.item);
-      view.setLocal('index', record.currentIndex);
-      view.setLocal('even', (record.currentIndex % 2 == 0));
-      view.setLocal('odd', (record.currentIndex % 2 == 1));
+      view.context.$implicit = record.item;
     };
     NgFor.prototype._bulkRemove = function(tuples) {
       tuples.sort(function(a, b) {
@@ -5555,7 +5613,7 @@ System.register("angular2/src/common/directives/ng_for", ["angular2/core", "angu
         if (lang_1.isPresent(tuple.view)) {
           this._viewContainer.insert(tuple.view, tuple.record.currentIndex);
         } else {
-          tuple.view = this._viewContainer.createEmbeddedView(this._templateRef, tuple.record.currentIndex);
+          tuple.view = this._viewContainer.createEmbeddedView(this._templateRef, new NgForRow(null, null, null), tuple.record.currentIndex);
         }
       }
       return tuples;
@@ -6794,7 +6852,7 @@ System.register("angular2/src/common/forms/directives/default_value_accessor", [
   var core_1 = require("angular2/core");
   var control_value_accessor_1 = require("angular2/src/common/forms/directives/control_value_accessor");
   var lang_1 = require("angular2/src/facade/lang");
-  var DEFAULT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
+  exports.DEFAULT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
     useExisting: core_1.forwardRef(function() {
       return DefaultValueAccessor;
     }),
@@ -6823,7 +6881,7 @@ System.register("angular2/src/common/forms/directives/default_value_accessor", [
         '(input)': 'onChange($event.target.value)',
         '(blur)': 'onTouched()'
       },
-      bindings: [DEFAULT_VALUE_ACCESSOR]
+      bindings: [exports.DEFAULT_VALUE_ACCESSOR]
     }), __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef])], DefaultValueAccessor);
     return DefaultValueAccessor;
   }());
@@ -6856,7 +6914,7 @@ System.register("angular2/src/common/forms/directives/number_value_accessor", ["
   var core_1 = require("angular2/core");
   var control_value_accessor_1 = require("angular2/src/common/forms/directives/control_value_accessor");
   var lang_1 = require("angular2/src/facade/lang");
-  var NUMBER_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
+  exports.NUMBER_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
     useExisting: core_1.forwardRef(function() {
       return NumberValueAccessor;
     }),
@@ -6887,7 +6945,7 @@ System.register("angular2/src/common/forms/directives/number_value_accessor", ["
         '(input)': 'onChange($event.target.value)',
         '(blur)': 'onTouched()'
       },
-      bindings: [NUMBER_VALUE_ACCESSOR]
+      bindings: [exports.NUMBER_VALUE_ACCESSOR]
     }), __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef])], NumberValueAccessor);
     return NumberValueAccessor;
   }());
@@ -6920,7 +6978,7 @@ System.register("angular2/src/common/forms/directives/checkbox_value_accessor", 
   var core_1 = require("angular2/core");
   var control_value_accessor_1 = require("angular2/src/common/forms/directives/control_value_accessor");
   var lang_1 = require("angular2/src/facade/lang");
-  var CHECKBOX_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
+  exports.CHECKBOX_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
     useExisting: core_1.forwardRef(function() {
       return CheckboxControlValueAccessor;
     }),
@@ -6948,7 +7006,7 @@ System.register("angular2/src/common/forms/directives/checkbox_value_accessor", 
         '(change)': 'onChange($event.target.checked)',
         '(blur)': 'onTouched()'
       },
-      providers: [CHECKBOX_VALUE_ACCESSOR]
+      providers: [exports.CHECKBOX_VALUE_ACCESSOR]
     }), __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef])], CheckboxControlValueAccessor);
     return CheckboxControlValueAccessor;
   }());
@@ -6987,7 +7045,7 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
   var control_value_accessor_1 = require("angular2/src/common/forms/directives/control_value_accessor");
   var lang_1 = require("angular2/src/facade/lang");
   var collection_1 = require("angular2/src/facade/collection");
-  var SELECT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
+  exports.SELECT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
     useExisting: core_1.forwardRef(function() {
       return SelectControlValueAccessor;
     }),
@@ -7048,7 +7106,7 @@ System.register("angular2/src/common/forms/directives/select_control_value_acces
         '(change)': 'onChange($event.target.value)',
         '(blur)': 'onTouched()'
       },
-      providers: [SELECT_VALUE_ACCESSOR]
+      providers: [exports.SELECT_VALUE_ACCESSOR]
     }), __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef])], SelectControlValueAccessor);
     return SelectControlValueAccessor;
   }());
@@ -7126,7 +7184,7 @@ System.register("angular2/src/common/forms/directives/radio_control_value_access
   var ng_control_1 = require("angular2/src/common/forms/directives/ng_control");
   var lang_1 = require("angular2/src/facade/lang");
   var collection_1 = require("angular2/src/facade/collection");
-  var RADIO_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
+  exports.RADIO_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, {
     useExisting: core_1.forwardRef(function() {
       return RadioControlValueAccessor;
     }),
@@ -7210,7 +7268,7 @@ System.register("angular2/src/common/forms/directives/radio_control_value_access
         '(change)': 'onChange()',
         '(blur)': 'onTouched()'
       },
-      providers: [RADIO_VALUE_ACCESSOR]
+      providers: [exports.RADIO_VALUE_ACCESSOR]
     }), __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef, RadioControlRegistry, core_1.Injector])], RadioControlValueAccessor);
     return RadioControlValueAccessor;
   }());
@@ -7291,7 +7349,7 @@ System.register("angular2/src/common/forms/directives/ng_form_control", ["angula
   var validators_1 = require("angular2/src/common/forms/validators");
   var control_value_accessor_1 = require("angular2/src/common/forms/directives/control_value_accessor");
   var shared_1 = require("angular2/src/common/forms/directives/shared");
-  var formControlBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, {useExisting: core_1.forwardRef(function() {
+  exports.formControlBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, {useExisting: core_1.forwardRef(function() {
       return NgFormControl;
     })}));
   var NgFormControl = (function(_super) {
@@ -7350,7 +7408,7 @@ System.register("angular2/src/common/forms/directives/ng_form_control", ["angula
     };
     NgFormControl = __decorate([core_1.Directive({
       selector: '[ngFormControl]',
-      bindings: [formControlBinding],
+      bindings: [exports.formControlBinding],
       inputs: ['form: ngFormControl', 'model: ngModel'],
       outputs: ['update: ngModelChange'],
       exportAs: 'ngForm'
@@ -7405,7 +7463,7 @@ System.register("angular2/src/common/forms/directives/ng_model", ["angular2/src/
   var model_1 = require("angular2/src/common/forms/model");
   var validators_1 = require("angular2/src/common/forms/validators");
   var shared_1 = require("angular2/src/common/forms/directives/shared");
-  var formControlBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, {useExisting: core_1.forwardRef(function() {
+  exports.formControlBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, {useExisting: core_1.forwardRef(function() {
       return NgModel;
     })}));
   var NgModel = (function(_super) {
@@ -7464,7 +7522,7 @@ System.register("angular2/src/common/forms/directives/ng_model", ["angular2/src/
     };
     NgModel = __decorate([core_1.Directive({
       selector: '[ngModel]:not([ngControl]):not([ngFormControl])',
-      bindings: [formControlBinding],
+      bindings: [exports.formControlBinding],
       inputs: ['model: ngModel'],
       outputs: ['update: ngModelChange'],
       exportAs: 'ngForm'
@@ -7516,7 +7574,7 @@ System.register("angular2/src/common/forms/directives/ng_control_group", ["angul
   var control_container_1 = require("angular2/src/common/forms/directives/control_container");
   var shared_1 = require("angular2/src/common/forms/directives/shared");
   var validators_1 = require("angular2/src/common/forms/validators");
-  var controlGroupProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, {useExisting: core_1.forwardRef(function() {
+  exports.controlGroupProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, {useExisting: core_1.forwardRef(function() {
       return NgControlGroup;
     })}));
   var NgControlGroup = (function(_super) {
@@ -7570,7 +7628,7 @@ System.register("angular2/src/common/forms/directives/ng_control_group", ["angul
     });
     NgControlGroup = __decorate([core_1.Directive({
       selector: '[ngControlGroup]',
-      providers: [controlGroupProvider],
+      providers: [exports.controlGroupProvider],
       inputs: ['name: ngControlGroup'],
       exportAs: 'ngForm'
     }), __param(0, core_1.Host()), __param(0, core_1.SkipSelf()), __param(1, core_1.Optional()), __param(1, core_1.Self()), __param(1, core_1.Inject(validators_1.NG_VALIDATORS)), __param(2, core_1.Optional()), __param(2, core_1.Self()), __param(2, core_1.Inject(validators_1.NG_ASYNC_VALIDATORS)), __metadata('design:paramtypes', [control_container_1.ControlContainer, Array, Array])], NgControlGroup);
@@ -7624,7 +7682,7 @@ System.register("angular2/src/common/forms/directives/ng_form_model", ["angular2
   var control_container_1 = require("angular2/src/common/forms/directives/control_container");
   var shared_1 = require("angular2/src/common/forms/directives/shared");
   var validators_1 = require("angular2/src/common/forms/validators");
-  var formDirectiveProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, {useExisting: core_1.forwardRef(function() {
+  exports.formDirectiveProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, {useExisting: core_1.forwardRef(function() {
       return NgFormModel;
     })}));
   var NgFormModel = (function(_super) {
@@ -7715,7 +7773,7 @@ System.register("angular2/src/common/forms/directives/ng_form_model", ["angular2
     };
     NgFormModel = __decorate([core_1.Directive({
       selector: '[ngFormModel]',
-      bindings: [formDirectiveProvider],
+      bindings: [exports.formDirectiveProvider],
       inputs: ['form: ngFormModel'],
       host: {'(submit)': 'onSubmit()'},
       outputs: ['ngSubmit'],
@@ -7771,7 +7829,7 @@ System.register("angular2/src/common/forms/directives/ng_form", ["angular2/src/f
   var model_1 = require("angular2/src/common/forms/model");
   var shared_1 = require("angular2/src/common/forms/directives/shared");
   var validators_1 = require("angular2/src/common/forms/validators");
-  var formDirectiveProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, {useExisting: core_1.forwardRef(function() {
+  exports.formDirectiveProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, {useExisting: core_1.forwardRef(function() {
       return NgForm;
     })}));
   var NgForm = (function(_super) {
@@ -7872,7 +7930,7 @@ System.register("angular2/src/common/forms/directives/ng_form", ["angular2/src/f
     };
     NgForm = __decorate([core_1.Directive({
       selector: 'form:not([ngNoForm]):not([ngFormModel]),ngForm,[ngForm]',
-      bindings: [formDirectiveProvider],
+      bindings: [exports.formDirectiveProvider],
       host: {'(submit)': 'onSubmit()'},
       outputs: ['ngSubmit'],
       exportAs: 'ngForm'
@@ -8007,7 +8065,7 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
   var lang_1 = require("angular2/src/facade/lang");
   var validators_1 = require("angular2/src/common/forms/validators");
   var REQUIRED = validators_1.Validators.required;
-  var REQUIRED_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, {
+  exports.REQUIRED_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, {
     useValue: REQUIRED,
     multi: true
   }));
@@ -8015,12 +8073,12 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
     function RequiredValidator() {}
     RequiredValidator = __decorate([core_1.Directive({
       selector: '[required][ngControl],[required][ngFormControl],[required][ngModel]',
-      providers: [REQUIRED_VALIDATOR]
+      providers: [exports.REQUIRED_VALIDATOR]
     }), __metadata('design:paramtypes', [])], RequiredValidator);
     return RequiredValidator;
   }());
   exports.RequiredValidator = RequiredValidator;
-  var MIN_LENGTH_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, {
+  exports.MIN_LENGTH_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, {
     useExisting: core_1.forwardRef(function() {
       return MinLengthValidator;
     }),
@@ -8035,12 +8093,12 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
     };
     MinLengthValidator = __decorate([core_1.Directive({
       selector: '[minlength][ngControl],[minlength][ngFormControl],[minlength][ngModel]',
-      providers: [MIN_LENGTH_VALIDATOR]
+      providers: [exports.MIN_LENGTH_VALIDATOR]
     }), __param(0, core_1.Attribute("minlength")), __metadata('design:paramtypes', [String])], MinLengthValidator);
     return MinLengthValidator;
   }());
   exports.MinLengthValidator = MinLengthValidator;
-  var MAX_LENGTH_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, {
+  exports.MAX_LENGTH_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, {
     useExisting: core_1.forwardRef(function() {
       return MaxLengthValidator;
     }),
@@ -8055,12 +8113,12 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
     };
     MaxLengthValidator = __decorate([core_1.Directive({
       selector: '[maxlength][ngControl],[maxlength][ngFormControl],[maxlength][ngModel]',
-      providers: [MAX_LENGTH_VALIDATOR]
+      providers: [exports.MAX_LENGTH_VALIDATOR]
     }), __param(0, core_1.Attribute("maxlength")), __metadata('design:paramtypes', [String])], MaxLengthValidator);
     return MaxLengthValidator;
   }());
   exports.MaxLengthValidator = MaxLengthValidator;
-  var PATTERN_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, {
+  exports.PATTERN_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, {
     useExisting: core_1.forwardRef(function() {
       return PatternValidator;
     }),
@@ -8075,7 +8133,7 @@ System.register("angular2/src/common/forms/directives/validators", ["angular2/co
     };
     PatternValidator = __decorate([core_1.Directive({
       selector: '[pattern][ngControl],[pattern][ngFormControl],[pattern][ngModel]',
-      providers: [PATTERN_VALIDATOR]
+      providers: [exports.PATTERN_VALIDATOR]
     }), __param(0, core_1.Attribute("pattern")), __metadata('design:paramtypes', [String])], PatternValidator);
     return PatternValidator;
   }());
@@ -17352,25 +17410,23 @@ System.register("angular2/src/core/linker/debug_context", ["angular2/src/facade/
       enumerable: true,
       configurable: true
     });
-    Object.defineProperty(DebugContext.prototype, "locals", {
+    Object.defineProperty(DebugContext.prototype, "references", {
       get: function() {
         var _this = this;
         var varValues = {};
-        collection_1.ListWrapper.forEachWithIndex(this._view.staticNodeDebugInfos, function(staticNodeInfo, nodeIndex) {
+        var staticNodeInfo = this._staticNodeInfo;
+        if (lang_1.isPresent(staticNodeInfo)) {
           var refs = staticNodeInfo.refTokens;
           collection_1.StringMapWrapper.forEach(refs, function(refToken, refName) {
             var varValue;
             if (lang_1.isBlank(refToken)) {
-              varValue = lang_1.isPresent(_this._view.allNodes) ? _this._view.allNodes[nodeIndex] : null;
+              varValue = lang_1.isPresent(_this._view.allNodes) ? _this._view.allNodes[_this._nodeIndex] : null;
             } else {
-              varValue = _this._view.injectorGet(refToken, nodeIndex, null);
+              varValue = _this._view.injectorGet(refToken, _this._nodeIndex, null);
             }
             varValues[refName] = varValue;
           });
-        });
-        collection_1.StringMapWrapper.forEach(this._view.locals, function(localValue, localName) {
-          varValues[localName] = localValue;
-        });
+        }
         return varValues;
       },
       enumerable: true,
@@ -19936,7 +19992,7 @@ System.register("angular2/src/compiler/view_compiler/view_builder", ["angular2/s
             return util_1.createFlatArray(nodes);
           }));
         }
-        this.view.createMethod.addStmt(compViewExpr.callMethod('create', [codeGenContentNodes, o.NULL_EXPR]).toStmt());
+        this.view.createMethod.addStmt(compViewExpr.callMethod('create', [compileElement.getComponent(), codeGenContentNodes, o.NULL_EXPR]).toStmt());
       }
       return null;
     };
@@ -20057,11 +20113,8 @@ System.register("angular2/src/compiler/view_compiler/view_builder", ["angular2/s
     return o.importExpr(identifiers_1.Identifiers.StaticNodeDebugInfo).instantiate([o.literalArr(providerTokens, new o.ArrayType(o.DYNAMIC_TYPE, [o.TypeModifier.Const])), componentToken, o.literalMap(varTokenEntries, new o.MapType(o.DYNAMIC_TYPE, [o.TypeModifier.Const]))], o.importType(identifiers_1.Identifiers.StaticNodeDebugInfo, null, [o.TypeModifier.Const]));
   }
   function createViewClass(view, renderCompTypeVar, nodeDebugInfosVar) {
-    var emptyTemplateVariableBindings = view.templateVariableBindings.map(function(entry) {
-      return [entry[0], o.NULL_EXPR];
-    });
     var viewConstructorArgs = [new o.FnParam(constants_1.ViewConstructorVars.viewUtils.name, o.importType(identifiers_1.Identifiers.ViewUtils)), new o.FnParam(constants_1.ViewConstructorVars.parentInjector.name, o.importType(identifiers_1.Identifiers.Injector)), new o.FnParam(constants_1.ViewConstructorVars.declarationEl.name, o.importType(identifiers_1.Identifiers.AppElement))];
-    var viewConstructor = new o.ClassMethod(null, viewConstructorArgs, [o.SUPER_EXPR.callFn([o.variable(view.className), renderCompTypeVar, constants_1.ViewTypeEnum.fromValue(view.viewType), o.literalMap(emptyTemplateVariableBindings), constants_1.ViewConstructorVars.viewUtils, constants_1.ViewConstructorVars.parentInjector, constants_1.ViewConstructorVars.declarationEl, constants_1.ChangeDetectionStrategyEnum.fromValue(getChangeDetectionMode(view)), nodeDebugInfosVar]).toStmt()]);
+    var viewConstructor = new o.ClassMethod(null, viewConstructorArgs, [o.SUPER_EXPR.callFn([o.variable(view.className), renderCompTypeVar, constants_1.ViewTypeEnum.fromValue(view.viewType), constants_1.ViewConstructorVars.viewUtils, constants_1.ViewConstructorVars.parentInjector, constants_1.ViewConstructorVars.declarationEl, constants_1.ChangeDetectionStrategyEnum.fromValue(getChangeDetectionMode(view)), nodeDebugInfosVar]).toStmt()]);
     var viewMethods = [new o.ClassMethod('createInternal', [new o.FnParam(rootSelectorVar.name, o.STRING_TYPE)], generateCreateMethod(view), o.importType(identifiers_1.Identifiers.AppElement)), new o.ClassMethod('injectorGetInternal', [new o.FnParam(constants_1.InjectMethodVars.token.name, o.DYNAMIC_TYPE), new o.FnParam(constants_1.InjectMethodVars.requestNodeIndex.name, o.NUMBER_TYPE), new o.FnParam(constants_1.InjectMethodVars.notFoundResult.name, o.DYNAMIC_TYPE)], addReturnValuefNotEmpty(view.injectorGetMethod.finish(), constants_1.InjectMethodVars.notFoundResult), o.DYNAMIC_TYPE), new o.ClassMethod('detectChangesInternal', [new o.FnParam(constants_1.DetectChangesVars.throwOnChange.name, o.BOOL_TYPE)], generateDetectChangesMethod(view)), new o.ClassMethod('dirtyParentQueriesInternal', [], view.dirtyParentQueriesMethod.finish()), new o.ClassMethod('destroyInternal', [], view.destroyMethod.finish())].concat(view.eventHandlerMethods);
     var viewClass = new o.ClassStmt(view.className, o.importExpr(identifiers_1.Identifiers.AppView, [getContextType(view)]), view.fields, view.getters, viewConstructor, viewMethods.filter(function(method) {
       return method.body.length > 0;
@@ -20139,8 +20192,10 @@ System.register("angular2/src/compiler/view_compiler/view_builder", ["angular2/s
     }
   }
   function getContextType(view) {
-    var typeMeta = view.component.type;
-    return typeMeta.isHost ? o.DYNAMIC_TYPE : o.importType(typeMeta);
+    if (view.viewType === view_type_1.ViewType.COMPONENT) {
+      return o.importType(view.component.type);
+    }
+    return o.DYNAMIC_TYPE;
   }
   function getChangeDetectionMode(view) {
     var mode;
@@ -20455,7 +20510,7 @@ System.register("angular2/src/compiler/view_compiler/event_binder", ["angular2/s
         this._hasComponentHostListener = true;
       }
       this._method.resetDebugInfo(this.compileElement.nodeIndex, hostEvent);
-      var context = lang_1.isPresent(directiveInstance) ? directiveInstance : o.THIS_EXPR.prop('context');
+      var context = lang_1.isPresent(directiveInstance) ? directiveInstance : this.compileElement.view.componentContext;
       var actionStmts = expression_converter_1.convertCdStatementToIr(this.compileElement.view, context, hostEvent.handler);
       var lastIndex = actionStmts.length - 1;
       if (lastIndex >= 0) {
@@ -20480,7 +20535,7 @@ System.register("angular2/src/compiler/view_compiler/event_binder", ["angular2/s
     };
     CompileEventListener.prototype.listenToRenderer = function() {
       var listenExpr;
-      var eventListener = o.THIS_EXPR.callMethod('eventHandler', [o.fn([this._eventParam], [new o.ReturnStatement(o.THIS_EXPR.callMethod(this._methodName, [constants_1.EventHandlerVars.event]))])]);
+      var eventListener = o.THIS_EXPR.callMethod('eventHandler', [o.fn([this._eventParam], [new o.ReturnStatement(o.THIS_EXPR.callMethod(this._methodName, [constants_1.EventHandlerVars.event]))], o.BOOL_TYPE)]);
       if (lang_1.isPresent(this.eventTarget)) {
         listenExpr = constants_1.ViewProperties.renderer.callMethod('listenGlobal', [o.literal(this.eventTarget), o.literal(this.eventName), eventListener]);
       } else {
@@ -20688,9 +20743,9 @@ System.register("angular2/src/compiler/directive_normalizer", ["angular2/src/com
     DirectiveNormalizer.prototype.normalizeTemplate = function(directiveType, template) {
       var _this = this;
       if (lang_1.isPresent(template.template)) {
-        return async_1.PromiseWrapper.resolve(this.normalizeLoadedTemplate(directiveType, template, template.template, directiveType.moduleUrl));
+        return async_1.PromiseWrapper.resolve(this.normalizeLoadedTemplate(directiveType, template, template.template, template.baseUrl));
       } else if (lang_1.isPresent(template.templateUrl)) {
-        var sourceAbsUrl = this._urlResolver.resolve(directiveType.moduleUrl, template.templateUrl);
+        var sourceAbsUrl = this._urlResolver.resolve(template.baseUrl, template.templateUrl);
         return this._xhr.get(sourceAbsUrl).then(function(templateContent) {
           return _this.normalizeLoadedTemplate(directiveType, template, templateContent, sourceAbsUrl);
         });
@@ -20711,7 +20766,7 @@ System.register("angular2/src/compiler/directive_normalizer", ["angular2/src/com
       var allStyleAbsUrls = visitor.styleUrls.filter(style_url_resolver_1.isStyleUrlResolvable).map(function(url) {
         return _this._urlResolver.resolve(templateAbsUrl, url);
       }).concat(templateMeta.styleUrls.filter(style_url_resolver_1.isStyleUrlResolvable).map(function(url) {
-        return _this._urlResolver.resolve(directiveType.moduleUrl, url);
+        return _this._urlResolver.resolve(templateMeta.baseUrl, url);
       }));
       var allResolvedStyles = allStyles.map(function(style) {
         var styleWithImports = style_url_resolver_1.extractStyleUrls(_this._urlResolver, templateAbsUrl, style);
@@ -22218,7 +22273,7 @@ System.register("angular2/src/compiler/output/interpretive_view", ["angular2/src
   var _InterpretiveAppView = (function(_super) {
     __extends(_InterpretiveAppView, _super);
     function _InterpretiveAppView(args, props, getters, methods) {
-      _super.call(this, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
+      _super.call(this, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
       this.props = props;
       this.getters = getters;
       this.methods = methods;
@@ -27573,13 +27628,15 @@ System.register("angular2/src/compiler/compile_metadata", ["angular2/src/facade/
           templateUrl = _b.templateUrl,
           styles = _b.styles,
           styleUrls = _b.styleUrls,
-          ngContentSelectors = _b.ngContentSelectors;
+          ngContentSelectors = _b.ngContentSelectors,
+          baseUrl = _b.baseUrl;
       this.encapsulation = lang_1.isPresent(encapsulation) ? encapsulation : view_1.ViewEncapsulation.Emulated;
       this.template = template;
       this.templateUrl = templateUrl;
       this.styles = lang_1.isPresent(styles) ? styles : [];
       this.styleUrls = lang_1.isPresent(styleUrls) ? styleUrls : [];
       this.ngContentSelectors = lang_1.isPresent(ngContentSelectors) ? ngContentSelectors : [];
+      this.baseUrl = baseUrl;
     }
     CompileTemplateMetadata.fromJson = function(data) {
       return new CompileTemplateMetadata({
@@ -27588,7 +27645,8 @@ System.register("angular2/src/compiler/compile_metadata", ["angular2/src/facade/
         templateUrl: data['templateUrl'],
         styles: data['styles'],
         styleUrls: data['styleUrls'],
-        ngContentSelectors: data['ngContentSelectors']
+        ngContentSelectors: data['ngContentSelectors'],
+        baseUrl: data['baseUrl']
       });
     };
     CompileTemplateMetadata.prototype.toJson = function() {
@@ -27598,7 +27656,8 @@ System.register("angular2/src/compiler/compile_metadata", ["angular2/src/facade/
         'templateUrl': this.templateUrl,
         'styles': this.styles,
         'styleUrls': this.styleUrls,
-        'ngContentSelectors': this.ngContentSelectors
+        'ngContentSelectors': this.ngContentSelectors,
+        'baseUrl': this.baseUrl
       };
     };
     return CompileTemplateMetadata;
@@ -27880,14 +27939,12 @@ System.register("angular2/src/core/linker/view", ["angular2/src/facade/collectio
   var exceptions_1 = require("angular2/src/core/linker/exceptions");
   var debug_context_1 = require("angular2/src/core/linker/debug_context");
   var element_injector_1 = require("angular2/src/core/linker/element_injector");
-  var EMPTY_CONTEXT = lang_1.CONST_EXPR(new Object());
   var _scope_check = profile_1.wtfCreateScope("AppView#check(ascii id)");
   var AppView = (function() {
-    function AppView(clazz, componentType, type, locals, viewUtils, parentInjector, declarationAppElement, cdMode, staticNodeDebugInfos) {
+    function AppView(clazz, componentType, type, viewUtils, parentInjector, declarationAppElement, cdMode, staticNodeDebugInfos) {
       this.clazz = clazz;
       this.componentType = componentType;
       this.type = type;
-      this.locals = locals;
       this.viewUtils = viewUtils;
       this.parentInjector = parentInjector;
       this.declarationAppElement = declarationAppElement;
@@ -27897,7 +27954,6 @@ System.register("angular2/src/core/linker/view", ["angular2/src/facade/collectio
       this.viewChildren = [];
       this.viewContainerElement = null;
       this.cdState = change_detection_1.ChangeDetectorState.NeverChecked;
-      this.context = null;
       this.destroyed = false;
       this._currentDebugContext = null;
       this.ref = new view_ref_1.ViewRef_(this);
@@ -27907,25 +27963,21 @@ System.register("angular2/src/core/linker/view", ["angular2/src/facade/collectio
         this.renderer = declarationAppElement.parentView.renderer;
       }
     }
-    AppView.prototype.create = function(givenProjectableNodes, rootSelectorOrNode) {
-      var context;
+    AppView.prototype.create = function(context, givenProjectableNodes, rootSelectorOrNode) {
+      this.context = context;
       var projectableNodes;
       switch (this.type) {
         case view_type_1.ViewType.COMPONENT:
-          context = this.declarationAppElement.component;
           projectableNodes = view_utils_1.ensureSlotCount(givenProjectableNodes, this.componentType.slotCount);
           break;
         case view_type_1.ViewType.EMBEDDED:
-          context = this.declarationAppElement.parentView.context;
           projectableNodes = this.declarationAppElement.parentView.projectableNodes;
           break;
         case view_type_1.ViewType.HOST:
-          context = EMPTY_CONTEXT;
           projectableNodes = givenProjectableNodes;
           break;
       }
       this._hasExternalHostElement = lang_1.isPresent(rootSelectorOrNode);
-      this.context = context;
       this.projectableNodes = projectableNodes;
       if (this.debugMode) {
         this._resetDebug();
@@ -28073,12 +28125,6 @@ System.register("angular2/src/core/linker/view", ["angular2/src/facade/collectio
       enumerable: true,
       configurable: true
     });
-    AppView.prototype.hasLocal = function(contextName) {
-      return collection_1.StringMapWrapper.contains(this.locals, contextName);
-    };
-    AppView.prototype.setLocal = function(contextName, value) {
-      this.locals[contextName] = value;
-    };
     AppView.prototype.dirtyParentQueriesInternal = function() {};
     AppView.prototype.addRenderContentChild = function(view) {
       this.contentChildren.push(view);
@@ -28819,6 +28865,7 @@ System.register("angular2/src/compiler/view_compiler/compile_view", ["angular2/s
       } else {
         this.componentView = this.declarationElement.view.componentView;
       }
+      this.componentContext = util_1.getPropertyInView(o.THIS_EXPR.prop('context'), this, this.componentView);
       var viewQueries = new compile_metadata_1.CompileTokenMap();
       if (this.viewType === view_type_1.ViewType.COMPONENT) {
         var directiveInstance = o.THIS_EXPR.prop('context');
@@ -28839,7 +28886,7 @@ System.register("angular2/src/compiler/view_compiler/compile_view", ["angular2/s
       }
       this.viewQueries = viewQueries;
       templateVariableBindings.forEach(function(entry) {
-        _this.locals.set(entry[1], o.THIS_EXPR.prop('locals').key(o.literal(entry[0])));
+        _this.locals.set(entry[1], o.THIS_EXPR.prop('context').prop(entry[0]));
       });
       if (!this.declarationElement.isNull()) {
         this.declarationElement.setEmbeddedView(this);
@@ -28971,7 +29018,7 @@ System.register("angular2/src/compiler/view_compiler/property_binder", ["angular
     var currValExpr = createCurrValueExpr(bindingIndex);
     var valueField = createBindFieldExpr(bindingIndex);
     view.detectChangesRenderPropertiesMethod.resetDebugInfo(compileNode.nodeIndex, boundText);
-    bind(view, currValExpr, valueField, boundText.value, o.THIS_EXPR.prop('context'), [o.THIS_EXPR.prop('renderer').callMethod('setText', [compileNode.renderNode, currValExpr]).toStmt()], view.detectChangesRenderPropertiesMethod);
+    bind(view, currValExpr, valueField, boundText.value, view.componentContext, [o.THIS_EXPR.prop('renderer').callMethod('setText', [compileNode.renderNode, currValExpr]).toStmt()], view.detectChangesRenderPropertiesMethod);
   }
   exports.bindRenderText = bindRenderText;
   function bindAndWriteToRenderer(boundProps, context, compileElement) {
@@ -29014,7 +29061,7 @@ System.register("angular2/src/compiler/view_compiler/property_binder", ["angular
     });
   }
   function bindRenderInputs(boundProps, compileElement) {
-    bindAndWriteToRenderer(boundProps, o.THIS_EXPR.prop('context'), compileElement);
+    bindAndWriteToRenderer(boundProps, compileElement.view.componentContext, compileElement);
   }
   exports.bindRenderInputs = bindRenderInputs;
   function bindDirectiveHostProps(directiveAst, directiveInstance, compileElement) {
@@ -29054,7 +29101,7 @@ System.register("angular2/src/compiler/view_compiler/property_binder", ["angular
       if (view.genConfig.logBindingUpdate) {
         statements.push(logBindingUpdateStmt(compileElement.renderNode, input.directiveName, currValExpr));
       }
-      bind(view, currValExpr, fieldExpr, input.value, o.THIS_EXPR.prop('context'), statements, detectChangesInInputsMethod);
+      bind(view, currValExpr, fieldExpr, input.value, view.componentContext, statements, detectChangesInInputsMethod);
     });
     if (isOnPushComp) {
       detectChangesInInputsMethod.addStmt(new o.IfStmt(constants_1.DetectChangesVars.changed, [compileElement.appElement.prop('componentView').callMethod('markAsCheckOnce', []).toStmt()]));
@@ -29148,14 +29195,12 @@ System.register("angular2/src/compiler/metadata_resolver", ["angular2/src/core/d
       var meta = this._directiveCache.get(directiveType);
       if (lang_1.isBlank(meta)) {
         var dirMeta = this._directiveResolver.resolve(directiveType);
-        var moduleUrl = staticTypeModuleUrl(directiveType);
         var templateMeta = null;
         var changeDetectionStrategy = null;
         var viewProviders = [];
         if (dirMeta instanceof md.ComponentMetadata) {
           assertions_1.assertArrayOfStrings('styles', dirMeta.styles);
           var cmpMeta = dirMeta;
-          moduleUrl = calcModuleUrl(this._reflector, directiveType, cmpMeta);
           var viewMeta = this._viewResolver.resolve(directiveType);
           assertions_1.assertArrayOfStrings('styles', viewMeta.styles);
           templateMeta = new cpl.CompileTemplateMetadata({
@@ -29163,7 +29208,8 @@ System.register("angular2/src/compiler/metadata_resolver", ["angular2/src/core/d
             template: viewMeta.template,
             templateUrl: viewMeta.templateUrl,
             styles: viewMeta.styles,
-            styleUrls: viewMeta.styleUrls
+            styleUrls: viewMeta.styleUrls,
+            baseUrl: calcTemplateBaseUrl(this._reflector, directiveType, cmpMeta)
           });
           changeDetectionStrategy = cmpMeta.changeDetection;
           if (lang_1.isPresent(dirMeta.viewProviders)) {
@@ -29184,7 +29230,7 @@ System.register("angular2/src/compiler/metadata_resolver", ["angular2/src/core/d
           selector: dirMeta.selector,
           exportAs: dirMeta.exportAs,
           isComponent: lang_1.isPresent(templateMeta),
-          type: this.getTypeMetadata(directiveType, moduleUrl),
+          type: this.getTypeMetadata(directiveType, staticTypeModuleUrl(directiveType)),
           template: templateMeta,
           changeDetection: changeDetectionStrategy,
           inputs: dirMeta.inputs,
@@ -29446,14 +29492,16 @@ System.register("angular2/src/compiler/metadata_resolver", ["angular2/src/core/d
   function staticTypeModuleUrl(value) {
     return isStaticType(value) ? value['moduleId'] : null;
   }
-  function calcModuleUrl(reflector, type, cmpMetadata) {
-    var moduleId = cmpMetadata.moduleId;
-    if (lang_1.isPresent(moduleId)) {
+  function calcTemplateBaseUrl(reflector, type, cmpMetadata) {
+    if (isStaticType(type)) {
+      return type['filePath'];
+    }
+    if (lang_1.isPresent(cmpMetadata.moduleId)) {
+      var moduleId = cmpMetadata.moduleId;
       var scheme = url_resolver_1.getUrlScheme(moduleId);
       return lang_1.isPresent(scheme) && scheme.length > 0 ? moduleId : "package:" + moduleId + util_1.MODULE_SUFFIX;
-    } else {
-      return reflector.importUri(type);
     }
+    return reflector.importUri(type);
   }
   global.define = __define;
   return module.exports;
@@ -30826,11 +30874,14 @@ System.register("angular2/src/core/linker/view_container_ref", ["angular2/src/fa
       enumerable: true,
       configurable: true
     });
-    ViewContainerRef_.prototype.createEmbeddedView = function(templateRef, index) {
+    ViewContainerRef_.prototype.createEmbeddedView = function(templateRef, context, index) {
+      if (context === void 0) {
+        context = null;
+      }
       if (index === void 0) {
         index = -1;
       }
-      var viewRef = templateRef.createEmbeddedView();
+      var viewRef = templateRef.createEmbeddedView(context);
       this.insert(viewRef, index);
       return viewRef;
     };
@@ -30940,7 +30991,7 @@ System.register("angular2/src/common/forms/directives/ng_control_name", ["angula
   var control_value_accessor_1 = require("angular2/src/common/forms/directives/control_value_accessor");
   var shared_1 = require("angular2/src/common/forms/directives/shared");
   var validators_1 = require("angular2/src/common/forms/validators");
-  var controlNameBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, {useExisting: core_1.forwardRef(function() {
+  exports.controlNameBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, {useExisting: core_1.forwardRef(function() {
       return NgControlName;
     })}));
   var NgControlName = (function(_super) {
@@ -31008,7 +31059,7 @@ System.register("angular2/src/common/forms/directives/ng_control_name", ["angula
     });
     NgControlName = __decorate([core_1.Directive({
       selector: '[ngControl]',
-      bindings: [controlNameBinding],
+      bindings: [exports.controlNameBinding],
       inputs: ['name: ngControl', 'model: ngModel'],
       outputs: ['update: ngModelChange'],
       exportAs: 'ngForm'
@@ -40423,6 +40474,7 @@ System.register("angular2/src/core/linker/component_factory", ["angular2/src/fac
     return ComponentRef_;
   }(ComponentRef));
   exports.ComponentRef_ = ComponentRef_;
+  var EMPTY_CONTEXT = lang_1.CONST_EXPR(new Object());
   var ComponentFactory = (function() {
     function ComponentFactory(selector, _viewFactory, _componentType) {
       this.selector = selector;
@@ -40448,7 +40500,7 @@ System.register("angular2/src/core/linker/component_factory", ["angular2/src/fac
         projectableNodes = [];
       }
       var hostView = this._viewFactory(vu, injector, null);
-      var hostElement = hostView.create(projectableNodes, rootSelectorOrNode);
+      var hostElement = hostView.create(EMPTY_CONTEXT, projectableNodes, rootSelectorOrNode);
       return new ComponentRef_(hostElement, this._componentType);
     };
     ComponentFactory = __decorate([lang_1.CONST(), __metadata('design:paramtypes', [String, Function, lang_1.Type])], ComponentFactory);

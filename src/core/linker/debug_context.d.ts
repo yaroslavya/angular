@@ -25,7 +25,7 @@ export declare class DebugContext implements RenderDebugInfo {
     renderNode: any;
     providerTokens: any[];
     source: string;
-    locals: {
-        [key: string]: string;
+    references: {
+        [key: string]: any;
     };
 }

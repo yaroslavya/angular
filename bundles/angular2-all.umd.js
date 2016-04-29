@@ -10459,6 +10459,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return ComponentRef_;
 	}(ComponentRef));
 	exports.ComponentRef_ = ComponentRef_;
+	var EMPTY_CONTEXT = lang_1.CONST_EXPR(new Object());
 	var ComponentFactory = (function () {
 	    function ComponentFactory(selector, _viewFactory, _componentType) {
 	        this.selector = selector;
@@ -10482,7 +10483,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        // Note: Host views don't need a declarationAppElement!
 	        var hostView = this._viewFactory(vu, injector, null);
-	        var hostElement = hostView.create(projectableNodes, rootSelectorOrNode);
+	        var hostElement = hostView.create(EMPTY_CONTEXT, projectableNodes, rootSelectorOrNode);
 	        return new ComponentRef_(hostElement, this._componentType);
 	    };
 	    ComponentFactory = __decorate([
@@ -11095,9 +11096,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	    // TODO(rado): profile and decide whether bounds checks should be added
 	    // to the methods below.
-	    ViewContainerRef_.prototype.createEmbeddedView = function (templateRef, index) {
+	    // TODO(tbosch): use a generic C once ts2dart supports it.
+	    ViewContainerRef_.prototype.createEmbeddedView = function (templateRef, context, index) {
+	        if (context === void 0) { context = null; }
 	        if (index === void 0) { index = -1; }
-	        var viewRef = templateRef.createEmbeddedView();
+	        var viewRef = templateRef.createEmbeddedView(context);
 	        this.insert(viewRef, index);
 	        return viewRef;
 	    };
@@ -11389,7 +11392,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        enumerable: true,
 	        configurable: true
 	    });
-	    Object.defineProperty(RenderDebugInfo.prototype, "locals", {
+	    Object.defineProperty(RenderDebugInfo.prototype, "references", {
+	        get: function () { return exceptions_1.unimplemented(); },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(RenderDebugInfo.prototype, "context", {
 	        get: function () { return exceptions_1.unimplemented(); },
 	        enumerable: true,
 	        configurable: true
@@ -11683,7 +11691,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 82 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var __extends = (this && this.__extends) || function (d, b) {
@@ -11691,6 +11699,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
+	var lang_1 = __webpack_require__(5);
+	var EMPTY_CONTEXT = lang_1.CONST_EXPR(new Object());
 	/**
 	 * Represents an Embedded Template that can be used to instantiate Embedded Views.
 	 *
@@ -11733,9 +11743,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._appElement = _appElement;
 	        this._viewFactory = _viewFactory;
 	    }
-	    TemplateRef_.prototype.createEmbeddedView = function () {
+	    TemplateRef_.prototype.createEmbeddedView = function (context) {
 	        var view = this._viewFactory(this._appElement.parentView.viewUtils, this._appElement.parentInjector, this._appElement);
-	        view.create(null, null);
+	        if (lang_1.isBlank(context)) {
+	            context = EMPTY_CONTEXT;
+	        }
+	        view.create(context, null, null);
 	        return view.ref;
 	    };
 	    Object.defineProperty(TemplateRef_.prototype, "elementRef", {
@@ -11806,9 +11819,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * </ul>
 	 * ```
 	 *
-	 * ... we have two {@link ProtoViewRef}s:
+	 * ... we have two {@link TemplateRef}s:
 	 *
-	 * Outer {@link ProtoViewRef}:
+	 * Outer {@link TemplateRef}:
 	 * ```
 	 * Count: {{items.length}}
 	 * <ul>
@@ -11816,14 +11829,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * </ul>
 	 * ```
 	 *
-	 * Inner {@link ProtoViewRef}:
+	 * Inner {@link TemplateRef}:
 	 * ```
 	 *   <li>{{item}}</li>
 	 * ```
 	 *
-	 * Notice that the original template is broken down into two separate {@link ProtoViewRef}s.
+	 * Notice that the original template is broken down into two separate {@link TemplateRef}s.
 	 *
-	 * The outer/inner {@link ProtoViewRef}s are then assembled into views like so:
+	 * The outer/inner {@link TemplateRef}s are then assembled into views like so:
 	 *
 	 * ```
 	 * <!-- ViewRef: outer-0 -->
@@ -11841,6 +11854,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function EmbeddedViewRef() {
 	        _super.apply(this, arguments);
 	    }
+	    Object.defineProperty(EmbeddedViewRef.prototype, "context", {
+	        get: function () { return exceptions_1.unimplemented(); },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    Object.defineProperty(EmbeddedViewRef.prototype, "rootNodes", {
 	        get: function () { return exceptions_1.unimplemented(); },
 	        enumerable: true,
@@ -11873,8 +11891,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        enumerable: true,
 	        configurable: true
 	    });
-	    ViewRef_.prototype.setLocal = function (variableName, value) { this._view.setLocal(variableName, value); };
-	    ViewRef_.prototype.hasLocal = function (variableName) { return this._view.hasLocal(variableName); };
+	    Object.defineProperty(ViewRef_.prototype, "context", {
+	        get: function () { return this._view.context; },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    Object.defineProperty(ViewRef_.prototype, "destroyed", {
 	        get: function () { return this._view.destroyed; },
 	        enumerable: true,
@@ -11940,9 +11961,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        enumerable: true,
 	        configurable: true
 	    });
-	    Object.defineProperty(DebugNode.prototype, "locals", {
+	    Object.defineProperty(DebugNode.prototype, "context", {
+	        get: function () { return lang_1.isPresent(this._debugInfo) ? this._debugInfo.context : null; },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(DebugNode.prototype, "references", {
 	        get: function () {
-	            return lang_1.isPresent(this._debugInfo) ? this._debugInfo.locals : null;
+	            return lang_1.isPresent(this._debugInfo) ? this._debugInfo.references : null;
 	        },
 	        enumerable: true,
 	        configurable: true
@@ -11960,7 +11986,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        configurable: true
 	    });
 	    DebugNode.prototype.inject = function (token) { return this.injector.get(token); };
-	    DebugNode.prototype.getLocal = function (name) { return this.locals[name]; };
 	    return DebugNode;
 	}());
 	exports.DebugNode = DebugNode;
@@ -13587,6 +13612,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	var core_1 = __webpack_require__(2);
 	var lang_1 = __webpack_require__(5);
 	var exceptions_1 = __webpack_require__(12);
+	var NgForRow = (function () {
+	    function NgForRow($implicit, index, count) {
+	        this.$implicit = $implicit;
+	        this.index = index;
+	        this.count = count;
+	    }
+	    Object.defineProperty(NgForRow.prototype, "first", {
+	        get: function () { return this.index === 0; },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(NgForRow.prototype, "last", {
+	        get: function () { return this.index === this.count - 1; },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(NgForRow.prototype, "even", {
+	        get: function () { return this.index % 2 === 0; },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(NgForRow.prototype, "odd", {
+	        get: function () { return !this.even; },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    return NgForRow;
+	}());
+	exports.NgForRow = NgForRow;
 	/**
 	 * The `NgFor` directive instantiates a template once per item from an iterable. The context for
 	 * each instantiated template inherits from the outer context with the given loop variable set
@@ -13702,19 +13756,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        for (var i = 0, ilen = this._viewContainer.length; i < ilen; i++) {
 	            var viewRef = this._viewContainer.get(i);
-	            viewRef.setLocal('first', i === 0);
-	            viewRef.setLocal('last', i === ilen - 1);
+	            viewRef.context.index = i;
+	            viewRef.context.count = ilen;
 	        }
 	        changes.forEachIdentityChange(function (record) {
 	            var viewRef = _this._viewContainer.get(record.currentIndex);
-	            viewRef.setLocal('\$implicit', record.item);
+	            viewRef.context.$implicit = record.item;
 	        });
 	    };
 	    NgFor.prototype._perViewChange = function (view, record) {
-	        view.setLocal('\$implicit', record.item);
-	        view.setLocal('index', record.currentIndex);
-	        view.setLocal('even', (record.currentIndex % 2 == 0));
-	        view.setLocal('odd', (record.currentIndex % 2 == 1));
+	        view.context.$implicit = record.item;
 	    };
 	    NgFor.prototype._bulkRemove = function (tuples) {
 	        tuples.sort(function (a, b) {
@@ -13725,7 +13776,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var tuple = tuples[i];
 	            // separate moved views from removed views.
 	            if (lang_1.isPresent(tuple.record.currentIndex)) {
-	                tuple.view = this._viewContainer.detach(tuple.record.previousIndex);
+	                tuple.view =
+	                    this._viewContainer.detach(tuple.record.previousIndex);
 	                movedTuples.push(tuple);
 	            }
 	            else {
@@ -13742,8 +13794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this._viewContainer.insert(tuple.view, tuple.record.currentIndex);
 	            }
 	            else {
-	                tuple.view =
-	                    this._viewContainer.createEmbeddedView(this._templateRef, tuple.record.currentIndex);
+	                tuple.view = this._viewContainer.createEmbeddedView(this._templateRef, new NgForRow(null, null, null), tuple.record.currentIndex);
 	            }
 	        }
 	        return tuples;
@@ -15202,7 +15253,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var control_value_accessor_1 = __webpack_require__(119);
 	var shared_1 = __webpack_require__(120);
 	var validators_1 = __webpack_require__(121);
-	var controlNameBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, { useExisting: core_1.forwardRef(function () { return NgControlName; }) }));
+	exports.controlNameBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, { useExisting: core_1.forwardRef(function () { return NgControlName; }) }));
 	/**
 	 * Creates and binds a control with a specified name to a DOM element.
 	 *
@@ -15313,7 +15364,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    NgControlName = __decorate([
 	        core_1.Directive({
 	            selector: '[ngControl]',
-	            bindings: [controlNameBinding],
+	            bindings: [exports.controlNameBinding],
 	            inputs: ['name: ngControl', 'model: ngModel'],
 	            outputs: ['update: ngModelChange'],
 	            exportAs: 'ngForm'
@@ -15655,7 +15706,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var core_1 = __webpack_require__(2);
 	var control_value_accessor_1 = __webpack_require__(119);
 	var lang_1 = __webpack_require__(5);
-	var DEFAULT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return DefaultValueAccessor; }), multi: true }));
+	exports.DEFAULT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return DefaultValueAccessor; }), multi: true }));
 	/**
 	 * The default accessor for writing a value and listening to changes that is used by the
 	 * {@link NgModel}, {@link NgFormControl}, and {@link NgControlName} directives.
@@ -15685,7 +15736,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // https://github.com/angular/angular/issues/3011 is implemented
 	            // selector: '[ngControl],[ngModel],[ngFormControl]',
 	            host: { '(input)': 'onChange($event.target.value)', '(blur)': 'onTouched()' },
-	            bindings: [DEFAULT_VALUE_ACCESSOR]
+	            bindings: [exports.DEFAULT_VALUE_ACCESSOR]
 	        }), 
 	        __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef])
 	    ], DefaultValueAccessor);
@@ -15711,7 +15762,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var core_1 = __webpack_require__(2);
 	var control_value_accessor_1 = __webpack_require__(119);
 	var lang_1 = __webpack_require__(5);
-	var NUMBER_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return NumberValueAccessor; }), multi: true }));
+	exports.NUMBER_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return NumberValueAccessor; }), multi: true }));
 	/**
 	 * The accessor for writing a number value and listening to changes that is used by the
 	 * {@link NgModel}, {@link NgFormControl}, and {@link NgControlName} directives.
@@ -15743,7 +15794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                '(input)': 'onChange($event.target.value)',
 	                '(blur)': 'onTouched()'
 	            },
-	            bindings: [NUMBER_VALUE_ACCESSOR]
+	            bindings: [exports.NUMBER_VALUE_ACCESSOR]
 	        }), 
 	        __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef])
 	    ], NumberValueAccessor);
@@ -15769,7 +15820,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var core_1 = __webpack_require__(2);
 	var control_value_accessor_1 = __webpack_require__(119);
 	var lang_1 = __webpack_require__(5);
-	var CHECKBOX_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return CheckboxControlValueAccessor; }), multi: true }));
+	exports.CHECKBOX_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return CheckboxControlValueAccessor; }), multi: true }));
 	/**
 	 * The accessor for writing a value and listening to changes on a checkbox input element.
 	 *
@@ -15794,7 +15845,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        core_1.Directive({
 	            selector: 'input[type=checkbox][ngControl],input[type=checkbox][ngFormControl],input[type=checkbox][ngModel]',
 	            host: { '(change)': 'onChange($event.target.checked)', '(blur)': 'onTouched()' },
-	            providers: [CHECKBOX_VALUE_ACCESSOR]
+	            providers: [exports.CHECKBOX_VALUE_ACCESSOR]
 	        }), 
 	        __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef])
 	    ], CheckboxControlValueAccessor);
@@ -15824,7 +15875,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var control_value_accessor_1 = __webpack_require__(119);
 	var lang_1 = __webpack_require__(5);
 	var collection_1 = __webpack_require__(15);
-	var SELECT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return SelectControlValueAccessor; }), multi: true }));
+	exports.SELECT_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return SelectControlValueAccessor; }), multi: true }));
 	function _buildValueString(id, value) {
 	    if (lang_1.isBlank(id))
 	        return "" + value;
@@ -15885,7 +15936,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        core_1.Directive({
 	            selector: 'select[ngControl],select[ngFormControl],select[ngModel]',
 	            host: { '(change)': 'onChange($event.target.value)', '(blur)': 'onTouched()' },
-	            providers: [SELECT_VALUE_ACCESSOR]
+	            providers: [exports.SELECT_VALUE_ACCESSOR]
 	        }), 
 	        __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef])
 	    ], SelectControlValueAccessor);
@@ -15981,7 +16032,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ng_control_1 = __webpack_require__(118);
 	var lang_1 = __webpack_require__(5);
 	var collection_1 = __webpack_require__(15);
-	var RADIO_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return RadioControlValueAccessor; }), multi: true }));
+	exports.RADIO_VALUE_ACCESSOR = lang_1.CONST_EXPR(new core_1.Provider(control_value_accessor_1.NG_VALUE_ACCESSOR, { useExisting: core_1.forwardRef(function () { return RadioControlValueAccessor; }), multi: true }));
 	/**
 	 * Internal class used by Angular to uncheck radio buttons with the matching name.
 	 */
@@ -16082,7 +16133,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        core_1.Directive({
 	            selector: 'input[type=radio][ngControl],input[type=radio][ngFormControl],input[type=radio][ngModel]',
 	            host: { '(change)': 'onChange()', '(blur)': 'onTouched()' },
-	            providers: [RADIO_VALUE_ACCESSOR]
+	            providers: [exports.RADIO_VALUE_ACCESSOR]
 	        }), 
 	        __metadata('design:paramtypes', [core_1.Renderer, core_1.ElementRef, RadioControlRegistry, core_1.Injector])
 	    ], RadioControlValueAccessor);
@@ -16146,7 +16197,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var validators_1 = __webpack_require__(121);
 	var control_value_accessor_1 = __webpack_require__(119);
 	var shared_1 = __webpack_require__(120);
-	var formControlBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, { useExisting: core_1.forwardRef(function () { return NgFormControl; }) }));
+	exports.formControlBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, { useExisting: core_1.forwardRef(function () { return NgFormControl; }) }));
 	/**
 	 * Binds an existing {@link Control} to a DOM element.
 	 *
@@ -16243,7 +16294,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    NgFormControl = __decorate([
 	        core_1.Directive({
 	            selector: '[ngFormControl]',
-	            bindings: [formControlBinding],
+	            bindings: [exports.formControlBinding],
 	            inputs: ['form: ngFormControl', 'model: ngModel'],
 	            outputs: ['update: ngModelChange'],
 	            exportAs: 'ngForm'
@@ -16294,7 +16345,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var model_1 = __webpack_require__(114);
 	var validators_1 = __webpack_require__(121);
 	var shared_1 = __webpack_require__(120);
-	var formControlBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, { useExisting: core_1.forwardRef(function () { return NgModel; }) }));
+	exports.formControlBinding = lang_1.CONST_EXPR(new core_1.Provider(ng_control_1.NgControl, { useExisting: core_1.forwardRef(function () { return NgModel; }) }));
 	/**
 	 * Binds a domain model to a form control.
 	 *
@@ -16367,7 +16418,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    NgModel = __decorate([
 	        core_1.Directive({
 	            selector: '[ngModel]:not([ngControl]):not([ngFormControl])',
-	            bindings: [formControlBinding],
+	            bindings: [exports.formControlBinding],
 	            inputs: ['model: ngModel'],
 	            outputs: ['update: ngModelChange'],
 	            exportAs: 'ngForm'
@@ -16415,7 +16466,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var control_container_1 = __webpack_require__(116);
 	var shared_1 = __webpack_require__(120);
 	var validators_1 = __webpack_require__(121);
-	var controlGroupProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, { useExisting: core_1.forwardRef(function () { return NgControlGroup; }) }));
+	exports.controlGroupProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, { useExisting: core_1.forwardRef(function () { return NgControlGroup; }) }));
 	/**
 	 * Creates and binds a control group to a DOM element.
 	 *
@@ -16508,7 +16559,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    NgControlGroup = __decorate([
 	        core_1.Directive({
 	            selector: '[ngControlGroup]',
-	            providers: [controlGroupProvider],
+	            providers: [exports.controlGroupProvider],
 	            inputs: ['name: ngControlGroup'],
 	            exportAs: 'ngForm'
 	        }),
@@ -16557,7 +16608,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var control_container_1 = __webpack_require__(116);
 	var shared_1 = __webpack_require__(120);
 	var validators_1 = __webpack_require__(121);
-	var formDirectiveProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, { useExisting: core_1.forwardRef(function () { return NgFormModel; }) }));
+	exports.formDirectiveProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, { useExisting: core_1.forwardRef(function () { return NgFormModel; }) }));
 	/**
 	 * Binds an existing control group to a DOM element.
 	 *
@@ -16707,7 +16758,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    NgFormModel = __decorate([
 	        core_1.Directive({
 	            selector: '[ngFormModel]',
-	            bindings: [formDirectiveProvider],
+	            bindings: [exports.formDirectiveProvider],
 	            inputs: ['form: ngFormModel'],
 	            host: { '(submit)': 'onSubmit()' },
 	            outputs: ['ngSubmit'],
@@ -16756,7 +16807,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var model_1 = __webpack_require__(114);
 	var shared_1 = __webpack_require__(120);
 	var validators_1 = __webpack_require__(121);
-	var formDirectiveProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, { useExisting: core_1.forwardRef(function () { return NgForm; }) }));
+	exports.formDirectiveProvider = lang_1.CONST_EXPR(new core_1.Provider(control_container_1.ControlContainer, { useExisting: core_1.forwardRef(function () { return NgForm; }) }));
 	/**
 	 * If `NgForm` is bound in a component, `<form>` elements in that component will be
 	 * upgraded to use the Angular form system.
@@ -16906,7 +16957,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    NgForm = __decorate([
 	        core_1.Directive({
 	            selector: 'form:not([ngNoForm]):not([ngFormModel]),ngForm,[ngForm]',
-	            bindings: [formDirectiveProvider],
+	            bindings: [exports.formDirectiveProvider],
 	            host: {
 	                '(submit)': 'onSubmit()',
 	            },
@@ -17126,7 +17177,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var lang_1 = __webpack_require__(5);
 	var validators_1 = __webpack_require__(121);
 	var REQUIRED = validators_1.Validators.required;
-	var REQUIRED_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, { useValue: REQUIRED, multi: true }));
+	exports.REQUIRED_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, { useValue: REQUIRED, multi: true }));
 	/**
 	 * A Directive that adds the `required` validator to any controls marked with the
 	 * `required` attribute, via the {@link NG_VALIDATORS} binding.
@@ -17143,7 +17194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    RequiredValidator = __decorate([
 	        core_1.Directive({
 	            selector: '[required][ngControl],[required][ngFormControl],[required][ngModel]',
-	            providers: [REQUIRED_VALIDATOR]
+	            providers: [exports.REQUIRED_VALIDATOR]
 	        }), 
 	        __metadata('design:paramtypes', [])
 	    ], RequiredValidator);
@@ -17157,7 +17208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * {@example common/forms/ts/validators/validators.ts region='min'}
 	 */
-	var MIN_LENGTH_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, { useExisting: core_1.forwardRef(function () { return MinLengthValidator; }), multi: true }));
+	exports.MIN_LENGTH_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, { useExisting: core_1.forwardRef(function () { return MinLengthValidator; }), multi: true }));
 	/**
 	 * A directive which installs the {@link MinLengthValidator} for any `ngControl`,
 	 * `ngFormControl`, or control with `ngModel` that also has a `minlength` attribute.
@@ -17170,7 +17221,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    MinLengthValidator = __decorate([
 	        core_1.Directive({
 	            selector: '[minlength][ngControl],[minlength][ngFormControl],[minlength][ngModel]',
-	            providers: [MIN_LENGTH_VALIDATOR]
+	            providers: [exports.MIN_LENGTH_VALIDATOR]
 	        }),
 	        __param(0, core_1.Attribute("minlength")), 
 	        __metadata('design:paramtypes', [String])
@@ -17185,7 +17236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * {@example common/forms/ts/validators/validators.ts region='max'}
 	 */
-	var MAX_LENGTH_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, { useExisting: core_1.forwardRef(function () { return MaxLengthValidator; }), multi: true }));
+	exports.MAX_LENGTH_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, { useExisting: core_1.forwardRef(function () { return MaxLengthValidator; }), multi: true }));
 	/**
 	 * A directive which installs the {@link MaxLengthValidator} for any `ngControl, `ngFormControl`,
 	 * or control with `ngModel` that also has a `maxlength` attribute.
@@ -17198,7 +17249,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    MaxLengthValidator = __decorate([
 	        core_1.Directive({
 	            selector: '[maxlength][ngControl],[maxlength][ngFormControl],[maxlength][ngModel]',
-	            providers: [MAX_LENGTH_VALIDATOR]
+	            providers: [exports.MAX_LENGTH_VALIDATOR]
 	        }),
 	        __param(0, core_1.Attribute("maxlength")), 
 	        __metadata('design:paramtypes', [String])
@@ -17218,7 +17269,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * <input [ngControl]="fullName" pattern="[a-zA-Z ]*">
 	 * ```
 	 */
-	var PATTERN_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, { useExisting: core_1.forwardRef(function () { return PatternValidator; }), multi: true }));
+	exports.PATTERN_VALIDATOR = lang_1.CONST_EXPR(new core_1.Provider(validators_1.NG_VALIDATORS, { useExisting: core_1.forwardRef(function () { return PatternValidator; }), multi: true }));
 	var PatternValidator = (function () {
 	    function PatternValidator(pattern) {
 	        this._validator = validators_1.Validators.pattern(pattern);
@@ -17227,7 +17278,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    PatternValidator = __decorate([
 	        core_1.Directive({
 	            selector: '[pattern][ngControl],[pattern][ngFormControl],[pattern][ngModel]',
-	            providers: [PATTERN_VALIDATOR]
+	            providers: [exports.PATTERN_VALIDATOR]
 	        }),
 	        __param(0, core_1.Attribute("pattern")), 
 	        __metadata('design:paramtypes', [String])
@@ -22986,13 +23037,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var CompileTemplateMetadata = (function () {
 	    function CompileTemplateMetadata(_a) {
-	        var _b = _a === void 0 ? {} : _a, encapsulation = _b.encapsulation, template = _b.template, templateUrl = _b.templateUrl, styles = _b.styles, styleUrls = _b.styleUrls, ngContentSelectors = _b.ngContentSelectors;
+	        var _b = _a === void 0 ? {} : _a, encapsulation = _b.encapsulation, template = _b.template, templateUrl = _b.templateUrl, styles = _b.styles, styleUrls = _b.styleUrls, ngContentSelectors = _b.ngContentSelectors, baseUrl = _b.baseUrl;
 	        this.encapsulation = lang_1.isPresent(encapsulation) ? encapsulation : view_1.ViewEncapsulation.Emulated;
 	        this.template = template;
 	        this.templateUrl = templateUrl;
 	        this.styles = lang_1.isPresent(styles) ? styles : [];
 	        this.styleUrls = lang_1.isPresent(styleUrls) ? styleUrls : [];
 	        this.ngContentSelectors = lang_1.isPresent(ngContentSelectors) ? ngContentSelectors : [];
+	        this.baseUrl = baseUrl;
 	    }
 	    CompileTemplateMetadata.fromJson = function (data) {
 	        return new CompileTemplateMetadata({
@@ -23003,7 +23055,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            templateUrl: data['templateUrl'],
 	            styles: data['styles'],
 	            styleUrls: data['styleUrls'],
-	            ngContentSelectors: data['ngContentSelectors']
+	            ngContentSelectors: data['ngContentSelectors'],
+	            baseUrl: data['baseUrl']
 	        });
 	    };
 	    CompileTemplateMetadata.prototype.toJson = function () {
@@ -23013,7 +23066,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            'templateUrl': this.templateUrl,
 	            'styles': this.styles,
 	            'styleUrls': this.styleUrls,
-	            'ngContentSelectors': this.ngContentSelectors
+	            'ngContentSelectors': this.ngContentSelectors,
+	            'baseUrl': this.baseUrl
 	        };
 	    };
 	    return CompileTemplateMetadata;
@@ -23635,18 +23689,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	var exceptions_1 = __webpack_require__(74);
 	var debug_context_1 = __webpack_require__(160);
 	var element_injector_1 = __webpack_require__(161);
-	var EMPTY_CONTEXT = lang_1.CONST_EXPR(new Object());
 	var _scope_check = profile_1.wtfCreateScope("AppView#check(ascii id)");
 	/**
 	 * Cost of making objects: http://jsperf.com/instantiate-size-of-object
 	 *
 	 */
 	var AppView = (function () {
-	    function AppView(clazz, componentType, type, locals, viewUtils, parentInjector, declarationAppElement, cdMode, staticNodeDebugInfos) {
+	    function AppView(clazz, componentType, type, viewUtils, parentInjector, declarationAppElement, cdMode, staticNodeDebugInfos) {
 	        this.clazz = clazz;
 	        this.componentType = componentType;
 	        this.type = type;
-	        this.locals = locals;
 	        this.viewUtils = viewUtils;
 	        this.parentInjector = parentInjector;
 	        this.declarationAppElement = declarationAppElement;
@@ -23658,11 +23710,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // The names of the below fields must be kept in sync with codegen_name_util.ts or
 	        // change detection will fail.
 	        this.cdState = change_detection_1.ChangeDetectorState.NeverChecked;
-	        /**
-	         * The context against which data-binding expressions in this view are evaluated against.
-	         * This is always a component instance.
-	         */
-	        this.context = null;
 	        this.destroyed = false;
 	        this._currentDebugContext = null;
 	        this.ref = new view_ref_1.ViewRef_(this);
@@ -23673,27 +23720,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.renderer = declarationAppElement.parentView.renderer;
 	        }
 	    }
-	    AppView.prototype.create = function (givenProjectableNodes, rootSelectorOrNode) {
-	        var context;
+	    AppView.prototype.create = function (context, givenProjectableNodes, rootSelectorOrNode) {
+	        this.context = context;
 	        var projectableNodes;
 	        switch (this.type) {
 	            case view_type_1.ViewType.COMPONENT:
-	                context = this.declarationAppElement.component;
 	                projectableNodes = view_utils_1.ensureSlotCount(givenProjectableNodes, this.componentType.slotCount);
 	                break;
 	            case view_type_1.ViewType.EMBEDDED:
-	                context = this.declarationAppElement.parentView.context;
 	                projectableNodes = this.declarationAppElement.parentView.projectableNodes;
 	                break;
 	            case view_type_1.ViewType.HOST:
-	                context = EMPTY_CONTEXT;
 	                // Note: Don't ensure the slot count for the projectableNodes as we store
 	                // them only for the contained component view (which will later check the slot count...)
 	                projectableNodes = givenProjectableNodes;
 	                break;
 	        }
 	        this._hasExternalHostElement = lang_1.isPresent(rootSelectorOrNode);
-	        this.context = context;
 	        this.projectableNodes = projectableNodes;
 	        if (this.debugMode) {
 	            this._resetDebug();
@@ -23858,10 +23901,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        enumerable: true,
 	        configurable: true
 	    });
-	    AppView.prototype.hasLocal = function (contextName) {
-	        return collection_1.StringMapWrapper.contains(this.locals, contextName);
-	    };
-	    AppView.prototype.setLocal = function (contextName, value) { this.locals[contextName] = value; };
 	    /**
 	     * Overwritten by implementations
 	     */
@@ -24104,28 +24143,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	        enumerable: true,
 	        configurable: true
 	    });
-	    Object.defineProperty(DebugContext.prototype, "locals", {
+	    Object.defineProperty(DebugContext.prototype, "references", {
 	        get: function () {
 	            var _this = this;
 	            var varValues = {};
-	            // TODO(tbosch): right now, the semantics of debugNode.locals are
-	            // that it contains the variables of all elements, not just
-	            // the given one. We preserve this for now to not have a breaking
-	            // change, but should change this later!
-	            collection_1.ListWrapper.forEachWithIndex(this._view.staticNodeDebugInfos, function (staticNodeInfo, nodeIndex) {
+	            var staticNodeInfo = this._staticNodeInfo;
+	            if (lang_1.isPresent(staticNodeInfo)) {
 	                var refs = staticNodeInfo.refTokens;
 	                collection_1.StringMapWrapper.forEach(refs, function (refToken, refName) {
 	                    var varValue;
 	                    if (lang_1.isBlank(refToken)) {
-	                        varValue = lang_1.isPresent(_this._view.allNodes) ? _this._view.allNodes[nodeIndex] : null;
+	                        varValue = lang_1.isPresent(_this._view.allNodes) ? _this._view.allNodes[_this._nodeIndex] : null;
 	                    }
 	                    else {
-	                        varValue = _this._view.injectorGet(refToken, nodeIndex, null);
+	                        varValue = _this._view.injectorGet(refToken, _this._nodeIndex, null);
 	                    }
 	                    varValues[refName] = varValue;
 	                });
-	            });
-	            collection_1.StringMapWrapper.forEach(this._view.locals, function (localValue, localName) { varValues[localName] = localValue; });
+	            }
 	            return varValues;
 	        },
 	        enumerable: true,
@@ -27376,6 +27411,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        else {
 	            this.componentView = this.declarationElement.view.componentView;
 	        }
+	        this.componentContext =
+	            util_1.getPropertyInView(o.THIS_EXPR.prop('context'), this, this.componentView);
 	        var viewQueries = new compile_metadata_1.CompileTokenMap();
 	        if (this.viewType === view_type_1.ViewType.COMPONENT) {
 	            var directiveInstance = o.THIS_EXPR.prop('context');
@@ -27397,9 +27434,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	        }
 	        this.viewQueries = viewQueries;
-	        templateVariableBindings.forEach(function (entry) {
-	            _this.locals.set(entry[1], o.THIS_EXPR.prop('locals').key(o.literal(entry[0])));
-	        });
+	        templateVariableBindings.forEach(function (entry) { _this.locals.set(entry[1], o.THIS_EXPR.prop('context').prop(entry[0])); });
 	        if (!this.declarationElement.isNull()) {
 	            this.declarationElement.setEmbeddedView(this);
 	        }
@@ -27744,7 +27779,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            else {
 	                codeGenContentNodes = o.literalArr(compileElement.contentNodesByNgContentIndex.map(function (nodes) { return util_1.createFlatArray(nodes); }));
 	            }
-	            this.view.createMethod.addStmt(compViewExpr.callMethod('create', [codeGenContentNodes, o.NULL_EXPR]).toStmt());
+	            this.view.createMethod.addStmt(compViewExpr.callMethod('create', [compileElement.getComponent(), codeGenContentNodes, o.NULL_EXPR])
+	                .toStmt());
 	        }
 	        return null;
 	    };
@@ -27855,7 +27891,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ], o.importType(identifiers_1.Identifiers.StaticNodeDebugInfo, null, [o.TypeModifier.Const]));
 	}
 	function createViewClass(view, renderCompTypeVar, nodeDebugInfosVar) {
-	    var emptyTemplateVariableBindings = view.templateVariableBindings.map(function (entry) { return [entry[0], o.NULL_EXPR]; });
 	    var viewConstructorArgs = [
 	        new o.FnParam(constants_1.ViewConstructorVars.viewUtils.name, o.importType(identifiers_1.Identifiers.ViewUtils)),
 	        new o.FnParam(constants_1.ViewConstructorVars.parentInjector.name, o.importType(identifiers_1.Identifiers.Injector)),
@@ -27866,7 +27901,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            o.variable(view.className),
 	            renderCompTypeVar,
 	            constants_1.ViewTypeEnum.fromValue(view.viewType),
-	            o.literalMap(emptyTemplateVariableBindings),
 	            constants_1.ViewConstructorVars.viewUtils,
 	            constants_1.ViewConstructorVars.parentInjector,
 	            constants_1.ViewConstructorVars.declarationEl,
@@ -28002,8 +28036,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	}
 	function getContextType(view) {
-	    var typeMeta = view.component.type;
-	    return typeMeta.isHost ? o.DYNAMIC_TYPE : o.importType(typeMeta);
+	    if (view.viewType === view_type_1.ViewType.COMPONENT) {
+	        return o.importType(view.component.type);
+	    }
+	    return o.DYNAMIC_TYPE;
 	}
 	function getChangeDetectionMode(view) {
 	    var mode;
@@ -28148,7 +28184,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var currValExpr = createCurrValueExpr(bindingIndex);
 	    var valueField = createBindFieldExpr(bindingIndex);
 	    view.detectChangesRenderPropertiesMethod.resetDebugInfo(compileNode.nodeIndex, boundText);
-	    bind(view, currValExpr, valueField, boundText.value, o.THIS_EXPR.prop('context'), [
+	    bind(view, currValExpr, valueField, boundText.value, view.componentContext, [
 	        o.THIS_EXPR.prop('renderer')
 	            .callMethod('setText', [compileNode.renderNode, currValExpr])
 	            .toStmt()
@@ -28198,7 +28234,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	}
 	function bindRenderInputs(boundProps, compileElement) {
-	    bindAndWriteToRenderer(boundProps, o.THIS_EXPR.prop('context'), compileElement);
+	    bindAndWriteToRenderer(boundProps, compileElement.view.componentContext, compileElement);
 	}
 	exports.bindRenderInputs = bindRenderInputs;
 	function bindDirectiveHostProps(directiveAst, directiveInstance, compileElement) {
@@ -28244,7 +28280,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (view.genConfig.logBindingUpdate) {
 	            statements.push(logBindingUpdateStmt(compileElement.renderNode, input.directiveName, currValExpr));
 	        }
-	        bind(view, currValExpr, fieldExpr, input.value, o.THIS_EXPR.prop('context'), statements, detectChangesInInputsMethod);
+	        bind(view, currValExpr, fieldExpr, input.value, view.componentContext, statements, detectChangesInInputsMethod);
 	    });
 	    if (isOnPushComp) {
 	        detectChangesInInputsMethod.addStmt(new o.IfStmt(constants_1.DetectChangesVars.changed, [
@@ -28563,7 +28599,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this._hasComponentHostListener = true;
 	        }
 	        this._method.resetDebugInfo(this.compileElement.nodeIndex, hostEvent);
-	        var context = lang_1.isPresent(directiveInstance) ? directiveInstance : o.THIS_EXPR.prop('context');
+	        var context = lang_1.isPresent(directiveInstance) ? directiveInstance :
+	            this.compileElement.view.componentContext;
 	        var actionStmts = expression_converter_1.convertCdStatementToIr(this.compileElement.view, context, hostEvent.handler);
 	        var lastIndex = actionStmts.length - 1;
 	        if (lastIndex >= 0) {
@@ -28597,7 +28634,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var eventListener = o.THIS_EXPR.callMethod('eventHandler', [
 	            o.fn([this._eventParam], [
 	                new o.ReturnStatement(o.THIS_EXPR.callMethod(this._methodName, [constants_1.EventHandlerVars.event]))
-	            ])
+	            ], o.BOOL_TYPE)
 	        ]);
 	        if (lang_1.isPresent(this.eventTarget)) {
 	            listenExpr = constants_1.ViewProperties.renderer.callMethod('listenGlobal', [o.literal(this.eventTarget), o.literal(this.eventName), eventListener]);
@@ -28794,10 +28831,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    DirectiveNormalizer.prototype.normalizeTemplate = function (directiveType, template) {
 	        var _this = this;
 	        if (lang_1.isPresent(template.template)) {
-	            return async_1.PromiseWrapper.resolve(this.normalizeLoadedTemplate(directiveType, template, template.template, directiveType.moduleUrl));
+	            return async_1.PromiseWrapper.resolve(this.normalizeLoadedTemplate(directiveType, template, template.template, template.baseUrl));
 	        }
 	        else if (lang_1.isPresent(template.templateUrl)) {
-	            var sourceAbsUrl = this._urlResolver.resolve(directiveType.moduleUrl, template.templateUrl);
+	            var sourceAbsUrl = this._urlResolver.resolve(template.baseUrl, template.templateUrl);
 	            return this._xhr.get(sourceAbsUrl)
 	                .then(function (templateContent) { return _this.normalizeLoadedTemplate(directiveType, template, templateContent, sourceAbsUrl); });
 	        }
@@ -28818,7 +28855,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var allStyleAbsUrls = visitor.styleUrls.filter(style_url_resolver_1.isStyleUrlResolvable)
 	            .map(function (url) { return _this._urlResolver.resolve(templateAbsUrl, url); })
 	            .concat(templateMeta.styleUrls.filter(style_url_resolver_1.isStyleUrlResolvable)
-	            .map(function (url) { return _this._urlResolver.resolve(directiveType.moduleUrl, url); }));
+	            .map(function (url) { return _this._urlResolver.resolve(templateMeta.baseUrl, url); }));
 	        var allResolvedStyles = allStyles.map(function (style) {
 	            var styleWithImports = style_url_resolver_1.extractStyleUrls(_this._urlResolver, templateAbsUrl, style);
 	            styleWithImports.styleUrls.forEach(function (styleUrl) { return allStyleAbsUrls.push(styleUrl); });
@@ -28987,14 +29024,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var meta = this._directiveCache.get(directiveType);
 	        if (lang_1.isBlank(meta)) {
 	            var dirMeta = this._directiveResolver.resolve(directiveType);
-	            var moduleUrl = staticTypeModuleUrl(directiveType);
 	            var templateMeta = null;
 	            var changeDetectionStrategy = null;
 	            var viewProviders = [];
 	            if (dirMeta instanceof md.ComponentMetadata) {
 	                assertions_1.assertArrayOfStrings('styles', dirMeta.styles);
 	                var cmpMeta = dirMeta;
-	                moduleUrl = calcModuleUrl(this._reflector, directiveType, cmpMeta);
 	                var viewMeta = this._viewResolver.resolve(directiveType);
 	                assertions_1.assertArrayOfStrings('styles', viewMeta.styles);
 	                templateMeta = new cpl.CompileTemplateMetadata({
@@ -29002,7 +29037,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    template: viewMeta.template,
 	                    templateUrl: viewMeta.templateUrl,
 	                    styles: viewMeta.styles,
-	                    styleUrls: viewMeta.styleUrls
+	                    styleUrls: viewMeta.styleUrls,
+	                    baseUrl: calcTemplateBaseUrl(this._reflector, directiveType, cmpMeta)
 	                });
 	                changeDetectionStrategy = cmpMeta.changeDetection;
 	                if (lang_1.isPresent(dirMeta.viewProviders)) {
@@ -29023,7 +29059,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                selector: dirMeta.selector,
 	                exportAs: dirMeta.exportAs,
 	                isComponent: lang_1.isPresent(templateMeta),
-	                type: this.getTypeMetadata(directiveType, moduleUrl),
+	                type: this.getTypeMetadata(directiveType, staticTypeModuleUrl(directiveType)),
 	                template: templateMeta,
 	                changeDetection: changeDetectionStrategy,
 	                inputs: dirMeta.inputs,
@@ -29312,16 +29348,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	function staticTypeModuleUrl(value) {
 	    return isStaticType(value) ? value['moduleId'] : null;
 	}
-	function calcModuleUrl(reflector, type, cmpMetadata) {
-	    var moduleId = cmpMetadata.moduleId;
-	    if (lang_1.isPresent(moduleId)) {
+	function calcTemplateBaseUrl(reflector, type, cmpMetadata) {
+	    if (isStaticType(type)) {
+	        return type['filePath'];
+	    }
+	    if (lang_1.isPresent(cmpMetadata.moduleId)) {
+	        var moduleId = cmpMetadata.moduleId;
 	        var scheme = url_resolver_1.getUrlScheme(moduleId);
 	        return lang_1.isPresent(scheme) && scheme.length > 0 ? moduleId :
 	            "package:" + moduleId + util_1.MODULE_SUFFIX;
 	    }
-	    else {
-	        return reflector.importUri(type);
-	    }
+	    return reflector.importUri(type);
 	}
 
 
@@ -31625,7 +31662,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _InterpretiveAppView = (function (_super) {
 	    __extends(_InterpretiveAppView, _super);
 	    function _InterpretiveAppView(args, props, getters, methods) {
-	        _super.call(this, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
+	        _super.call(this, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
 	        this.props = props;
 	        this.getters = getters;
 	        this.methods = methods;

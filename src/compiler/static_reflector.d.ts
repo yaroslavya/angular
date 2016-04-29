@@ -1,4 +1,9 @@
 import { ReflectorReader } from 'angular2/src/core/reflection/reflector_reader';
+export declare class ModuleContext {
+    moduleId: string;
+    filePath: string;
+    constructor(moduleId: string, filePath: string);
+}
 /**
  * The host of the static resolver is expected to be able to provide module metadata in the form of
  * ModuleMetadata. Angular 2 CLI will produce this metadata for a module whenever a .d.ts files is
@@ -16,25 +21,23 @@ export interface StaticReflectorHost {
         [key: string]: any;
     };
     /**
-     * Resolve a module from an import statement form to an absolute path.
-     * @param moduleName the location imported from
+     * Resolve a symbol from an import statement form, to the file where it is declared.
+     * @param module the location imported from
      * @param containingFile for relative imports, the path of the file containing the import
      */
-    resolveModule(moduleName: string, containingFile?: string): string;
-    findDeclaration(modulePath: string, symbolName: string): {
-        declarationPath: string;
-        declaredName: string;
-    };
+    findDeclaration(modulePath: string, symbolName: string, containingFile?: string): StaticSymbol;
+    getStaticSymbol(moduleId: string, declarationFile: string, name: string): StaticSymbol;
 }
 /**
  * A token representing the a reference to a static type.
  *
  * This token is unique for a moduleId and name and can be used as a hash table key.
  */
-export declare class StaticType {
+export declare class StaticSymbol implements ModuleContext {
     moduleId: string;
+    filePath: string;
     name: string;
-    constructor(moduleId: string, name: string);
+    constructor(moduleId: string, filePath: string, name: string);
 }
 /**
  * A static reflector implements enough of the Reflector API that is necessary to compile
@@ -42,7 +45,6 @@ export declare class StaticType {
  */
 export declare class StaticReflector implements ReflectorReader {
     private host;
-    private typeCache;
     private annotationCache;
     private propertyCache;
     private parameterCache;
@@ -50,19 +52,11 @@ export declare class StaticReflector implements ReflectorReader {
     private conversionMap;
     constructor(host: StaticReflectorHost);
     importUri(typeOrFunc: any): string;
-    /**
-     * getStaticType produces a Type whose metadata is known but whose implementation is not loaded.
-     * All types passed to the StaticResolver should be pseudo-types returned by this method.
-     *
-     * @param moduleId the module identifier as an absolute path.
-     * @param name the name of the type.
-     */
-    getStaticType(moduleId: string, name: string): StaticType;
-    annotations(type: StaticType): any[];
-    propMetadata(type: StaticType): {
+    annotations(type: StaticSymbol): any[];
+    propMetadata(type: StaticSymbol): {
         [key: string]: any;
     };
-    parameters(type: StaticType): any[];
+    parameters(type: StaticSymbol): any[];
     private registerDecoratorOrConstructor(type, ctor, crossModuleProps?);
     private initializeConversionMap();
     /**

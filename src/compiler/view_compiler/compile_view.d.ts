@@ -47,6 +47,7 @@ export declare class CompileView implements NameResolver {
     literalArrayCount: number;
     literalMapCount: number;
     pipeCount: number;
+    componentContext: o.Expression;
     constructor(component: CompileDirectiveMetadata, genConfig: CompilerConfig, pipeMetas: CompilePipeMetadata[], styles: o.Expression, viewIndex: number, declarationElement: CompileElement, templateVariableBindings: string[][]);
     callPipe(name: string, input: o.Expression, args: o.Expression[]): o.Expression;
     getLocal(name: string): o.Expression;

@@ -14,7 +14,7 @@ import { forwardRef, Provider, Attribute, Directive } from 'angular2/core';
 import { CONST_EXPR, NumberWrapper } from 'angular2/src/facade/lang';
 import { Validators, NG_VALIDATORS } from '../validators';
 const REQUIRED = Validators.required;
-const REQUIRED_VALIDATOR = CONST_EXPR(new Provider(NG_VALIDATORS, { useValue: REQUIRED, multi: true }));
+export const REQUIRED_VALIDATOR = CONST_EXPR(new Provider(NG_VALIDATORS, { useValue: REQUIRED, multi: true }));
 /**
  * A Directive that adds the `required` validator to any controls marked with the
  * `required` attribute, via the {@link NG_VALIDATORS} binding.
@@ -41,7 +41,7 @@ RequiredValidator = __decorate([
  *
  * {@example common/forms/ts/validators/validators.ts region='min'}
  */
-const MIN_LENGTH_VALIDATOR = CONST_EXPR(new Provider(NG_VALIDATORS, { useExisting: forwardRef(() => MinLengthValidator), multi: true }));
+export const MIN_LENGTH_VALIDATOR = CONST_EXPR(new Provider(NG_VALIDATORS, { useExisting: forwardRef(() => MinLengthValidator), multi: true }));
 /**
  * A directive which installs the {@link MinLengthValidator} for any `ngControl`,
  * `ngFormControl`, or control with `ngModel` that also has a `minlength` attribute.
@@ -67,7 +67,7 @@ MinLengthValidator = __decorate([
  *
  * {@example common/forms/ts/validators/validators.ts region='max'}
  */
-const MAX_LENGTH_VALIDATOR = CONST_EXPR(new Provider(NG_VALIDATORS, { useExisting: forwardRef(() => MaxLengthValidator), multi: true }));
+export const MAX_LENGTH_VALIDATOR = CONST_EXPR(new Provider(NG_VALIDATORS, { useExisting: forwardRef(() => MaxLengthValidator), multi: true }));
 /**
  * A directive which installs the {@link MaxLengthValidator} for any `ngControl, `ngFormControl`,
  * or control with `ngModel` that also has a `maxlength` attribute.
@@ -98,7 +98,7 @@ MaxLengthValidator = __decorate([
  * <input [ngControl]="fullName" pattern="[a-zA-Z ]*">
  * ```
  */
-const PATTERN_VALIDATOR = CONST_EXPR(new Provider(NG_VALIDATORS, { useExisting: forwardRef(() => PatternValidator), multi: true }));
+export const PATTERN_VALIDATOR = CONST_EXPR(new Provider(NG_VALIDATORS, { useExisting: forwardRef(() => PatternValidator), multi: true }));
 export let PatternValidator = class PatternValidator {
     constructor(pattern) {
         this._validator = Validators.pattern(pattern);

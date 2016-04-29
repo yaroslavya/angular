@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Type, CONST, isBlank } from 'angular2/src/facade/lang';
+import { Type, CONST, CONST_EXPR, isBlank } from 'angular2/src/facade/lang';
 import { unimplemented } from 'angular2/src/facade/exceptions';
 import { ViewUtils } from './view_utils';
 /**
@@ -63,6 +63,7 @@ export class ComponentRef_ extends ComponentRef {
     destroy() { this._hostElement.parentView.destroy(); }
     onDestroy(callback) { this.hostView.onDestroy(callback); }
 }
+const EMPTY_CONTEXT = CONST_EXPR(new Object());
 export let ComponentFactory = class ComponentFactory {
     constructor(selector, _viewFactory, _componentType) {
         this.selector = selector;
@@ -80,7 +81,7 @@ export let ComponentFactory = class ComponentFactory {
         }
         // Note: Host views don't need a declarationAppElement!
         var hostView = this._viewFactory(vu, injector, null);
-        var hostElement = hostView.create(projectableNodes, rootSelectorOrNode);
+        var hostElement = hostView.create(EMPTY_CONTEXT, projectableNodes, rootSelectorOrNode);
         return new ComponentRef_(hostElement, this._componentType);
     }
 };

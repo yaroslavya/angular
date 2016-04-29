@@ -1,6 +1,6 @@
-import { ListWrapper, StringMapWrapper } from 'angular2/src/facade/collection';
+import { ListWrapper } from 'angular2/src/facade/collection';
 import { AppElement } from './element';
-import { isPresent, CONST_EXPR } from 'angular2/src/facade/lang';
+import { isPresent } from 'angular2/src/facade/lang';
 import { ObservableWrapper } from 'angular2/src/facade/async';
 import { ViewRef_ } from './view_ref';
 import { ViewType } from './view_type';
@@ -10,18 +10,16 @@ import { wtfCreateScope, wtfLeave } from '../profile/profile';
 import { ExpressionChangedAfterItHasBeenCheckedException, ViewDestroyedException, ViewWrappedException } from './exceptions';
 import { DebugContext } from './debug_context';
 import { ElementInjector } from './element_injector';
-const EMPTY_CONTEXT = CONST_EXPR(new Object());
 var _scope_check = wtfCreateScope(`AppView#check(ascii id)`);
 /**
  * Cost of making objects: http://jsperf.com/instantiate-size-of-object
  *
  */
 export class AppView {
-    constructor(clazz, componentType, type, locals, viewUtils, parentInjector, declarationAppElement, cdMode, staticNodeDebugInfos) {
+    constructor(clazz, componentType, type, viewUtils, parentInjector, declarationAppElement, cdMode, staticNodeDebugInfos) {
         this.clazz = clazz;
         this.componentType = componentType;
         this.type = type;
-        this.locals = locals;
         this.viewUtils = viewUtils;
         this.parentInjector = parentInjector;
         this.declarationAppElement = declarationAppElement;
@@ -33,11 +31,6 @@ export class AppView {
         // The names of the below fields must be kept in sync with codegen_name_util.ts or
         // change detection will fail.
         this.cdState = ChangeDetectorState.NeverChecked;
-        /**
-         * The context against which data-binding expressions in this view are evaluated against.
-         * This is always a component instance.
-         */
-        this.context = null;
         this.destroyed = false;
         this._currentDebugContext = null;
         this.ref = new ViewRef_(this);
@@ -48,27 +41,23 @@ export class AppView {
             this.renderer = declarationAppElement.parentView.renderer;
         }
     }
-    create(givenProjectableNodes, rootSelectorOrNode) {
-        var context;
+    create(context, givenProjectableNodes, rootSelectorOrNode) {
+        this.context = context;
         var projectableNodes;
         switch (this.type) {
             case ViewType.COMPONENT:
-                context = this.declarationAppElement.component;
                 projectableNodes = ensureSlotCount(givenProjectableNodes, this.componentType.slotCount);
                 break;
             case ViewType.EMBEDDED:
-                context = this.declarationAppElement.parentView.context;
                 projectableNodes = this.declarationAppElement.parentView.projectableNodes;
                 break;
             case ViewType.HOST:
-                context = EMPTY_CONTEXT;
                 // Note: Don't ensure the slot count for the projectableNodes as we store
                 // them only for the contained component view (which will later check the slot count...)
                 projectableNodes = givenProjectableNodes;
                 break;
         }
         this._hasExternalHostElement = isPresent(rootSelectorOrNode);
-        this.context = context;
         this.projectableNodes = projectableNodes;
         if (this.debugMode) {
             this._resetDebug();
@@ -213,10 +202,6 @@ export class AppView {
             null;
         return _findLastRenderNode(lastNode);
     }
-    hasLocal(contextName) {
-        return StringMapWrapper.contains(this.locals, contextName);
-    }
-    setLocal(contextName, value) { this.locals[contextName] = value; }
     /**
      * Overwritten by implementations
      */

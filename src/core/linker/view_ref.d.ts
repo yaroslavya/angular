@@ -27,9 +27,9 @@ export declare abstract class ViewRef extends ChangeDetectorRef {
  * </ul>
  * ```
  *
- * ... we have two {@link ProtoViewRef}s:
+ * ... we have two {@link TemplateRef}s:
  *
- * Outer {@link ProtoViewRef}:
+ * Outer {@link TemplateRef}:
  * ```
  * Count: {{items.length}}
  * <ul>
@@ -37,14 +37,14 @@ export declare abstract class ViewRef extends ChangeDetectorRef {
  * </ul>
  * ```
  *
- * Inner {@link ProtoViewRef}:
+ * Inner {@link TemplateRef}:
  * ```
  *   <li>{{item}}</li>
  * ```
  *
- * Notice that the original template is broken down into two separate {@link ProtoViewRef}s.
+ * Notice that the original template is broken down into two separate {@link TemplateRef}s.
  *
- * The outer/inner {@link ProtoViewRef}s are then assembled into views like so:
+ * The outer/inner {@link TemplateRef}s are then assembled into views like so:
  *
  * ```
  * <!-- ViewRef: outer-0 -->
@@ -57,32 +57,24 @@ export declare abstract class ViewRef extends ChangeDetectorRef {
  * <!-- /ViewRef: outer-0 -->
  * ```
  */
-export declare abstract class EmbeddedViewRef extends ViewRef {
-    /**
-     * Sets `value` of local variable called `variableName` in this View.
-     */
-    abstract setLocal(variableName: string, value: any): void;
-    /**
-     * Checks whether this view has a local variable called `variableName`.
-     */
-    abstract hasLocal(variableName: string): boolean;
+export declare abstract class EmbeddedViewRef<C> extends ViewRef {
+    context: C;
     rootNodes: any[];
     /**
      * Destroys the view and all of the data structures associated with it.
      */
     abstract destroy(): any;
 }
-export declare class ViewRef_ implements EmbeddedViewRef {
+export declare class ViewRef_<C> implements EmbeddedViewRef<C> {
     private _view;
-    constructor(_view: AppView<any>);
-    internalView: AppView<any>;
+    constructor(_view: AppView<C>);
+    internalView: AppView<C>;
     /**
      * Return `ChangeDetectorRef`
      */
     changeDetectorRef: ChangeDetectorRef;
     rootNodes: any[];
-    setLocal(variableName: string, value: any): void;
-    hasLocal(variableName: string): boolean;
+    context: C;
     destroyed: boolean;
     markForCheck(): void;
     detach(): void;

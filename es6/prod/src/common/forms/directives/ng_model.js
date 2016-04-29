@@ -18,7 +18,7 @@ import { NgControl } from './ng_control';
 import { Control } from '../model';
 import { NG_VALIDATORS, NG_ASYNC_VALIDATORS } from '../validators';
 import { setUpControl, isPropertyUpdated, selectValueAccessor, composeValidators, composeAsyncValidators } from './shared';
-const formControlBinding = CONST_EXPR(new Provider(NgControl, { useExisting: forwardRef(() => NgModel) }));
+export const formControlBinding = CONST_EXPR(new Provider(NgControl, { useExisting: forwardRef(() => NgModel) }));
 /**
  * Binds a domain model to a form control.
  *

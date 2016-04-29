@@ -14,7 +14,7 @@ import { Directive, Renderer, forwardRef, Provider, ElementRef, Input, Host, Opt
 import { NG_VALUE_ACCESSOR } from './control_value_accessor';
 import { CONST_EXPR, StringWrapper, isPrimitive, isPresent, isBlank, looseIdentical } from 'angular2/src/facade/lang';
 import { MapWrapper } from 'angular2/src/facade/collection';
-const SELECT_VALUE_ACCESSOR = CONST_EXPR(new Provider(NG_VALUE_ACCESSOR, { useExisting: forwardRef(() => SelectControlValueAccessor), multi: true }));
+export const SELECT_VALUE_ACCESSOR = CONST_EXPR(new Provider(NG_VALUE_ACCESSOR, { useExisting: forwardRef(() => SelectControlValueAccessor), multi: true }));
 function _buildValueString(id, value) {
     if (isBlank(id))
         return `${value}`;

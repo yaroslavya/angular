@@ -25,6 +25,6 @@ export declare class NgIf {
     private _viewContainer;
     private _templateRef;
     private _prevCondition;
-    constructor(_viewContainer: ViewContainerRef, _templateRef: TemplateRef);
+    constructor(_viewContainer: ViewContainerRef, _templateRef: TemplateRef<Object>);
     ngIf: any;
 }

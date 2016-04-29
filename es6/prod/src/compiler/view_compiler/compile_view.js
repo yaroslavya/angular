@@ -53,6 +53,8 @@ export class CompileView {
         else {
             this.componentView = this.declarationElement.view.componentView;
         }
+        this.componentContext =
+            getPropertyInView(o.THIS_EXPR.prop('context'), this, this.componentView);
         var viewQueries = new CompileTokenMap();
         if (this.viewType === ViewType.COMPONENT) {
             var directiveInstance = o.THIS_EXPR.prop('context');
@@ -74,9 +76,7 @@ export class CompileView {
             });
         }
         this.viewQueries = viewQueries;
-        templateVariableBindings.forEach((entry) => {
-            this.locals.set(entry[1], o.THIS_EXPR.prop('locals').key(o.literal(entry[0])));
-        });
+        templateVariableBindings.forEach((entry) => { this.locals.set(entry[1], o.THIS_EXPR.prop('context').prop(entry[0])); });
         if (!this.declarationElement.isNull()) {
             this.declarationElement.setEmbeddedView(this);
         }

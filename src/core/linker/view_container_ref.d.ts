@@ -49,7 +49,7 @@ export declare abstract class ViewContainerRef {
      *
      * Returns the {@link ViewRef} for the newly created View.
      */
-    abstract createEmbeddedView(templateRef: TemplateRef, index?: number): EmbeddedViewRef;
+    abstract createEmbeddedView(templateRef: TemplateRef<any>, context?: any, index?: number): EmbeddedViewRef<any>;
     /**
      * Instantiates a single {@link Component} and inserts its Host View into this container at the
      * specified `index`.
@@ -93,12 +93,12 @@ export declare abstract class ViewContainerRef {
 export declare class ViewContainerRef_ implements ViewContainerRef {
     private _element;
     constructor(_element: AppElement);
-    get(index: number): EmbeddedViewRef;
+    get(index: number): ViewRef;
     length: number;
     element: ElementRef;
     injector: Injector;
     parentInjector: Injector;
-    createEmbeddedView(templateRef: TemplateRef, index?: number): EmbeddedViewRef;
+    createEmbeddedView(templateRef: TemplateRef<any>, context?: any, index?: number): EmbeddedViewRef<any>;
     createComponent(componentFactory: ComponentFactory, index?: number, injector?: Injector, projectableNodes?: any[][]): ComponentRef;
     insert(viewRef: ViewRef, index?: number): ViewRef;
     indexOf(viewRef: ViewRef): number;

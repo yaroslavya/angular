@@ -18,7 +18,7 @@ import { Directive, forwardRef, Provider, Inject, Optional, Self } from 'angular
 import { ControlContainer } from './control_container';
 import { setUpControl, setUpControlGroup, composeValidators, composeAsyncValidators } from './shared';
 import { Validators, NG_VALIDATORS, NG_ASYNC_VALIDATORS } from '../validators';
-const formDirectiveProvider = CONST_EXPR(new Provider(ControlContainer, { useExisting: forwardRef(() => NgFormModel) }));
+export const formDirectiveProvider = CONST_EXPR(new Provider(ControlContainer, { useExisting: forwardRef(() => NgFormModel) }));
 /**
  * Binds an existing control group to a DOM element.
  *

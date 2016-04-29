@@ -14,13 +14,13 @@ export declare class DebugNode {
     constructor(nativeNode: any, parent: DebugNode, _debugInfo: RenderDebugInfo);
     injector: Injector;
     componentInstance: any;
-    locals: {
+    context: any;
+    references: {
         [key: string]: any;
     };
     providerTokens: any[];
     source: string;
     inject(token: any): any;
-    getLocal(name: string): any;
 }
 export declare class DebugElement extends DebugNode {
     name: string;

@@ -52,10 +52,10 @@ export let DirectiveNormalizer = class DirectiveNormalizer {
     }
     normalizeTemplate(directiveType, template) {
         if (isPresent(template.template)) {
-            return PromiseWrapper.resolve(this.normalizeLoadedTemplate(directiveType, template, template.template, directiveType.moduleUrl));
+            return PromiseWrapper.resolve(this.normalizeLoadedTemplate(directiveType, template, template.template, template.baseUrl));
         }
         else if (isPresent(template.templateUrl)) {
-            var sourceAbsUrl = this._urlResolver.resolve(directiveType.moduleUrl, template.templateUrl);
+            var sourceAbsUrl = this._urlResolver.resolve(template.baseUrl, template.templateUrl);
             return this._xhr.get(sourceAbsUrl)
                 .then(templateContent => this.normalizeLoadedTemplate(directiveType, template, templateContent, sourceAbsUrl));
         }
@@ -75,7 +75,7 @@ export let DirectiveNormalizer = class DirectiveNormalizer {
         var allStyleAbsUrls = visitor.styleUrls.filter(isStyleUrlResolvable)
             .map(url => this._urlResolver.resolve(templateAbsUrl, url))
             .concat(templateMeta.styleUrls.filter(isStyleUrlResolvable)
-            .map(url => this._urlResolver.resolve(directiveType.moduleUrl, url)));
+            .map(url => this._urlResolver.resolve(templateMeta.baseUrl, url)));
         var allResolvedStyles = allStyles.map(style => {
             var styleWithImports = extractStyleUrls(this._urlResolver, templateAbsUrl, style);
             styleWithImports.styleUrls.forEach(styleUrl => allStyleAbsUrls.push(styleUrl));

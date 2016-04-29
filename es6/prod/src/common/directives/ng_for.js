@@ -10,6 +10,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Directive, ChangeDetectorRef, IterableDiffers, ViewContainerRef, TemplateRef } from 'angular2/core';
 import { isPresent, isBlank, getTypeNameForDebugging } from 'angular2/src/facade/lang';
 import { BaseException } from "../../facade/exceptions";
+export class NgForRow {
+    constructor($implicit, index, count) {
+        this.$implicit = $implicit;
+        this.index = index;
+        this.count = count;
+    }
+    get first() { return this.index === 0; }
+    get last() { return this.index === this.count - 1; }
+    get even() { return this.index % 2 === 0; }
+    get odd() { return !this.even; }
+}
 /**
  * The `NgFor` directive instantiates a template once per item from an iterable. The context for
  * each instantiated template inherits from the outer context with the given loop variable set
@@ -106,19 +117,16 @@ export let NgFor = class NgFor {
         }
         for (var i = 0, ilen = this._viewContainer.length; i < ilen; i++) {
             var viewRef = this._viewContainer.get(i);
-            viewRef.setLocal('first', i === 0);
-            viewRef.setLocal('last', i === ilen - 1);
+            viewRef.context.index = i;
+            viewRef.context.count = ilen;
         }
         changes.forEachIdentityChange((record) => {
             var viewRef = this._viewContainer.get(record.currentIndex);
-            viewRef.setLocal('\$implicit', record.item);
+            viewRef.context.$implicit = record.item;
         });
     }
     _perViewChange(view, record) {
-        view.setLocal('\$implicit', record.item);
-        view.setLocal('index', record.currentIndex);
-        view.setLocal('even', (record.currentIndex % 2 == 0));
-        view.setLocal('odd', (record.currentIndex % 2 == 1));
+        view.context.$implicit = record.item;
     }
     _bulkRemove(tuples) {
         tuples.sort((a, b) => a.record.previousIndex - b.record.previousIndex);
@@ -127,7 +135,8 @@ export let NgFor = class NgFor {
             var tuple = tuples[i];
             // separate moved views from removed views.
             if (isPresent(tuple.record.currentIndex)) {
-                tuple.view = this._viewContainer.detach(tuple.record.previousIndex);
+                tuple.view =
+                    this._viewContainer.detach(tuple.record.previousIndex);
                 movedTuples.push(tuple);
             }
             else {
@@ -144,8 +153,7 @@ export let NgFor = class NgFor {
                 this._viewContainer.insert(tuple.view, tuple.record.currentIndex);
             }
             else {
-                tuple.view =
-                    this._viewContainer.createEmbeddedView(this._templateRef, tuple.record.currentIndex);
+                tuple.view = this._viewContainer.createEmbeddedView(this._templateRef, new NgForRow(null, null, null), tuple.record.currentIndex);
             }
         }
         return tuples;

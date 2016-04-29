@@ -176,7 +176,8 @@ class ViewBuilderVisitor {
             else {
                 codeGenContentNodes = o.literalArr(compileElement.contentNodesByNgContentIndex.map(nodes => createFlatArray(nodes)));
             }
-            this.view.createMethod.addStmt(compViewExpr.callMethod('create', [codeGenContentNodes, o.NULL_EXPR]).toStmt());
+            this.view.createMethod.addStmt(compViewExpr.callMethod('create', [compileElement.getComponent(), codeGenContentNodes, o.NULL_EXPR])
+                .toStmt());
         }
         return null;
     }
@@ -286,7 +287,6 @@ function createStaticNodeDebugInfo(node) {
     ], o.importType(Identifiers.StaticNodeDebugInfo, null, [o.TypeModifier.Const]));
 }
 function createViewClass(view, renderCompTypeVar, nodeDebugInfosVar) {
-    var emptyTemplateVariableBindings = view.templateVariableBindings.map((entry) => [entry[0], o.NULL_EXPR]);
     var viewConstructorArgs = [
         new o.FnParam(ViewConstructorVars.viewUtils.name, o.importType(Identifiers.ViewUtils)),
         new o.FnParam(ViewConstructorVars.parentInjector.name, o.importType(Identifiers.Injector)),
@@ -297,7 +297,6 @@ function createViewClass(view, renderCompTypeVar, nodeDebugInfosVar) {
             o.variable(view.className),
             renderCompTypeVar,
             ViewTypeEnum.fromValue(view.viewType),
-            o.literalMap(emptyTemplateVariableBindings),
             ViewConstructorVars.viewUtils,
             ViewConstructorVars.parentInjector,
             ViewConstructorVars.declarationEl,
@@ -433,8 +432,10 @@ function addReturnValuefNotEmpty(statements, value) {
     }
 }
 function getContextType(view) {
-    var typeMeta = view.component.type;
-    return typeMeta.isHost ? o.DYNAMIC_TYPE : o.importType(typeMeta);
+    if (view.viewType === ViewType.COMPONENT) {
+        return o.importType(view.component.type);
+    }
+    return o.DYNAMIC_TYPE;
 }
 function getChangeDetectionMode(view) {
     var mode;

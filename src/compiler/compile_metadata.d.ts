@@ -203,13 +203,15 @@ export declare class CompileTemplateMetadata {
     styles: string[];
     styleUrls: string[];
     ngContentSelectors: string[];
-    constructor({encapsulation, template, templateUrl, styles, styleUrls, ngContentSelectors}?: {
+    baseUrl: string;
+    constructor({encapsulation, template, templateUrl, styles, styleUrls, ngContentSelectors, baseUrl}?: {
         encapsulation?: ViewEncapsulation;
         template?: string;
         templateUrl?: string;
         styles?: string[];
         styleUrls?: string[];
         ngContentSelectors?: string[];
+        baseUrl?: string;
     });
     static fromJson(data: {
         [key: string]: any;

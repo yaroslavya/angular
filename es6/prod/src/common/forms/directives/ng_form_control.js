@@ -18,7 +18,7 @@ import { NgControl } from './ng_control';
 import { NG_VALIDATORS, NG_ASYNC_VALIDATORS } from '../validators';
 import { NG_VALUE_ACCESSOR } from './control_value_accessor';
 import { setUpControl, composeValidators, composeAsyncValidators, isPropertyUpdated, selectValueAccessor } from './shared';
-const formControlBinding = CONST_EXPR(new Provider(NgControl, { useExisting: forwardRef(() => NgFormControl) }));
+export const formControlBinding = CONST_EXPR(new Provider(NgControl, { useExisting: forwardRef(() => NgFormControl) }));
 /**
  * Binds an existing {@link Control} to a DOM element.
  *

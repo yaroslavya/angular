@@ -14,15 +14,12 @@ export declare abstract class AppView<T> {
     clazz: any;
     componentType: RenderComponentType;
     type: ViewType;
-    locals: {
-        [key: string]: any;
-    };
     viewUtils: ViewUtils;
     parentInjector: Injector;
     declarationAppElement: AppElement;
     cdMode: ChangeDetectionStrategy;
     staticNodeDebugInfos: StaticNodeDebugInfo[];
-    ref: ViewRef_;
+    ref: ViewRef_<T>;
     rootNodesOrAppElements: any[];
     allNodes: any[];
     disposables: Function[];
@@ -32,20 +29,14 @@ export declare abstract class AppView<T> {
     renderParent: AppView<any>;
     viewContainerElement: AppElement;
     cdState: ChangeDetectorState;
-    /**
-     * The context against which data-binding expressions in this view are evaluated against.
-     * This is always a component instance.
-     */
-    context: T;
     projectableNodes: Array<any | any[]>;
     destroyed: boolean;
     renderer: Renderer;
     private _currentDebugContext;
     private _hasExternalHostElement;
-    constructor(clazz: any, componentType: RenderComponentType, type: ViewType, locals: {
-        [key: string]: any;
-    }, viewUtils: ViewUtils, parentInjector: Injector, declarationAppElement: AppElement, cdMode: ChangeDetectionStrategy, staticNodeDebugInfos: StaticNodeDebugInfo[]);
-    create(givenProjectableNodes: Array<any | any[]>, rootSelectorOrNode: string | any): AppElement;
+    context: T;
+    constructor(clazz: any, componentType: RenderComponentType, type: ViewType, viewUtils: ViewUtils, parentInjector: Injector, declarationAppElement: AppElement, cdMode: ChangeDetectionStrategy, staticNodeDebugInfos: StaticNodeDebugInfo[]);
+    create(context: T, givenProjectableNodes: Array<any | any[]>, rootSelectorOrNode: string | any): AppElement;
     /**
      * Overwritten by implementations.
      * Returns the AppElement for the host element for ViewType.HOST.
@@ -71,8 +62,6 @@ export declare abstract class AppView<T> {
     parent: AppView<any>;
     flatRootNodes: any[];
     lastRootNode: any;
-    hasLocal(contextName: string): boolean;
-    setLocal(contextName: string, value: any): void;
     /**
      * Overwritten by implementations
      */

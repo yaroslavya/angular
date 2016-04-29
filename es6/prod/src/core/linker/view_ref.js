@@ -32,9 +32,9 @@ export class ViewRef extends ChangeDetectorRef {
  * </ul>
  * ```
  *
- * ... we have two {@link ProtoViewRef}s:
+ * ... we have two {@link TemplateRef}s:
  *
- * Outer {@link ProtoViewRef}:
+ * Outer {@link TemplateRef}:
  * ```
  * Count: {{items.length}}
  * <ul>
@@ -42,14 +42,14 @@ export class ViewRef extends ChangeDetectorRef {
  * </ul>
  * ```
  *
- * Inner {@link ProtoViewRef}:
+ * Inner {@link TemplateRef}:
  * ```
  *   <li>{{item}}</li>
  * ```
  *
- * Notice that the original template is broken down into two separate {@link ProtoViewRef}s.
+ * Notice that the original template is broken down into two separate {@link TemplateRef}s.
  *
- * The outer/inner {@link ProtoViewRef}s are then assembled into views like so:
+ * The outer/inner {@link TemplateRef}s are then assembled into views like so:
  *
  * ```
  * <!-- ViewRef: outer-0 -->
@@ -63,6 +63,7 @@ export class ViewRef extends ChangeDetectorRef {
  * ```
  */
 export class EmbeddedViewRef extends ViewRef {
+    get context() { return unimplemented(); }
     get rootNodes() { return unimplemented(); }
     ;
 }
@@ -77,8 +78,7 @@ export class ViewRef_ {
      */
     get changeDetectorRef() { return this; }
     get rootNodes() { return this._view.flatRootNodes; }
-    setLocal(variableName, value) { this._view.setLocal(variableName, value); }
-    hasLocal(variableName) { return this._view.hasLocal(variableName); }
+    get context() { return this._view.context; }
     get destroyed() { return this._view.destroyed; }
     markForCheck() { this._view.markPathToRootAsCheckOnce(); }
     detach() { this._view.cdMode = ChangeDetectionStrategy.Detached; }

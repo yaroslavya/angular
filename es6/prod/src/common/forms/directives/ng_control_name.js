@@ -18,7 +18,7 @@ import { NgControl } from './ng_control';
 import { NG_VALUE_ACCESSOR } from './control_value_accessor';
 import { controlPath, composeValidators, composeAsyncValidators, isPropertyUpdated, selectValueAccessor } from './shared';
 import { NG_VALIDATORS, NG_ASYNC_VALIDATORS } from '../validators';
-const controlNameBinding = CONST_EXPR(new Provider(NgControl, { useExisting: forwardRef(() => NgControlName) }));
+export const controlNameBinding = CONST_EXPR(new Provider(NgControl, { useExisting: forwardRef(() => NgControlName) }));
 /**
  * Creates and binds a control with a specified name to a DOM element.
  *
